@@ -1,17 +1,30 @@
 ﻿@{
-    ViewData["Title"] = "Contact";
+    ViewData["Title"] = "众评";
 }
+<header>
+    <link href="~/lib/codemirror/lib/codemirror.css" rel="stylesheet" />
+    <link href="~/lib/highlightjs/styles/vs2015.css" rel="stylesheet" />
+    <link href="~/lib/tui-editor/dist/tui-editor.css" rel="stylesheet" />
+    <link href="~/lib/tui-editor/dist/tui-editor-contents.css" rel="stylesheet" />
+</header>
 <h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+<div id="editSection"></div>
 
-<address>
-    <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+@section Scripts{
+<script src='~/lib/markdown-it/dist/markdown-it.js'></script>
+<script src="~/lib/to-mark/dist/to-mark.js"></script>
+<script src="~/lib/tui-code-snippet/dist/tui-code-snippet.js"></script>
+<script src="~/lib/codemirror/lib/codemirror.js"></script>
+<script src="~/lib/highlightjs/highlight.pack.js"></script>
+<script src="~/lib/squire-rte/build/squire-raw.js"></script>
+<script src="~/lib/tui-editor/dist/tui-editor-Editor.min.js"></script>
+
+<script>
+    $('#editSection').tuiEditor({
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
+        height: '600px'
+    });
+</script>
+} 

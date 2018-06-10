@@ -1,0 +1,32 @@
+{
+  "name": "Comment",
+  "homepage": "https://github.com/niltor/comment",
+  "authors": [
+    "zpty still <zpty@outlook.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jQuery": "3.3.1",
+    "jquery-validation": "1.17.0",
+    "jquery-validation-unobtrusive": "v3.2.10",
+    "bootstrap": "boostrap#v3.3.7",
+    "markdown-it": "8.4.1",
+    "tui-code-snippet": "v1.4.0",
+    "codemirror": "v3.12",
+    "highlightjs": "9.12.0",
+    "squire-rte": "v1.8.14"
+  },
+  "resolutions": {
+    "codemirror": "^5.32.0",
+    "squire-rte": "306230d0df9b38047cd06204476ddc0582569cfd"
+  }
+}
