@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -26,7 +26,7 @@ namespace Comment.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
             _emailSender = emailSender;
         }
-
+        [Display(Name = "登录名")]
         public string Username { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
@@ -41,10 +41,11 @@ namespace Comment.Areas.Identity.Pages.Account.Manage
         {
             [Required]
             [EmailAddress]
+            [Display(Name = "邮箱")]
             public string Email { get; set; }
 
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "手机号")]
             public string PhoneNumber { get; set; }
         }
 

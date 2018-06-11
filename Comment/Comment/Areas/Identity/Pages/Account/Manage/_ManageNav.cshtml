@@ -1,14 +1,24 @@
-﻿@inject SignInManager<IdentityUser> SignInManager
+@inject SignInManager<IdentityUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
 <ul class="nav nav-pills nav-stacked">
-    <li class="@ManageNavPages.IndexNavClass(ViewContext)"><a asp-page="./Index">Profile</a></li>
-    <li class="@ManageNavPages.ChangePasswordNavClass(ViewContext)"><a id="change-password" asp-page="./ChangePassword">Password</a></li>
+    <li class="@ManageNavPages.IndexNavClass(ViewContext)">
+        <a asp-page="./Index">基本信息</a>
+    </li>
+    <li class="@ManageNavPages.ChangePasswordNavClass(ViewContext)">
+        <a id="change-password" asp-page="./ChangePassword">密码</a>
+    </li>
+    <li class="@ManageNavPages.RealNameNavClass(ViewContext)">
+        <a id="real-name" asp-page="./RealName">实名认证</a>
+    </li>
     @if (hasExternalLogins)
     {
-        <li class="@ManageNavPages.ExternalLoginsNavClass(ViewContext)"><a id="external-login" asp-page="./ExternalLogins">External logins</a></li>
+        <li class="@ManageNavPages.ExternalLoginsNavClass(ViewContext)">
+            <a id="external-login" asp-page="./ExternalLogins">External logins</a>
+        </li>
     }
-    <li class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="@ManageNavPages.PersonalDataNavClass(ViewContext)"><a asp-page="./PersonalData">Personal data</a></li>
+
+    @*<li class="@ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"><a asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
+        <li class="@ManageNavPages.PersonalDataNavClass(ViewContext)"><a asp-page="./PersonalData">Personal data</a></li>*@
 </ul>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +9,8 @@ namespace Comment.Areas.Identity.Pages.Account.Manage
     public static class ManageNavPages
     {
         public static string Index => "Index";
+
+        public static string RealName => "RealName";
 
         public static string ChangePassword => "ChangePassword";
 
@@ -23,6 +25,8 @@ namespace Comment.Areas.Identity.Pages.Account.Manage
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
+
+        public static string RealNameNavClass(ViewContext viewContext) => PageNavClass(viewContext, RealName);
 
         public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
 
