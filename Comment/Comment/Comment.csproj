@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Utilities\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 

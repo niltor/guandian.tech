@@ -1,4 +1,41 @@
 @page
 @model RealNameModel
 @{
+    ViewData["Title"] = "实名认证";
 }
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="real-name-form" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Input.RealName"></label>
+                <input asp-for="Input.RealName" class="form-control" />
+                <span asp-validation-for="Input.RealName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.IdentityCard"></label>
+                <input asp-for="Input.IdentityCard" class="form-control" />
+                <span asp-validation-for="Input.IdentityCard" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Birthday"></label>
+                <input asp-for="Input.Birthday" class="form-control" type="date" />
+                <span asp-validation-for="Input.Birthday" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.File"></label>
+                <input asp-for="Input.File" />
+                <p class="help-block">上传身份证头像面，大小不要超过1MB；该图片只在验证时使用，不会被存储和显示！</p>
+            </div>
+            <button type="submit" class="btn btn-default">验证</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
