@@ -11,10 +11,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Comment.Areas.Identity.Pages.Account.Manage
 {
-
     public class RealNameModel : PageModel
     {
-
         readonly IHostingEnvironment _env;
         public RealNameModel(IHostingEnvironment env)
         {
