@@ -1,5 +1,5 @@
 {
-  "name": "Comment",
+  "name": "comment",
   "homepage": "https://github.com/niltor/comment",
   "authors": [
     "zpty still <zpty@outlook.com>"
@@ -15,15 +15,17 @@
     "tests"
   ],
   "dependencies": {
-    "jQuery": "3.3.1",
+    "jquery": "3.3.1",
     "jquery-validation": "1.17.0",
     "jquery-validation-unobtrusive": "v3.2.10",
     "bootstrap": "boostrap#v3.3.7",
     "markdown-it": "8.4.1",
     "tui-code-snippet": "v1.4.0",
-    "codemirror": "v3.12",
+    "codemirror": "5.32",
     "highlightjs": "9.12.0",
-    "squire-rte": "v1.8.14"
+    "squire-rte": "1.8.14",
+    "to-mark": "^1.1.0",
+    "tui-editor": "^1.2.2"
   },
   "resolutions": {
     "codemirror": "^5.32.0",
