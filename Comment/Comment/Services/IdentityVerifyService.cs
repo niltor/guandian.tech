@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Comment.Services
 {
-    public class IdentityVerify
+    public class IdentityVerifyService : IDisposable
     {
         /// <summary>
         /// 身份识别
@@ -26,7 +26,7 @@ namespace Comment.Services
         private readonly string appCode;
         public IConfiguration Configuration { get; }
 
-        public IdentityVerify(IConfiguration configuration)
+        public IdentityVerifyService(IConfiguration configuration)
         {
             Configuration = configuration;
             appCode = configuration["appcode"];
@@ -40,14 +40,14 @@ namespace Comment.Services
             using (var hc = new HttpClient())
             {
                 // 设置请求头
-                hc.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "APPCODE" + appCode);
+                hc.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "APPCODE " + appCode);
                 // 构造请求体
                 var file = File.ReadAllBytes(filePath);
                 var body = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("pic", Convert.ToBase64String(file))
                 };
-                var response = await hc.PostAsync(recognitionApi + "?typeid=2", new FormUrlEncodedContent(body));
+                var response = await hc.PostAsync(recognitionApi + "?typeid=2", new StringContent("pic=" + Convert.ToBase64String(file), Encoding.UTF8));
 
                 Console.WriteLine(response.Content);
             }
@@ -61,10 +61,15 @@ namespace Comment.Services
             using (var hc = new HttpClient())
             {
                 // 设置请求头
-                hc.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "APPCODE" + appCode);
-                var result = await hc.GetStringAsync(recognitionApi + $"?typeid=2&name={name}&idCard={identity}");
+                hc.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "APPCODE " + appCode);
+                var result = await hc.GetStringAsync(verifyIdentity + $"?typeid=2&name={name}&idCard={identity}");
                 Console.WriteLine(result);
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose();
         }
     }
 }

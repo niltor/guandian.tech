@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Comment.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Comment.Services;
 
 namespace Comment
 {
@@ -70,6 +71,7 @@ namespace Comment
                 options.SlidingExpiration = true;
             });
 
+            services.AddSingleton<IdentityVerifyService>();
             // Add application services.
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

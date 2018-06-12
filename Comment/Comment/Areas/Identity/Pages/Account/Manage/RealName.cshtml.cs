@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Comment.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,11 @@ namespace Comment.Areas.Identity.Pages.Account.Manage
     public class RealNameModel : PageModel
     {
         readonly IHostingEnvironment _env;
-        public RealNameModel(IHostingEnvironment env)
+        readonly IdentityVerifyService _service;
+        public RealNameModel(IHostingEnvironment env, IdentityVerifyService service)
         {
             _env = env;
+            _service = service;
         }
 
         [BindProperty]
@@ -66,6 +69,9 @@ namespace Comment.Areas.Identity.Pages.Account.Manage
             {
                 await Input.File.CopyToAsync(fileStream);
             }
+
+            await _service.RecognitionIdentityAsync(filePath);
+            await _service.VerifyIdentityAsync(Input.RealName, Input.IdentityCard);
 
             return RedirectToPage();
         }
