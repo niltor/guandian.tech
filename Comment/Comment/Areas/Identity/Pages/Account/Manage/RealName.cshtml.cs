@@ -71,7 +71,7 @@ namespace Comment.Areas.Identity.Pages.Account.Manage
             }
 
             await _service.RecognitionIdentityAsync(filePath);
-            await _service.VerifyIdentityAsync(Input.RealName, Input.IdentityCard);
+            //await _service.VerifyIdentityAsync(Input.RealName, Input.IdentityCard);
 
             return RedirectToPage();
         }

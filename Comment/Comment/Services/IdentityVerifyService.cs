@@ -3,6 +3,7 @@ using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,13 +44,12 @@ namespace Comment.Services
                 hc.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "APPCODE " + appCode);
                 // 构造请求体
                 var file = File.ReadAllBytes(filePath);
-                var body = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("pic", Convert.ToBase64String(file))
-                };
-                var response = await hc.PostAsync(recognitionApi + "?typeid=2", new StringContent("pic=" + Convert.ToBase64String(file), Encoding.UTF8));
 
-                Console.WriteLine(response.Content);
+                var response = await hc.PostAsync(recognitionApi + "?typeid=2",
+                    new StringContent("pic=" + WebUtility.UrlEncode(Convert.ToBase64String(file)), Encoding.UTF8, "application/x-www-form-urlencoded"));
+
+                var result = response.Content.ReadAsStringAsync();
+                Console.WriteLine(result);
             }
         }
         /// <summary>
@@ -62,7 +62,7 @@ namespace Comment.Services
             {
                 // 设置请求头
                 hc.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "APPCODE " + appCode);
-                var result = await hc.GetStringAsync(verifyIdentity + $"?typeid=2&name={name}&idCard={identity}");
+                var result = await hc.GetStringAsync(verifyIdentity + $"?name={name}&idCard={identity}");
                 Console.WriteLine(result);
             }
         }
