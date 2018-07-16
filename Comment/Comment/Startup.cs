@@ -13,6 +13,7 @@ using Comment.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Comment.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Comment
 {
@@ -93,7 +94,10 @@ namespace Comment
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
             //app.UseCookiePolicy();
-
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseAuthentication();
 
             app.UseMvc(routes =>
