@@ -1,8 +1,5 @@
-﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Comment.Data.Entity
 {
@@ -28,7 +25,7 @@ namespace Comment.Data.Entity
         /// 内容
         /// </summary>
         [MaxLength(4000)]
-        public string Description { get; set; }
+        public string Content { get; set; }
         /// <summary>
         /// 关键词
         /// </summary>

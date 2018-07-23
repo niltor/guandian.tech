@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Comment.Data.Entity;
@@ -11,11 +11,12 @@ namespace Comment.Data
     {
         public DbSet<Author> Authors { get; set; }
         public DbSet<Article> Articles { get; set; }
-        public DbSet<Comment.Data.Entity.Comment> Comments { get; set; }
+        public DbSet<Entity.Comment> Comments { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
         }
     }
 }
