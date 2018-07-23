@@ -12,9 +12,9 @@ namespace Functions
         public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
-
-            var service = new NewsService();
-            var result = await service.GetNews("微软");
+            var keywords = new string[] { "微软", "Microsoft" };
+            var service = new NewsService(log);
+            var result = await service.GetNews("Microsoft");
 
             Console.WriteLine("finish");
         }

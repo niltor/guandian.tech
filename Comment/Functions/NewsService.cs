@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Functions.Models;
+using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json.Linq;
 
 namespace Functions
@@ -16,13 +17,13 @@ namespace Functions
         private const string AutoSuggestionEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/suggestions";
         private const string NewsSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/news/search";
         private const string TopNewsSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/news";
-
         private const double Similarity = 0.5;//定义相似度
-
         private static HttpClient SearchClient { get; set; }
+        TraceWriter _log;
 
-        public NewsService()
+        public NewsService(TraceWriter log)
         {
+            _log = log;
             SearchClient = new HttpClient();
             SearchClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", BingSearchKey);
         }
@@ -39,16 +40,16 @@ namespace Functions
                 return default;
             }
 
-            //TODO:获取过滤来源名单
-            string[] providerFilter = { "大连天健网", "中金在线", "安卓网资讯专区", "中国通信网", "中国网", "华商网", "A5站长网", "东方财富网 股票", "秦巴在线", "ITBEAR科技资讯", "京华网", "TechWeb", "四海网" };
+            //TODO:获取过滤来源白名单
+            string[] providerFilter = { "电脑之家", "太平洋电脑网", "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta" };
 
             //数据预处理
             for (int i = 0; i < newNews.Count; i++)
             {
                 //来源过滤
-                if (Array.Exists(providerFilter, provider => provider == newNews[i].Provider))
+                if (providerFilter.Any(p => !p.ToLower().Equals(newNews[i].Provider.ToLower())))
                 {
-                    Console.WriteLine("filter:" + newNews[i].Provider + newNews[i].Title);
+                    _log.Info("filter:" + newNews[i].Provider + newNews[i].Title);
                     newNews[i].Title = string.Empty;
                     continue;
                 }
@@ -88,7 +89,7 @@ namespace Functions
         /// <param name="market">地区</param>
         /// <param name="freshness">时间频率</param>
         /// <returns></returns>
-        public static async Task<List<BingNewsEntity>> GetNewsSearchResults(string query, int count = 20, int offset = 0, string market = "zh-CN", string freshness = "Day")
+        public async Task<List<BingNewsEntity>> GetNewsSearchResults(string query, int count = 20, int offset = 0, string market = "zh-CN", string freshness = "Day")
         {
             var articles = new List<BingNewsEntity>();
             try
@@ -98,6 +99,8 @@ namespace Functions
 
                 result.EnsureSuccessStatusCode();
                 string json = await result.Content.ReadAsStringAsync();
+
+                _log.Info(json);
                 dynamic data = JObject.Parse(json);
 
                 if (data.value == null || data.value.Count <= 0)
@@ -128,7 +131,7 @@ namespace Functions
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Source + e.Message);
+                _log.Info(e.Source + e.Message);
             }
 
             return articles;
