@@ -12,6 +12,7 @@ namespace Comment.Data
         public DbSet<Author> Authors { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<Entity.Comment> Comments { get; set; }
+        public DbSet<News> News { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
