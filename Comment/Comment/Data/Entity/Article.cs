@@ -6,7 +6,7 @@ namespace Comment.Data.Entity
     /// <summary>
     /// 文章
     /// </summary>
-    public class Article : Db
+    public class Article : BaseDb
     {
         [MaxLength(60)]
         public string Title { get; set; }

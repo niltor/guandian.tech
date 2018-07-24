@@ -9,7 +9,7 @@ namespace Comment.Data.Entity
     /// <summary>
     /// 设置配置项
     /// </summary>
-    public class Setting : Db
+    public class Setting : BaseDb
     {
         [MaxLength(100)]
         public string Key { get; set; }

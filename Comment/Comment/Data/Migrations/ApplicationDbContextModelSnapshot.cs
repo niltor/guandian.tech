@@ -29,13 +29,15 @@ namespace Comment.Data.Migrations
                     b.Property<string>("AuthorName")
                         .HasMaxLength(50);
 
-                    b.Property<DateTime>("CreatedTime");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("Content")
                         .HasMaxLength(4000);
+
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("Keywords")
                         .HasMaxLength(200);
+
+                    b.Property<int>("Status");
 
                     b.Property<string>("Summary")
                         .HasMaxLength(500);
@@ -65,6 +67,8 @@ namespace Comment.Data.Migrations
 
                     b.Property<DateTime>("CreatedTime");
 
+                    b.Property<int>("Status");
+
                     b.Property<DateTime>("UpdatedTime");
 
                     b.HasKey("Id");
@@ -74,6 +78,46 @@ namespace Comment.Data.Migrations
                     b.HasIndex("AuthorId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Comment.Data.Entity.News", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AuthorName")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("Content")
+                        .HasMaxLength(4000);
+
+                    b.Property<DateTime>("CreatedTime");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(400);
+
+                    b.Property<string>("Provider")
+                        .HasMaxLength(100);
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Tags")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ThumbnailUrl")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime>("UpdatedTime");
+
+                    b.Property<string>("Url")
+                        .HasMaxLength(200);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("News");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

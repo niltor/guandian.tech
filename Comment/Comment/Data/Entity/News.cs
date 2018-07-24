@@ -9,7 +9,7 @@ namespace Comment.Data.Entity
     /// <summary>
     /// 第三方新闻资讯
     /// </summary>
-    public class News
+    public class News : BaseDb
     {
         /// <summary>
         /// 标题

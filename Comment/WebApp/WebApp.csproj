@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="README.md" />
     <None Include="package.json" />
   </ItemGroup>
 

@@ -41,13 +41,13 @@ namespace Functions
             }
 
             //TODO:获取过滤来源白名单
-            string[] providerFilter = { "电脑之家", "太平洋电脑网", "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta" };
+            string[] providerFilter = { "电脑之家", "太平洋电脑网", "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta", "腾讯网" };
 
             //数据预处理
             for (int i = 0; i < newNews.Count; i++)
             {
                 //来源过滤
-                if (providerFilter.Any(p => !p.ToLower().Equals(newNews[i].Provider.ToLower())))
+                if (!providerFilter.Any(p => p.ToLower().Equals(newNews[i].Provider.ToLower())))
                 {
                     _log.Info("filter:" + newNews[i].Provider + newNews[i].Title);
                     newNews[i].Title = string.Empty;
@@ -56,7 +56,7 @@ namespace Functions
                 //无缩略图过滤
                 if (string.IsNullOrEmpty(newNews[i].ThumbnailUrl))
                 {
-                    Console.WriteLine("noPic:" + newNews[i].Title);
+                    _log.Info("noPic:" + newNews[i].Title);
                     newNews[i].Title = string.Empty;
                     continue;
                 }
@@ -65,17 +65,17 @@ namespace Functions
                 for (int j = i + 1; j < newNews.Count; j++)
                 {
                     //重复过滤
-                    if (!(StringTools.Similarity(newNews[i].Title, newNews[j].Title) > Similarity))
+                    if ((StringTools.Similarity(newNews[i].Title, newNews[j].Title) > Similarity))
                     {
+                        _log.Info("repeat" + newNews[i].Title);
+                        newNews[i].Title = string.Empty;
                         continue;
                     }
-                    Console.WriteLine("repeat" + newNews[i].Title);
-                    newNews[i].Title = string.Empty;
-                }
 
+                }
             }
 
-            return newNews;
+            return newNews.Where(n => n.Title != string.Empty).ToList();
         }
 
 
@@ -100,7 +100,6 @@ namespace Functions
                 result.EnsureSuccessStatusCode();
                 string json = await result.Content.ReadAsStringAsync();
 
-                _log.Info(json);
                 dynamic data = JObject.Parse(json);
 
                 if (data.value == null || data.value.Count <= 0)
