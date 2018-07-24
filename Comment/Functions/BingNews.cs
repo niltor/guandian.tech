@@ -10,7 +10,7 @@ namespace Functions
 {
     public static class BingNews
     {
-        static readonly string postUrl = "http://localhost:5000/api/BingNews/multi";
+        static readonly string postUrl = "http://guandian.tech/api/BingNews/multi";
 
         [FunctionName("GetNews")]
         public static async Task RunAsync([TimerTrigger("* * */4 * * *")]TimerInfo myTimer, TraceWriter log)
