@@ -13,7 +13,7 @@ namespace Functions
         static readonly string postUrl = "http://localhost:5000/api/BingNews/multi";
 
         [FunctionName("GetNews")]
-        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
+        public static async Task RunAsync([TimerTrigger("* * */4 * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
 
@@ -27,7 +27,7 @@ namespace Functions
                 await hc.PostAsync(postUrl, new StringContent(JsonConvert.SerializeObject(result1), Encoding.UTF8, "application/json"));
             }
 
-            Console.WriteLine("finish");
+            log.Info("finish");
         }
     }
 }

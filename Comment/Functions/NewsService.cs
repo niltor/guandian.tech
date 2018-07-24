@@ -41,7 +41,7 @@ namespace Functions
             }
 
             //TODO:获取过滤来源白名单
-            string[] providerFilter = { "电脑之家", "太平洋电脑网", "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta", "腾讯网" };
+            string[] providerFilter = { "电脑之家", "太平洋电脑网", "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta", "腾讯网" ,"凤凰网 科技"};
 
             //数据预处理
             for (int i = 0; i < newNews.Count; i++)
