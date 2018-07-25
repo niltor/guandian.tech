@@ -20,6 +20,7 @@ namespace Comment.Controllers
         public IActionResult Index(int page = 1, int pageSize = 12)
         {
             var news = _context.News
+                .OrderByDescending(n => n.UpdatedTime)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();

@@ -1,10 +1,36 @@
+@using System.Web;
 @{
     ViewData["Title"] = "主页";
 }
 @model NewsListViewModel
 
 
-@foreach (var news in Model.NewsList)
-{
-    
-}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        @foreach (var bingNews in Model.NewsList)
+        {
+            var Url = HttpUtility.ParseQueryString(new Uri(bingNews.Url).Query);
+            <div class="row news-list bg-white m-0 mb-2 p-2">
+                <div class="col-md-auto d-md-flex d-none">
+                    <a href="@bingNews.Url" target="_blank">
+                        <img class="bingnews" src="@bingNews.ThumbnailUrl" alt="">
+                    </a>
+                </div>
+                <div class="content col-md-8">
+                    <div class="news-title">
+                        <a href="@bingNews.Url" target="_blank">
+                            @bingNews.Title
+                        </a>
+                    </div>
+                    <div class="news-sectitle">
+                        @bingNews.UpdatedTime @bingNews.Provider
+                    </div>
+                    <div class="news-description">
+                        @bingNews.Description
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

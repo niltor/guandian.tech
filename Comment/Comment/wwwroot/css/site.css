@@ -37,3 +37,36 @@ body {
         display: none;
     }
 }
+
+.news-list {
+    margin: 1rem 0;
+}
+
+img.bingnews {
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+}
+
+.content {
+    padding: 0 1rem;
+}
+
+.news-title {
+    color: rgb(21,21,21);
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+}
+
+.news-sectitle {
+    color: rgb(19,122,171);
+    margin-bottom: 3px;
+    font-size: 0.9rem;
+}
+
+.news-description {
+    color: rgb(104, 104, 104);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
