@@ -4,8 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Functions.Data;
+using Functions.Data.Entity;
 using Functions.Models;
 using Microsoft.Azure.WebJobs.Host;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Functions
@@ -41,7 +44,7 @@ namespace Functions
             }
 
             //TODO:获取过滤来源白名单
-            string[] providerFilter = { "电脑之家", "太平洋电脑网", "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta", "腾讯网" ,"凤凰网 科技"};
+            string[] providerFilter = { "电脑之家", "太平洋电脑网", "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta", "腾讯网", "凤凰网 科技" };
 
             //数据预处理
             for (int i = 0; i < newNews.Count; i++)
@@ -134,6 +137,40 @@ namespace Functions
             }
 
             return articles;
+        }
+
+        /// <summary>
+        /// 保存新闻到数据库
+        /// </summary>
+        public void SaveNews(string connectionString, List<BingNewsEntity> bingNews)
+        {
+            using (var context = new NewsDbContext(connectionString))
+            {
+                var news = new List<News>();
+                news = bingNews.Select(s => new News
+                {
+                    Description = s.Description,
+                    Provider = s.Provider,
+                    ThumbnailUrl = s.ThumbnailUrl,
+                    Title = s.Title,
+                    Url = s.Url
+                }).ToList();
+
+                // 与过去50条对比，去除相似内容
+                var oldNews = context.News.Take(50).ToList();
+
+                foreach (var item in news)
+                {
+                    if (oldNews.Any(o => StringTools.Similarity(o.Title, item.Title) >= 0.5))
+                    {
+                        // 标记为无效
+                        item.Title = null;
+                    }
+                }
+                news = news.Where(n => n.Title != null).ToList();
+                context.News.AddRange(news);
+                context.SaveChanges();
+            }
         }
     }
 }

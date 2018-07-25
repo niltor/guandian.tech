@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Functions.Data.Entity
 {
@@ -12,7 +9,6 @@ namespace Functions.Data.Entity
         public Guid Id { get; set; } = Guid.NewGuid();
         public DateTime CreatedTime { get; set; } = DateTime.Now;
         public DateTime UpdatedTime { get; set; } = DateTime.Now;
-
         public Status Status { get; set; } = Status.Default;
     }
 

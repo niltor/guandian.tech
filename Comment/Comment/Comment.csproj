@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Views\" />
     <Folder Include="Areas\Identity\Services\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>
