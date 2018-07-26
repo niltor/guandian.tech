@@ -5,33 +5,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
-
-<h4>Article</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-12">
+        <form asp-action="Create" id="form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AuthorName" class="control-label"></label>
-                <input asp-for="AuthorName" class="form-control" />
-                <span asp-validation-for="AuthorName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ViewNunmber" class="control-label"></label>
-                <input asp-for="ViewNunmber" class="form-control" />
-                <span asp-validation-for="ViewNunmber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Keywords" class="control-label"></label>
@@ -43,23 +25,12 @@
                 <input asp-for="Summary" class="form-control" />
                 <span asp-validation-for="Summary" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreatedTime" class="control-label"></label>
-                <input asp-for="CreatedTime" class="form-control" />
-                <span asp-validation-for="CreatedTime" class="text-danger"></span>
+            <div id="editSection"></div>
+            <div>
+                <textarea asp-for="Content" style="display:none" id="content"></textarea>
             </div>
             <div class="form-group">
-                <label asp-for="UpdatedTime" class="control-label"></label>
-                <input asp-for="UpdatedTime" class="form-control" />
-                <span asp-validation-for="UpdatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="添加" class="btn btn-default" id="addArticle"/>
             </div>
         </form>
     </div>
@@ -74,9 +45,8 @@
     <link href="~/lib/tui-editor/dist/tui-editor.css" rel="stylesheet" />
     <link href="~/lib/tui-editor/dist/tui-editor-contents.css" rel="stylesheet" />
 </header>
-<h2>@ViewData["Title"]</h2>
 
-<div id="editSection"></div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -90,10 +60,17 @@
     <script src="~/lib/tui-editor/dist/tui-editor-Editor.min.js"></script>
 
     <script>
-        $('#editSection').tuiEditor({
+        var editor = new tui.Editor({
+            el: document.querySelector('#editSection'),
             initialEditType: 'markdown',
             previewStyle: 'vertical',
-            height: '600px'
+            height: '600px',
+        });
+        $("#addArticle").click(function (event) {
+            event.preventDefault();
+            var content = editor.getMarkdown();
+            $("#content").val(content);
+            $("#form").submit();
         });
     </script>
 }
