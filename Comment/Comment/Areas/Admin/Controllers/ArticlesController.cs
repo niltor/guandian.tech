@@ -7,17 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Comment.Data;
 using Comment.Data.Entity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Comment.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Policy = "Admin")]
     public class ArticlesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
         public ArticlesController(ApplicationDbContext context)
         {
-            _context = context;  
+            _context = context;
         }
 
         // GET: Admin/Articles
