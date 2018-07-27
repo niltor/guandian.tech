@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Functions.Data;
 using Functions.Data.Entity;
 using Functions.Models;
+using HtmlAgilityPack;
 using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -43,8 +44,8 @@ namespace Functions
                 return default;
             }
 
-            //TODO:获取过滤来源白名单
-            string[] providerFilter = { "电脑之家", "太平洋电脑网", "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta", "腾讯网", "凤凰网 科技" };
+            //TODO:获取过滤来源白名单  改成域名过滤更好
+            string[] providerFilter = { "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta", "腾讯网", "凤凰网 科技" };
 
             //数据预处理
             for (int i = 0; i < newNews.Count; i++)
@@ -168,9 +169,23 @@ namespace Functions
                     }
                 }
                 news = news.Where(n => n.Title != null).ToList();
+
+                // 获取并解析新闻具体内容
+                
                 context.News.AddRange(news);
                 context.SaveChanges();
             }
+        }
+
+        public async Task<string> GetNewsContentAsync(string url)
+        {
+            // 判断url来源，根据不同来源使用不同规则获取内容
+
+            var hw = new HtmlWeb();
+            var originContent = await hw.LoadFromWebAsync(url);
+
+
+            return default;
         }
     }
 }

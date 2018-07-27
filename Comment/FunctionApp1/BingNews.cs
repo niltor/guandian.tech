@@ -9,7 +9,7 @@ namespace Functions
     public static class BingNews
     {
         [FunctionName("BingNewsAuto")]
-        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
+        public static async Task RunAsync([TimerTrigger("0 0 */4 * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
 
@@ -23,14 +23,13 @@ namespace Functions
             if (!string.IsNullOrEmpty(connstr))
             {
                 // 获取新闻
-                var keywords = new string[] { "微软", "Microsoft" };
+                var keywords = new string[] { "微软", "Microsoft", "三星", "谷歌", "科技" };
                 var service = new NewsService(log);
-                var result = await service.GetNews("Microsoft");
-                var result1 = await service.GetNews("微软");
-
-                // 处理并入库新闻
-                service.SaveNews(connstr, result);
-                service.SaveNews(connstr, result1);
+                foreach (var keyword in keywords)
+                {
+                    var result = await service.GetNews(keyword);
+                    service.SaveNews(connstr, result);
+                }
                 log.Info("finish");
             }
         }
