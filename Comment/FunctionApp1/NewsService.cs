@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BingNewsFunction.Models;
 using Functions.Data;
 using Functions.Data.Entity;
 using Functions.Models;
@@ -45,13 +46,13 @@ namespace Functions
             }
 
             //TODO:获取过滤来源白名单  改成域名过滤更好
-            string[] providerFilter = { "新浪科技", "DoNews", "中关村在线", "中国IDC圈", "oschina", "cnBeta", "腾讯网", "凤凰网 科技" };
+            string[] urlFilter = { "www.cnbeta.com", "tech.ifeng.com", "news.zol.com.cn", "tech.sina.com.cn", "pchome.net", "donews.com", "idcquan.com", "oschina.net" };
 
             //数据预处理
             for (int i = 0; i < newNews.Count; i++)
             {
                 //来源过滤
-                if (!providerFilter.Any(p => p.ToLower().Equals(newNews[i].Provider.ToLower())))
+                if (!urlFilter.Any(p => newNews[i].Url.ToLower().Contains(p)))
                 {
                     _log.Info("filter:" + newNews[i].Provider + newNews[i].Title);
                     newNews[i].Title = string.Empty;
@@ -143,7 +144,7 @@ namespace Functions
         /// <summary>
         /// 保存新闻到数据库
         /// </summary>
-        public void SaveNews(string connectionString, List<BingNewsEntity> bingNews)
+        public async void SaveNewsAsync(string connectionString, List<BingNewsEntity> bingNews)
         {
             using (var context = new NewsDbContext(connectionString))
             {
@@ -171,21 +172,35 @@ namespace Functions
                 news = news.Where(n => n.Title != null).ToList();
 
                 // 获取并解析新闻具体内容
-                
+                foreach (var item in news)
+                {
+                    item.Content = await GetNewsContentAsync(item.Url);
+                }
                 context.News.AddRange(news);
                 context.SaveChanges();
             }
         }
 
+
+        /// <summary>
+        /// 获取内容页
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public async Task<string> GetNewsContentAsync(string url)
         {
             // 判断url来源，根据不同来源使用不同规则获取内容
+            var filterList = NewsContentFilter.GetDefaultFilter();
+            var filter = filterList.Where(f => url.Contains(f.Url)).FirstOrDefault();
+            if (filter == null)
+            {
+                return "";
+            }
 
             var hw = new HtmlWeb();
-            var originContent = await hw.LoadFromWebAsync(url);
-
-
-            return default;
+            var doc = await hw.LoadFromWebAsync(url);
+            var content = doc.DocumentNode.SelectSingleNode($"//div[@{filter.Path}]").InnerHtml;
+            return content ?? "";
         }
     }
 }

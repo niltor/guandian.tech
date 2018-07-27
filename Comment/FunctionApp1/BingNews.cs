@@ -9,7 +9,8 @@ namespace Functions
     public static class BingNews
     {
         [FunctionName("BingNewsAuto")]
-        public static async Task RunAsync([TimerTrigger("0 0 */4 * * *")]TimerInfo myTimer, TraceWriter log)
+        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
+        //public static async Task RunAsync([TimerTrigger("0 0 */4 * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
 
@@ -28,7 +29,7 @@ namespace Functions
                 foreach (var keyword in keywords)
                 {
                     var result = await service.GetNews(keyword);
-                    service.SaveNews(connstr, result);
+                    service.SaveNewsAsync(connstr, result);
                 }
                 log.Info("finish");
             }

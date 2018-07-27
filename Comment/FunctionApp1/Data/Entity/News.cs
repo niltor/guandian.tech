@@ -24,7 +24,6 @@ namespace Functions.Data.Entity
         /// <summary>
         /// 新闻内容
         /// </summary>
-        [MaxLength(4000)]
         public string Content { get; set; }
         /// <summary>
         /// 内容概要
