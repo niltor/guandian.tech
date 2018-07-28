@@ -155,7 +155,9 @@ namespace Functions
                     Provider = s.Provider,
                     ThumbnailUrl = s.ThumbnailUrl,
                     Title = s.Title,
-                    Url = s.Url
+                    Url = s.Url,
+                    CreatedTime = s.DatePublished,
+                    UpdatedTime = s.DatePublished
                 }).ToList();
 
                 // 与过去50条对比，去除相似内容
