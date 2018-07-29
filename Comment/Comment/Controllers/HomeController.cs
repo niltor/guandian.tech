@@ -17,7 +17,7 @@ namespace Comment.Controllers
         {
             _context = context;
         }
-        public IActionResult Index(int page = 1, int pageSize = 12)
+        public IActionResult Index(int page = 1, int pageSize = 20)
         {
             var news = _context.News
                 .OrderByDescending(n => n.UpdatedTime)

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Comment.Services;
 using Microsoft.AspNetCore.HttpOverrides;
+using Comment.Data.Entity;
 
 namespace Comment
 {
@@ -68,7 +69,7 @@ namespace Comment
                     Configuration.GetConnectionString("DefaultConnection")));
 
             // 身份验证服务
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<User>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddSingleton<IdentityVerifyService>();

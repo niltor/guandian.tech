@@ -1,0 +1,28 @@
+﻿@model Comment.Data.Entity.News
+@{
+    ViewData["Title"] = Model.Title;
+}
+<head>
+    <style>
+        .content {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<div class="container">
+    <h2 class="mt-3">@Model.Title</h2>
+    <div class="text-muted">
+        <span>
+            @Model.Provider @Model.CreatedTime
+        </span>
+        <span class="text-primary">
+            &nbsp;&nbsp;
+            <a href="@Model.Url">原文</a>
+        </span>
+    </div>
+    <hr />
+    <div class="content">
+        @Html.Raw(Model.Content)
+    </div>
+</div>
+
