@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comment", "Comment\Comment.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csproj", "{2E8C550F-D221-4FF7-A7CF-B7978E749C3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingNewsFunction", "FunctionApp1\BingNewsFunction.csproj", "{2B6F5F1F-F8A4-4CA7-97B5-5EF68E7BF01E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNewsFunction", "FunctionApp1\BingNewsFunction.csproj", "{2B6F5F1F-F8A4-4CA7-97B5-5EF68E7BF01E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

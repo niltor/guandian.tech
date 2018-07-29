@@ -17,7 +17,7 @@ namespace Functions
 {
     public class NewsService
     {
-        private readonly string BingSearchKey = "4a959632315b40559f810a1edffed02b";
+        private readonly string BingSearchKey = "";
         private const string ImageSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/images/search";
         private const string AutoSuggestionEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/suggestions";
         private const string NewsSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/news/search";
@@ -26,10 +26,11 @@ namespace Functions
         private static HttpClient SearchClient { get; set; }
         TraceWriter _log;
 
-        public NewsService(TraceWriter log)
+        public NewsService(TraceWriter log, string searchKey)
         {
             _log = log;
             SearchClient = new HttpClient();
+            BingSearchKey = searchKey;
             SearchClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", BingSearchKey);
         }
         public async Task<List<BingNewsEntity>> GetNews(string keyword, string freshness = "Day")
@@ -46,7 +47,7 @@ namespace Functions
             }
 
             //TODO:获取过滤来源白名单  改成域名过滤更好
-            string[] urlFilter = { "www.cnbeta.com", "tech.ifeng.com", "news.zol.com.cn", "tech.sina.com.cn", "pchome.net", "donews.com", "idcquan.com", "oschina.net" };
+            string[] urlFilter = { "tech.ifeng.com", "news.zol.com.cn", "tech.sina.com.cn", "pchome.net", "donews.com", "idcquan.com", "oschina.net" };
 
             //数据预处理
             for (int i = 0; i < newNews.Count; i++)
@@ -165,6 +166,11 @@ namespace Functions
 
                 foreach (var item in news)
                 {
+                    if (oldNews.Any(o => o.Url.Equals(item.Url) || o.ThumbnailUrl.Equals(item.ThumbnailUrl)))
+                    {
+                        item.Title = null;
+                        continue;
+                    }
                     if (oldNews.Any(o => StringTools.Similarity(o.Title, item.Title) >= 0.5))
                     {
                         // 标记为无效
