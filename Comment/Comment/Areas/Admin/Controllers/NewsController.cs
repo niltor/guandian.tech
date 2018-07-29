@@ -25,7 +25,7 @@ namespace Comment.Areas.Admin.Controllers
         // GET: Admin/News
         public async Task<IActionResult> Index()
         {
-            return View(await _context.News.ToListAsync());
+            return View(await _context.News.OrderByDescending(n => n.CreatedTime).ToListAsync());
         }
 
         // GET: Admin/News/Details/5

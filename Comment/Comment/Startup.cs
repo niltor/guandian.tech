@@ -68,8 +68,9 @@ namespace Comment
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            // 身份验证服务
-            services.AddDefaultIdentity<User>()
+            // 身份验证服务 
+            // TODO:这里之后改成自定义的User，已生成UI之后改model会出错 https://github.com/aspnet/Docs/issues/7764
+            services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddSingleton<IdentityVerifyService>();

@@ -1,1 +1,14 @@
-﻿
+﻿@{ 
+    
+}
+@model List<Comment.Data.Entity.User>
+<div>
+    @foreach (var item in Model)
+    {
+        <p>
+            @item.Email
+        </p>
+
+    }
+
+</div>

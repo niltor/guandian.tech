@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Comment.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public DbSet<Author> Authors { get; set; }
         public DbSet<Article> Articles { get; set; }

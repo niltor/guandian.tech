@@ -2,17 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Comment.Data;
+using Comment.Data.Entity;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Comment.Areas.Admin.Controllers
 {
+    [Area("admin")]
     public class UserController : Controller
     {
+        readonly UserManager<IdentityUser> _userManager;
+        readonly ApplicationDbContext _context;
+        public UserController(UserManager<IdentityUser> userManager, ApplicationDbContext context)
+        {
+            _userManager = userManager;
+            _context = context;
+        }
         // GET: User
         public ActionResult Index()
         {
-            return View();
+
+            var users = _context.Users.ToList();
+            return View(users);
         }
 
         // GET: User/Details/5
