@@ -11,9 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Comment.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    [Authorize(Policy = "Admin")]
-    public class ArticlesController : Controller
+
+    public class ArticlesController : CommonController
     {
         private readonly ApplicationDbContext _context;
 

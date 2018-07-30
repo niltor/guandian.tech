@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,9 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Comment.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    //[Authorize(Policy = "Admin")]
-    public class NewsController : Controller
+    public class NewsController : CommonController
     {
         private readonly ApplicationDbContext _context;
 
