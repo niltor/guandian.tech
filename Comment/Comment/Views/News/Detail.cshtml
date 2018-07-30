@@ -1,4 +1,4 @@
-﻿@model Comment.Data.Entity.News
+@model Comment.Data.Entity.News
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -7,6 +7,10 @@
         .content {
             font-size: 16px;
         }
+            .content img {
+                max-width: 100%;
+                text-align: center;
+            }
     </style>
 </head>
 <div class="container">
@@ -21,7 +25,7 @@
         </span>
     </div>
     <hr />
-    <div class="content">
+    <div class="content ">
         @Html.Raw(Model.Content)
     </div>
 </div>
