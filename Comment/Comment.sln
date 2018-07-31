@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comment", "Comment\Comment.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNewsFunction", "FunctionApp1\BingNewsFunction.csproj", "{2B6F5F1F-F8A4-4CA7-97B5-5EF68E7BF01E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{CE63B7E3-5BC4-4729-9B1A-53CED1556E9B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{2B6F5F1F-F8A4-4CA7-97B5-5EF68E7BF01E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B6F5F1F-F8A4-4CA7-97B5-5EF68E7BF01E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B6F5F1F-F8A4-4CA7-97B5-5EF68E7BF01E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE63B7E3-5BC4-4729-9B1A-53CED1556E9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE63B7E3-5BC4-4729-9B1A-53CED1556E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE63B7E3-5BC4-4729-9B1A-53CED1556E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE63B7E3-5BC4-4729-9B1A-53CED1556E9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

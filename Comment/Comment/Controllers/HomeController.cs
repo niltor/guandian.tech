@@ -17,6 +17,12 @@ namespace Comment.Controllers
         {
             _context = context;
         }
+        /// <summary>
+        /// 主页，资讯列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         public IActionResult Index(int page = 1, int pageSize = 20)
         {
             var news = _context.News
@@ -27,6 +33,24 @@ namespace Comment.Controllers
 
             return View(new NewsListViewModel { NewsList = news });
         }
+
+
+        /// <summary>
+        /// 微信推送用内容
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public IActionResult WeixinMP(int page = 1, int pageSize = 10)
+        {
+            var news = _context.News
+                .OrderByDescending(n => n.UpdatedTime)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            return View(new NewsListViewModel { NewsList = news });
+        }
+
 
         public IActionResult Viewpoint()
         {

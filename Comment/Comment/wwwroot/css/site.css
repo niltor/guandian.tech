@@ -52,14 +52,14 @@ img.bingnews {
     padding: 0 1rem;
 }
 
-.news-title {
-    color: rgb(21,21,21);
+.news-title a{
+    color: rgb(21,21,21) !important;
     margin-bottom: 5px;
     font-size: 1.2rem;
 }
 
 .news-sectitle {
-    color: rgb(19,122,171);
+    color: #3d3d3d;
     margin-bottom: 3px;
     font-size: 0.9rem;
 }
