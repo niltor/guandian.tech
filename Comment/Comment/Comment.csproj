@@ -52,9 +52,7 @@
     <Content Update="Areas\Admin\Views\_ViewStart.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Home\WeixinMP.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
+
   </ItemGroup>
 
 </Project>
