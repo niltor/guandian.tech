@@ -3,13 +3,18 @@
     ViewData["Title"] = Model.Title;
 }
 <head>
+    <link href="file:/ms-appx-web:\\\assets\ReadingView\css\StyleNormalPRV.css" rel="stylesheet">
+    <link href="file:/ms-appx-web:\\\assets\ReadingView\css\BaseStylePRV.css" rel="stylesheet">
+    <link href="file:/ms-appx-web:\\\assets\ReadingView\css\BaseFontSizePRV.css" rel="stylesheet">
     <style>
         .content {
             font-size: 16px;
         }
+
             .content img {
                 max-width: 100%;
                 text-align: center;
+                margin-bottom: 16px;
             }
     </style>
 </head>
@@ -29,4 +34,14 @@
         @Html.Raw(Model.Content)
     </div>
 </div>
+@section Scripts{
+<script>
+    $(document).ready(function () {
+        // edge浏览器 打开阅读模式
+        if (navigator.userAgent.indexOf("Edge") > -1) {
+            location.href = "read:" + location.href;
+        }
+    });
 
+</script>
+}
