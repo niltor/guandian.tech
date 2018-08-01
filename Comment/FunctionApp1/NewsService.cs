@@ -162,7 +162,10 @@ namespace Functions
                 }).ToList();
 
                 // 与过去50条对比，去除相似内容
-                var oldNews = context.News.Take(50).ToList();
+                var oldNews = context.News
+                    .OrderByDescending(n => n.CreatedTime)
+                    .Take(50)
+                    .ToList();
 
                 foreach (var item in news)
                 {
