@@ -3,12 +3,10 @@
     ViewData["Title"] = Model.Title;
 }
 <head>
-    <link href="file:/ms-appx-web:\\\assets\ReadingView\css\StyleNormalPRV.css" rel="stylesheet">
-    <link href="file:/ms-appx-web:\\\assets\ReadingView\css\BaseStylePRV.css" rel="stylesheet">
-    <link href="file:/ms-appx-web:\\\assets\ReadingView\css\BaseFontSizePRV.css" rel="stylesheet">
     <style>
         .content {
             font-size: 16px;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
         }
 
             .content img {
@@ -17,31 +15,38 @@
                 margin-bottom: 16px;
             }
     </style>
+
+    <meta />
 </head>
 <div class="container p-0">
-    <h2 class="mt-3">@Model.Title</h2>
-    <div class="text-muted ">
-        <span>
-            @Model.Provider @Model.CreatedTime
-        </span>
-        <span class="text-primary">
-            &nbsp;&nbsp;
-            <a href="@Model.Url">原文</a>
-        </span>
-    </div>
-    <hr />
-    <div class="content p-0">
-        @Html.Raw(Model.Content)
+    <div class="col-md-8 offset-md-2">
+        <h2 class="mt-3" style="font-family:segoe UI semibold">@Model.Title</h2>
+        <div class="text-muted ">
+            <span class="byline-name">
+                @Model.Provider
+            </span>
+            <span class="dateline">
+                @Model.CreatedTime
+            </span>
+            <span class="text-primary">
+                &nbsp;&nbsp;
+                <a href="@Model.Url">原文</a>
+            </span>
+        </div>
+        <hr />
+        <div class="content p-0">
+            @Html.Raw(Model.Content)
+        </div>
     </div>
 </div>
 @section Scripts{
-<script>
-    $(document).ready(function () {
-        // edge浏览器 打开阅读模式
-        if (navigator.userAgent.indexOf("Edge") > -1) {
-            location.href = "read:" + location.href;
-        }
-    });
+    <script>
+        $(document).ready(function () {
+            // edge浏览器 打开阅读模式
+            //if (navigator.userAgent.indexOf("Edge") > -1) {
+            //    location.href = "read:" + location.href;
+            //}
+        });
 
-</script>
+    </script>
 }

@@ -10,10 +10,10 @@
         @foreach (var bingNews in Model.NewsList)
         {
             var Url = HttpUtility.ParseQueryString(new Uri(bingNews.Url).Query);
-            <div class="row news-list bg-white m-0 mb-2 p-1">
-                <div class="col-md-auto d-md-flex d-none">
+            <div class="row news-list bg-white mb-2 p-1">
+                <div class="col-md-auto d-md-flex d-none mt-2">
                     <a asp-controller="news" asp-action="detail" asp-route-id="@bingNews.Id" target="_blank">
-                        <img class="bingnews" src="@bingNews.ThumbnailUrl" alt="">
+                        <img class="bingnews img-thumbnail" src="@bingNews.ThumbnailUrl" alt="">
                     </a>
                 </div>
                 <div class="content col-md-8">
@@ -25,7 +25,7 @@
                     <div class="news-sectitle">
                         @bingNews.UpdatedTime.ToString("MM-dd H:mm") @bingNews.Provider
                     </div>
-                    <div class="news-description">
+                    <div class="news-description col-md-10">
                         @bingNews.Description
                     </div>
                 </div>
