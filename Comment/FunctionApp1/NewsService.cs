@@ -22,7 +22,7 @@ namespace Functions
         private const string AutoSuggestionEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/suggestions";
         private const string NewsSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/news/search";
         private const string TopNewsSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/news";
-        private const double Similarity = 0.5;//定义相似度
+        private const double Similarity = 0.6;//定义相似度
         private static HttpClient SearchClient { get; set; }
         TraceWriter _log;
 
@@ -71,7 +71,7 @@ namespace Functions
                 for (int j = i + 1; j < newNews.Count; j++)
                 {
                     //重复过滤
-                    if ((StringTools.Similarity(newNews[i].Title, newNews[j].Title) > Similarity))
+                    if ((StringTools.Similarity(newNews[i].Title, newNews[j].Title) >= Similarity))
                     {
                         _log.Info("repeat" + newNews[i].Title);
                         newNews[i].Title = string.Empty;
@@ -80,7 +80,6 @@ namespace Functions
 
                 }
             }
-
             return newNews.Where(n => n.Title != string.Empty).ToList();
         }
 
@@ -145,7 +144,7 @@ namespace Functions
         /// <summary>
         /// 保存新闻到数据库
         /// </summary>
-        public async void SaveNewsAsync(string connectionString, List<BingNewsEntity> bingNews)
+        public async Task SaveNewsAsync(string connectionString, List<BingNewsEntity> bingNews)
         {
             using (var context = new NewsDbContext(connectionString))
             {
@@ -169,19 +168,19 @@ namespace Functions
 
                 foreach (var item in news)
                 {
-                    if (oldNews.Any(o => o.Url.Equals(item.Url) || o.ThumbnailUrl.Equals(item.ThumbnailUrl)))
+                    if (oldNews.Any(o => o.Url.Equals(item.Url) || o.ThumbnailUrl.Equals(item.ThumbnailUrl) || o.Title.Equals(item.Title)))
                     {
                         item.Title = null;
                         continue;
                     }
-                    if (oldNews.Any(o => StringTools.Similarity(o.Title, item.Title) >= 0.5))
+                    if (oldNews.Any(o => StringTools.Similarity(o.Title, item.Title) >= Similarity))
                     {
                         // 标记为无效
                         item.Title = null;
+                        continue;
                     }
                 }
                 news = news.Where(n => n.Title != null).ToList();
-
                 // 获取并解析新闻具体内容
                 foreach (var item in news)
                 {

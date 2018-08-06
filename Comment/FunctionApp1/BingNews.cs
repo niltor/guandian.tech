@@ -30,7 +30,7 @@ namespace Functions
                 foreach (var keyword in keywords)
                 {
                     var result = await service.GetNews(keyword);
-                    service.SaveNewsAsync(connstr, result);
+                    await service.SaveNewsAsync(connstr, result);
                 }
                 log.Info("finish");
             }

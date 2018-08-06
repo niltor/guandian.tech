@@ -22,7 +22,7 @@ namespace Functions
                 return 0.0;
             }
 
-            if (source == target)
+            if (source.Equals(target))
             {
                 return 1.0;
             }
@@ -46,7 +46,7 @@ namespace Functions
                 return 0;
             }
 
-            if (source == target)
+            if (source.Equals(target))
             {
                 return source.Length;
             }
