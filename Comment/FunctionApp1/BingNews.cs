@@ -1,8 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Threading.Tasks;
 
 namespace Functions
 {
@@ -25,7 +25,7 @@ namespace Functions
             if (!string.IsNullOrEmpty(connstr))
             {
                 // 获取新闻
-                var keywords = new string[] { "微软", "Microsoft", "三星", "谷歌", "科技" };
+                var keywords = new string[] { "微软", "Microsoft", "三星", "谷歌", "科技", "机器人", "人工智能", "英特尔", ".net" };
                 var service = new NewsService(log, searchKey);
                 foreach (var keyword in keywords)
                 {
