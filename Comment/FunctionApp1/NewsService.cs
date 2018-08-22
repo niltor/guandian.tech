@@ -1,17 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using BingNewsFunction.Models;
 using Functions.Data;
 using Functions.Data.Entity;
 using Functions.Models;
 using HtmlAgilityPack;
 using Microsoft.Azure.WebJobs.Host;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Functions
 {
@@ -47,7 +46,9 @@ namespace Functions
             }
 
             //TODO:获取过滤来源白名单  改成域名过滤更好
-            string[] urlFilter = { "tech.ifeng.com", "news.zol.com.cn", "tech.sina.com.cn", "pchome.net", "donews.com", "idcquan.com", "oschina.net" };
+            string[] urlFilter = { "tech.ifeng.com", "news.zol.com.cn", "tech.sina.com.cn",
+                "pchome.net", "donews.com", "idcquan.com", "oschina.net" , "homea.people.com.cn",
+                "tech.qq.com","www.ebrun.com","cn.engadget.com","tech.huanqiu.com"};
 
             //数据预处理
             for (int i = 0; i < newNews.Count; i++)
