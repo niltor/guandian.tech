@@ -1,13 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RuntimeFrameworkVersion>2.1.2</RuntimeFrameworkVersion>
     <UserSecretsId>aspnet-Comment-7FFC48C7-5037-4F12-9E69-1948B0650351</UserSecretsId>
-    <StartupObject></StartupObject>
-    <ApplicationIcon />
-    <OutputType>Exe</OutputType>
-    <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
     <FileVersion>0.0.0.0</FileVersion>
   </PropertyGroup>
@@ -29,30 +24,4 @@
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Update="Areas\Admin\Views\Shared\Error.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\Admin\Views\Shared\_CookieConsentPartial.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\Admin\Views\Shared\_Layout.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\Admin\Views\Shared\_LoginPartial.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\Admin\Views\Shared\_ValidationScriptsPartial.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\Admin\Views\_ViewImports.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\Admin\Views\_ViewStart.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-
-  </ItemGroup>
-
-
 </Project>
