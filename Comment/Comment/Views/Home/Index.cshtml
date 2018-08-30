@@ -7,6 +7,9 @@
 
 <div class="row">
     <div class="col-md-8 offset-md-2 p-0">
+        <div class="p-2 my-1">
+            <span class="text-muted">说明：本站资讯皆来自必应新闻接口，详情页只是对原内容做阅读适配展现！</span>
+        </div>
         @foreach (var bingNews in Model.NewsList)
         {
             var Url = HttpUtility.ParseQueryString(new Uri(bingNews.Url).Query);
