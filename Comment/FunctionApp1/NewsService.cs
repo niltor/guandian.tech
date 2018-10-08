@@ -146,7 +146,7 @@ namespace Functions
         /// <summary>
         /// 保存新闻到数据库
         /// </summary>
-        public async void SaveNewsAsync(string connectionString, List<BingNewsEntity> bingNews)
+        public async Task SaveNewsAsync(string connectionString, List<BingNewsEntity> bingNews)
         {
             using (var context = new NewsDbContext(connectionString))
             {
@@ -189,7 +189,7 @@ namespace Functions
                     item.Content = await GetNewsContentAsync(item.Url);
                 }
                 context.News.AddRange(news);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 

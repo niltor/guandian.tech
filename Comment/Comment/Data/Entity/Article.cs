@@ -24,7 +24,6 @@ namespace Comment.Data.Entity
         /// <summary>
         /// 内容
         /// </summary>
-        [MaxLength(4000)]
         public string Content { get; set; }
         /// <summary>
         /// 关键词

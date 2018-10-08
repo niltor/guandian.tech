@@ -30,7 +30,6 @@ namespace Functions
             int stepsToSame = ComputeLevenshteinDistance(source, target);
             return (1.0 - ((double)stepsToSame / (double)Math.Max(source.Length, target.Length)));
         }
-
         /// <summary>
         /// 计算两字符串转变距离
         /// </summary>
@@ -92,7 +91,6 @@ namespace Functions
 
             return distance[sourceWordCount, targetWordCount];
         }
-
         /// <summary>
         /// 对比字符串相似度
         /// </summary>
@@ -127,8 +125,6 @@ namespace Functions
             }
             return sameNum / shorterString.Length;
         }
-
-
         /// <summary>
         /// 获取搜索关键词当前行内容
         /// </summary>
