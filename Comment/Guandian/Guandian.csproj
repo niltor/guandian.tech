@@ -18,17 +18,11 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-<<<<<<< HEAD:Comment/Comment/Guandian.csproj
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
-    <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.1.6" />
-=======
     <PackageReference Include="Markdig" Version="0.15.4" />
     <PackageReference Include="Markdig.SyntaxHighlighting" Version="1.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
     <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.1.8" />
->>>>>>> 9ad439c422d3b75db3cd33c704aeee877911c976:Comment/Comment/Comment.csproj
   </ItemGroup>
 
   <ItemGroup>

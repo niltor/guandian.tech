@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guandian", "Comment\Guandian.csproj", "{1B046EA5-26CF-49E3-BB09-B72D6DD2B570}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guandian", "Guandian\Guandian.csproj", "{1B046EA5-26CF-49E3-BB09-B72D6DD2B570}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BingNewsFunction", "FunctionApp1\BingNewsFunction.csproj", "{2B6F5F1F-F8A4-4CA7-97B5-5EF68E7BF01E}"
 EndProject
