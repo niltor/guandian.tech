@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Comment.Data;
 using Comment.Data.Entity;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Comment.Areas.Admin.Controllers
 {
@@ -20,10 +17,19 @@ namespace Comment.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Admin/News
-        public async Task<IActionResult> Index()
+        /// <summary>
+        /// 获取资讯列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public IActionResult Index(int page = 1, int pageSize = 12)
         {
-            return View(await _context.News.OrderByDescending(n => n.CreatedTime).ToListAsync());
+            var result = _context.News
+                .OrderByDescending(n => n.CreatedTime)
+                .Take(100)
+                .ToList();
+            return View(result);
         }
 
         // GET: Admin/News/Details/5

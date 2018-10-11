@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using MetaWeblogSharp;
 using Microsoft.AspNetCore.Mvc;
 using MSDev.DB;
+using MSDev.MetaWeblog;
 using Newtonsoft.Json;
 
 namespace Comment.Areas.Admin.Controllers
