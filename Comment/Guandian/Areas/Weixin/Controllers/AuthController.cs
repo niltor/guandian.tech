@@ -38,8 +38,7 @@ namespace Comment.Areas.Weixin.Controllers
                 return Content(echostr); //返回随机字符串则表示验证通过
             }
             else {
-                return Content("failed:" + postModel.Signature + "," + Senparc.Weixin.MP.CheckSignature.GetSignature(postModel.Timestamp, postModel.Nonce, Token) + "。" +
-                    "地址正确");
+                return Content("failed:" + postModel.Signature + "," + Senparc.Weixin.MP.CheckSignature.GetSignature(postModel.Timestamp, postModel.Nonce, Token));
             }
         }
 
