@@ -1,16 +1,17 @@
 using System;
+using Comment.Data;
+using Comment.Services;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Comment.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Comment.Services;
+using MSDev.DB;
 
 namespace Comment
 {
@@ -37,11 +38,14 @@ namespace Comment
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-
+            services.AddDbContext<MSDevContext>(options =>
+               options.UseSqlServer(
+                   Configuration.GetConnectionString("MSDev")));
             // 身份验证服务 
             // TODO:这里之后改成自定义的User，已生成UI之后改model会出错 https://github.com/aspnet/Docs/issues/7764
             services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<MSDevContext>();
 
             services.Configure<IdentityOptions>(options =>
             {
