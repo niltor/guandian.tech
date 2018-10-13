@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Comment.Data.Entity
 {
@@ -50,6 +46,10 @@ namespace Comment.Data.Entity
         /// </summary>
         [MaxLength(100)]
         public string Provider { get; set; }
+        /// <summary>
+        /// 是否发布到公众号
+        /// </summary>
+        public bool IsPublishToMP { get; set; } = false;
 
     }
 }

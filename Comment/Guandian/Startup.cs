@@ -148,7 +148,6 @@ namespace Comment
             });
             // 启动 CO2NET 全局注册，必须！
             IRegisterService register = RegisterService.Start(env, senparcSetting.Value).UseSenparcGlobal();
-
             register.UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value)
                 .RegisterMpAccount(senparcWeixinSetting.Value, string.Empty);
         }
