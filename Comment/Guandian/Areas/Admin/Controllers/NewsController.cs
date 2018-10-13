@@ -25,9 +25,12 @@ namespace Comment.Areas.Admin.Controllers
         /// <returns></returns>
         public IActionResult Index(int page = 1, int pageSize = 12)
         {
+            page = page < 1 ? 1 : page;
+            ViewBag.Page = page;
             var result = _context.News
                 .OrderByDescending(n => n.CreatedTime)
-                .Take(100)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
             return View(result);
         }

@@ -86,7 +86,7 @@ namespace Guandian.Areas.Weixin.Controllers
                         var userList = await UserApi.GetAsync(token, null);
                         var firstUserOpenId = userList.data.openid.FirstOrDefault();
                         // 群发消息
-                        var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "fengxicai1");
+                        var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "estnil");
 
                     }
                 }
