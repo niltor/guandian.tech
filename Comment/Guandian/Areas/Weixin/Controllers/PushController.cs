@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -16,14 +16,14 @@ namespace Guandian.Areas.Weixin.Controllers
     /// <summary>
     /// 微信图文消息推送
     /// </summary>
-    public class GroupMessageController : CommonController
+    public class PushController : CommonController
     {
-        public GroupMessageController(IOptions<SenparcWeixinSetting> senparcWeixinSetting, ApplicationDbContext context) : base(senparcWeixinSetting, context)
+        public PushController(IOptions<SenparcWeixinSetting> senparcWeixinSetting, ApplicationDbContext context) : base(senparcWeixinSetting, context)
         {
 
         }
 
-        public async System.Threading.Tasks.Task<ActionResult> TestAsync()
+        public async System.Threading.Tasks.Task<ActionResult> PushToWeixinAsync()
         {
 
             // 获取原内容,当天
@@ -76,7 +76,7 @@ namespace Guandian.Areas.Weixin.Controllers
                         thumb_media_id = thumbImg.media_id,
                         content = content,
                         title = firstNews?.Title,
-                        show_cover_pic = "1",
+                        show_cover_pic = "0",
                         content_source_url = "https://guandian.tech",
                         digest = firstNews.Description,
                     });
@@ -86,8 +86,7 @@ namespace Guandian.Areas.Weixin.Controllers
                         var userList = await UserApi.GetAsync(token, null);
                         var firstUserOpenId = userList.data.openid.FirstOrDefault();
                         // 群发消息
-                        var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "estnil");
-
+                        var sendNewsResult = await GroupMessageApi.SendGroupMessageByTagIdAsync(token, null, uploadNewsResult.media_id, Senparc.Weixin.MP.GroupMessageType.mpnews, true);
                     }
                 }
             }

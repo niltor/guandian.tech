@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using BingNewsFunction.Models;
 using Functions.Data;
 using Functions.Data.Entity;
@@ -5,12 +11,6 @@ using Functions.Models;
 using HtmlAgilityPack;
 using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Functions
 {
@@ -21,7 +21,7 @@ namespace Functions
         private const string AutoSuggestionEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/suggestions";
         private const string NewsSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/news/search";
         private const string TopNewsSearchEndPoint = "https://api.cognitive.microsoft.com/bing/v7.0/news";
-        private const double Similarity = 0.5;//定义相似度
+        private const double Similarity = 0.5;// 定义相似度
         private static HttpClient SearchClient { get; set; }
         TraceWriter _log;
 
@@ -45,22 +45,22 @@ namespace Functions
                 return default;
             }
 
-            //TODO:获取过滤来源白名单  改成域名过滤更好
+            // 获取过滤来源白名单
             string[] urlFilter = { "tech.ifeng.com", "news.zol.com.cn", "tech.sina.com.cn",
                 "pchome.net", "donews.com", "idcquan.com", "oschina.net" , "homea.people.com.cn",
                 "tech.qq.com","www.ebrun.com","cn.engadget.com","tech.huanqiu.com"};
 
-            //数据预处理
+            // 数据预处理
             for (int i = 0; i < newNews.Count; i++)
             {
-                //来源过滤
+                // 来源过滤
                 if (!urlFilter.Any(p => newNews[i].Url.ToLower().Contains(p)))
                 {
                     _log.Info("filter:" + newNews[i].Provider + newNews[i].Title);
                     newNews[i].Title = string.Empty;
                     continue;
                 }
-                //无缩略图过滤
+                // 无缩略图过滤
                 if (string.IsNullOrEmpty(newNews[i].ThumbnailUrl))
                 {
                     _log.Info("noPic:" + newNews[i].Title);
@@ -71,7 +71,7 @@ namespace Functions
                 //TODO: 语义分词重复过滤
                 for (int j = i + 1; j < newNews.Count; j++)
                 {
-                    //重复过滤
+                    // 重复过滤
                     if ((StringTools.Similarity(newNews[i].Title, newNews[j].Title) > Similarity))
                     {
                         _log.Info("repeat" + newNews[i].Title);
@@ -175,7 +175,7 @@ namespace Functions
                         item.Title = null;
                         continue;
                     }
-                    if (oldNews.Any(o => StringTools.Similarity(o.Title, item.Title) >= 0.5))
+                    if (oldNews.Any(o => StringTools.Similarity(o.Title, item.Title) > Similarity))
                     {
                         // 标记为无效
                         item.Title = null;

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.Configuration;
 
 namespace MSBlogsFunction
 {
@@ -19,17 +18,14 @@ namespace MSBlogsFunction
             var blogs = await RssHelper.GetDevBlogs();
 
             // 读取配置
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("local.settings.json", true)
-                .AddEnvironmentVariables()
-                .Build();
+
             //string connstr = configuration.GetConnectionString("Default");
             string subKey = Environment.GetEnvironmentVariable("SubKey");
 
             var translateHelper = new TranslateTextHelper(subKey);
             var result = translateHelper.TranslateText(blogs.First().Description);
 
-            log.Info(result);
+            //log.Info(result);
 
             log.Info("finish");
         }
