@@ -73,11 +73,11 @@ namespace Guandian.Areas.Weixin.Controllers
     </div>";
                         item.IsPublishToMP = true;
                     }
-                    _context.UpdateRange(news);
-                    _context.SaveChanges();
+
                     // 上传封面图片
                     wc.DownloadFile(firstNews?.ThumbnailUrl + "&w=600", "temp.jpg");
                     var thumbImg = await MediaApi.UploadForeverMediaAsync(token, "temp.jpg");
+                    // TODO:上传后可删除
 
                     var mainNews = new NewsModel
                     {
@@ -93,28 +93,82 @@ namespace Guandian.Areas.Weixin.Controllers
                 }
             }
             // 博客内容
-            if (blogs != null && news.Count > 0)
+            if (blogs != null && blogs.Count > 0)
             {
-                var htmlDoc = new HtmlDocument();
-                foreach (var item in blogs)
+                using (var wc = new WebClient())
                 {
-                    // 处理文章内图片
-                    htmlDoc.LoadHtml(item.Content);
-                    var images =
-                    // 替换文本
+                    var htmlDoc = new HtmlDocument();
+                    try
+                    {
+                        foreach (var item in blogs)
+                        {
+                            // 处理文章内图片
+                            htmlDoc.LoadHtml(item.Content);
+                            var images = htmlDoc.DocumentNode.SelectNodes(".//img")
+                                .Select(img => img.GetAttributeValue("src", null))
+                                .ToList();
+                            images = images.Where(i => i != null).ToList();
+                            string mediaId = "";
+                            // 获取默认封面
+                            if (images == null || images?.Count < 1)
+                            {
+                                var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
+                                mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
+                            }
+                            else
+                            {
+                                foreach (var image in images)
+                                {
+                                    wc.DownloadFile(image, "temp.jpg");
+                                    var uploadImgResult = await MediaApi.UploadImgAsync(token, "temp.jpg");
+                                    System.IO.File.Delete("temp.jpg");
+                                    // 替换文本
+                                    item.Content.Replace(image, uploadImgResult.url);
+                                }
 
-                    // 构造图文消息体
+                                // 设置封面
+                                wc.DownloadFile(images.FirstOrDefault(), "temp.jpg");
+                                var uploadCoverResult = await MediaApi.UploadForeverMediaAsync(token, "temp.jpg");
+                                mediaId = uploadCoverResult.media_id;
+                                // TODO:后面可删除该封面
+                            }
+
+                            // 构造图文消息体
+                            var currentNews = new NewsModel
+                            {
+                                author = "MSDev_NilTor",
+                                thumb_media_id = mediaId,
+                                content = item.Content,
+                                title = item.Title,
+                                show_cover_pic = "0",
+                                content_source_url = "https://guandian.tech/blogs/" + item.Id,
+                                digest = item.Keywords,
+                            };
+                            item.IsPublishMP = true;
+                            newsList.Add(currentNews);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                 }
             }
-
             // 上传图文
             var uploadNewsResult = await MediaApi.UploadNewsAsync(token, news: newsList.ToArray());
             if (uploadNewsResult.media_id != null)
             {
                 var userList = await UserApi.GetAsync(token, null);
                 var firstUserOpenId = userList.data.openid.FirstOrDefault();
+                // 预览
+                var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "EstNil");
                 // 群发消息
-                var sendNewsResult = await GroupMessageApi.SendGroupMessageByTagIdAsync(token, null, uploadNewsResult.media_id, Senparc.Weixin.MP.GroupMessageType.mpnews, true);
+                //var sendNewsResult = await GroupMessageApi.SendGroupMessageByTagIdAsync(token, null, uploadNewsResult.media_id, Senparc.Weixin.MP.GroupMessageType.mpnews, true);
+
+                //  更新数据库标识 
+                _context.UpdateRange(news);
+                _context.UpdateRange(blogs);
+                _context.SaveChanges();
             }
             return Ok();
         }
