@@ -1,2 +1,7 @@
 {
+  "bindings": [
+    {
+      "runOnStartup": true
+    }
+  ]
 }

@@ -29,7 +29,7 @@ namespace Guandian.Areas.Weixin.Controllers
             // 获取原内容,当天
             var news = _context.News
                 .OrderByDescending(n => n.CreatedTime)
-                .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date == DateTime.Now.Date)
+                .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date == DateTime.Now.Date.AddDays(-3))
                 .Take(6)
                 .ToList();
 
