@@ -23,5 +23,9 @@ namespace Guandian.Data.Entity
         /// </summary>
         [MaxLength(300)]
         public string Categories { get; set; }
+        /// <summary>
+        /// 是否推送到微信
+        /// </summary>
+        public bool IsPublishMP { get; set; } = false;
     }
 }

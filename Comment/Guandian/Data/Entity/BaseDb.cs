@@ -25,7 +25,12 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// 有效的
         /// </summary>
-        Valid
+        Valid,
+        /// <summary>
+        /// 已推送到微信公众号
+        /// </summary>
+        IsPublishedMP
+
 
     }
 }

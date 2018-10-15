@@ -27,12 +27,12 @@ namespace MSBlogsFunction
                 {
                     var blogForm = new BlogForm
                     {
-                        ContentEn = translateHelper.TranslateText(item.Description),
+                        ContentEn = item.Description,
                         AuthorName = item.Author,
                         Categories = item.Categories,
-                        Content = item.Description,
-                        Title = item.Title,
-                        TitleEn = translateHelper.TranslateText(item.Title),
+                        Content = translateHelper.TranslateText(item.Description),
+                        Title = translateHelper.TranslateText(item.Title),
+                        TitleEn = item.Title,
                         Link = item.Link,
                         CreatedTime = item.CreateTime
                     };
@@ -47,12 +47,12 @@ namespace MSBlogsFunction
                 {
                     var blogForm = new BlogForm
                     {
-                        ContentEn = translateHelper.TranslateText(item.Description),
+                        ContentEn = item.Description,
                         AuthorName = item.Author,
                         Categories = item.Categories,
-                        Content = item.Description,
-                        Title = item.Title,
-                        TitleEn = translateHelper.TranslateText(item.Title),
+                        Content = translateHelper.TranslateText(item.Description),
+                        Title = translateHelper.TranslateText(item.Title),
+                        TitleEn = item.Title,
                         Link = item.Link,
                         CreatedTime = item.CreateTime
                     };
