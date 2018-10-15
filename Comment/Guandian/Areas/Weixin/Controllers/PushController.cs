@@ -28,8 +28,8 @@ namespace Guandian.Areas.Weixin.Controllers
 
             // 获取原内容,当天
             var news = _context.News
+                .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date >= DateTime.Now.Date.AddDays(-3))
                 .OrderByDescending(n => n.CreatedTime)
-                .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date == DateTime.Now.Date.AddDays(-3))
                 .Take(6)
                 .ToList();
 
@@ -64,22 +64,28 @@ namespace Guandian.Areas.Weixin.Controllers
         </div>
         <br />
     </div>";
+
+                        item.IsPublishToMP = true;
                     }
+                    _context.UpdateRange(news);
+                    _context.SaveChanges();
                     // 上传封面图片
                     wc.DownloadFile(firstNews?.ThumbnailUrl + "&w=600", "temp.jpg");
                     var thumbImg = await MediaApi.UploadForeverMediaAsync(token, "temp.jpg");
                     // 上传图文
-                    var newsList = new List<NewsModel>();
-                    newsList.Add(new NewsModel
+                    var newsList = new List<NewsModel>
                     {
-                        author = "MSDev_NilTor",
-                        thumb_media_id = thumbImg.media_id,
-                        content = content,
-                        title = firstNews?.Title,
-                        show_cover_pic = "0",
-                        content_source_url = "https://guandian.tech",
-                        digest = firstNews.Description,
-                    });
+                        new NewsModel
+                        {
+                            author = "MSDev_NilTor",
+                            thumb_media_id = thumbImg.media_id,
+                            content = content,
+                            title = firstNews?.Title,
+                            show_cover_pic = "0",
+                            content_source_url = "https://guandian.tech",
+                            digest = firstNews.Description,
+                        }
+                    };
                     var uploadNewsResult = await MediaApi.UploadNewsAsync(token, news: newsList.ToArray());
                     if (uploadNewsResult.media_id != null)
                     {
