@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MSDev.MetaWeblog;
 using Newtonsoft.Json;
 
-namespace Comment.Services
+namespace Guandian.Services
 {
     /// <summary>
     /// 博客园同步

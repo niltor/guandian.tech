@@ -1,10 +1,10 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Comment.Data;
+using Guandian.Data;
 using Senparc.Weixin;
 using Senparc.Weixin.Entities;
-namespace Comment.Areas.Weixin.Controllers
+namespace Guandian.Areas.Weixin.Controllers
 {
     [Area("Weixin")]
     public class CommonController : Controller

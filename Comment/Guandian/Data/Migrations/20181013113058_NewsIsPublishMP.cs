@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Comment.Data.Migrations
+namespace Guandian.Data.Migrations
 {
     public partial class NewsIsPublishMP : Migration
     {

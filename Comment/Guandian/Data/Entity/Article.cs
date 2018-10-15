@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Comment.Data.Entity
+namespace Guandian.Data.Entity
 {
     /// <summary>
     /// 文章
     /// </summary>
     public class Article : BaseDb
     {
-        [MaxLength(60)]
+        [MaxLength(100)]
         public string Title { get; set; }
-        [MaxLength(50)]
+        [MaxLength(60)]
         public string AuthorName { get; set; }
         public Author Author { get; set; }
         /// <summary>
@@ -20,7 +20,7 @@ namespace Comment.Data.Entity
         /// <summary>
         /// 浏览数量 
         /// </summary>
-        public int ViewNunmber { get; set; }
+        public int ViewNunmber { get; set; } = 0;
         /// <summary>
         /// 内容
         /// </summary>

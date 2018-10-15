@@ -2,7 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Comment.Data.Migrations
+namespace Guandian.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

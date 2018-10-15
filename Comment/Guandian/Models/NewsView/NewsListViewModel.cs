@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Comment.Data.Entity;
+using Guandian.Data.Entity;
 
-namespace Comment.Models
+namespace Guandian.Models
 {
     public class NewsListViewModel
     {

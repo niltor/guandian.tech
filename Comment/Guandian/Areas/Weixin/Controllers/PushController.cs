@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using Comment.Areas.Weixin.Controllers;
-using Comment.Data;
+using Guandian.Areas.Weixin.Controllers;
+using Guandian.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Senparc.Weixin.Entities;
@@ -36,7 +36,7 @@ namespace Guandian.Areas.Weixin.Controllers
             if (news != null && news.Count > 0)
             {
                 var token = AccessTokenContainer.TryGetAccessToken(AppId, AppSecret);
-                string content = "<h6>TechViews为你精选最近科技资讯!</h6><br/> ";
+                string content = "<h6>TechViews今日资讯一览!</h6>";
 
                 // 上传文章内图片
                 using (var wc = new WebClient())
@@ -64,7 +64,6 @@ namespace Guandian.Areas.Weixin.Controllers
         </div>
         <br />
     </div>";
-
                         item.IsPublishToMP = true;
                     }
                     _context.UpdateRange(news);
@@ -80,7 +79,7 @@ namespace Guandian.Areas.Weixin.Controllers
                             author = "MSDev_NilTor",
                             thumb_media_id = thumbImg.media_id,
                             content = content,
-                            title = firstNews?.Title,
+                            title = "资讯一览:"+firstNews?.Title,
                             show_cover_pic = "0",
                             content_source_url = "https://guandian.tech",
                             digest = firstNews.Description,

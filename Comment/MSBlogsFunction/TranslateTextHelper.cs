@@ -25,8 +25,8 @@ namespace MSBlogsFunction
         public string TranslateText(string content)
         {
             string seperator = "<!--divider-->";
-
-            if (content.Length > 5000)
+            int maxNumber = 4500;
+            if (content.Length > maxNumber)
             {
                 //分解 content
                 content = addSeperator(content, 1);
@@ -45,7 +45,7 @@ namespace MSBlogsFunction
                     foreach (var item in contentParts)
                     {
                         var row = item + tag;
-                        if (row.Length >= 5000)
+                        if (row.Length >= maxNumber)
                         {
                             row = addSeperator(row, tagLevel + 1);
                         }
@@ -95,11 +95,14 @@ namespace MSBlogsFunction
                     request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
                     request.Headers.Add("Ocp-Apim-Subscription-Key", SubScriptKey);
                     var response = await client.SendAsync(request);
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    JArray translations = JsonConvert.DeserializeObject<JArray>(responseBody);
-                    result = translations.First["translations"]?.First["text"]?.ToString();
-
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        JArray translations = JsonConvert.DeserializeObject<JArray>(responseBody);
+                        result = translations.First["translations"]?.First["text"]?.ToString();
+                    }
                     return result;
+
                 }
             }
         }

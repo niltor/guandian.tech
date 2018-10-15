@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Comment.Areas.Admin.Controllers
+namespace Guandian.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Policy = "Admin")]

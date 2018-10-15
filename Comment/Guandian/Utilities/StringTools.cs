@@ -1,6 +1,6 @@
 using System;
 
-namespace Comment.Utilities
+namespace Guandian.Utilities
 {
     public class StringTools
     {

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Comment.Data;
-using Comment.Data.Entity;
+using Guandian.Data;
+using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Comment.Areas.Admin.Controllers
+namespace Guandian.Areas.Admin.Controllers
 {
 
     public class UserController : CommonController

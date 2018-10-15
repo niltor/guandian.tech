@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace Comment.Data.Entity
+namespace Guandian.Data.Entity
 {
     /// <summary>
     /// 用户

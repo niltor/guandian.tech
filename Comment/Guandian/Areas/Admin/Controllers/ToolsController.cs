@@ -1,22 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Comment.Services;
+using Guandian.Areas.Admin.Models;
+using Guandian.Data;
+using Guandian.Data.Entity;
+using Guandian.Services;
 using Markdig;
 using Markdig.SyntaxHighlighting;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MSDev.DB;
 using MSDev.MetaWeblog;
 
-namespace Comment.Areas.Admin.Controllers
+namespace Guandian.Areas.Admin.Controllers
 {
     public class ToolsController : CommonController
     {
-        readonly MSDevContext _context;
-        public ToolsController(MSDevContext context)
+        readonly MSDevContext _msdevContext;
+        readonly ApplicationDbContext _context;
+        public ToolsController(MSDevContext context, ApplicationDbContext applicationDbContext)
         {
-            _context = context;
+            _msdevContext = context;
+            _context = applicationDbContext;
         }
         public ActionResult Index()
         {
@@ -26,7 +32,7 @@ namespace Comment.Areas.Admin.Controllers
         public async Task<ActionResult> SyncToCnBlogsAsync()
         {
             var service = new SyncCnBlogsService("niltor", "$54NilTor");
-            var currentBlogs = _context.Blog
+            var currentBlogs = _msdevContext.Blog
                 .Where(b => b.Catalog.Name.Equals("从零开始学编程"))
                 .OrderBy(b => b.CreatedTime)
                 .Include(b => b.Catalog)
@@ -54,6 +60,35 @@ namespace Comment.Areas.Admin.Controllers
             }
             service.SyncTo(cnblogs, currentBlogs.FirstOrDefault()?.Catalog.Name);
             return Content("完成");
+        }
+
+        /// <summary>
+        /// 添加博客
+        /// </summary>
+        /// <param name="blogForms"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        // TODO: 验证
+        public async Task<ActionResult> AddRssBlogs([FromBody]List<BlogForm> blogForms)
+        {
+            var blogs = new List<Blog>();
+            blogs = blogForms.Select(b => new Blog
+            {
+                AuthorName = b.AuthorName,
+                Categories = "MSBlogRSS",
+                Content = b.Content,
+                ContentEn = b.ContentEn,
+                CreatedTime = b.CreatedTime,
+                Keywords = b.Categories,
+                Link = b.Link,
+                Title = b.Title,
+                TitleEn = b.TitleEn
+            }).ToList();
+
+            _context.AddRange(blogs);
+            var num = await _context.SaveChangesAsync();
+            return Ok(num);
         }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Comment.Areas.Identity.Pages.Account.Manage
+namespace Guandian.Areas.Identity.Pages.Account.Manage
 {
     public class PersonalDataModel : PageModel
     {

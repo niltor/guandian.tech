@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Comment.Services;
+using Guandian.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Comment.Areas.Identity.Pages.Account.Manage
+namespace Guandian.Areas.Identity.Pages.Account.Manage
 {
     public class RealNameModel : PageModel
     {

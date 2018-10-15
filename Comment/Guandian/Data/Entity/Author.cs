@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Comment.Data.Entity
+namespace Guandian.Data.Entity
 {
     /// <summary>
     /// 作者

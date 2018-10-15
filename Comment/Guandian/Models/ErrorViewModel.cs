@@ -1,6 +1,6 @@
 using System;
 
-namespace Comment.Models
+namespace Guandian.Models
 {
     public class ErrorViewModel
     {

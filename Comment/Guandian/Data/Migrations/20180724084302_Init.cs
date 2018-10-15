@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Comment.Data.Migrations
+namespace Guandian.Data.Migrations
 {
     public partial class Init : Migration
     {

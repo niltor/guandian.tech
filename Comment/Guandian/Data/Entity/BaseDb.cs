@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Comment.Data.Entity
+namespace Guandian.Data.Entity
 {
     public class BaseDb
     {

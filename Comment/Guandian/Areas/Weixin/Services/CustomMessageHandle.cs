@@ -6,7 +6,7 @@ using Senparc.Weixin.MP.Entities;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.MessageHandlers;
 
-namespace Comment.Services
+namespace Guandian.Services
 {
     public class CustomMessageHandler : MessageHandler<CustomMessageContext>
     {

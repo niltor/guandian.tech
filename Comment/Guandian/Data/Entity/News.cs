@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Comment.Data.Entity
+namespace Guandian.Data.Entity
 {
     /// <summary>
     /// 第三方新闻资讯

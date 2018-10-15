@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Comment.Data;
-using Comment.Data.Entity;
-using Comment.Services;
+using Guandian.Data;
+using Guandian.Data.Entity;
+using Guandian.Services;
 using Senparc.CO2NET.HttpUtility;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.MP;
@@ -19,7 +19,7 @@ using Senparc.Weixin.MP.Containers;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.MvcExtension;
 
-namespace Comment.Areas.Weixin.Controllers
+namespace Guandian.Areas.Weixin.Controllers
 {
     public class AuthController : CommonController
     {

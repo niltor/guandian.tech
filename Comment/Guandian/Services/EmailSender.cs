@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
-namespace Comment.Services
+namespace Guandian.Services
 {
     public class EmailSender : IEmailSender
     {

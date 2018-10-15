@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MSDev.MetaWeblog;
 
-namespace Comment.Services
+namespace Guandian.Services
 {
     /// <summary>
     /// 同步接口

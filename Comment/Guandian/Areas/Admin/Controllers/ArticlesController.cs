@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Comment.Data;
-using Comment.Data.Entity;
+using Guandian.Data;
+using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Comment.Areas.Admin.Controllers
+namespace Guandian.Areas.Admin.Controllers
 {
 
     public class ArticlesController : CommonController

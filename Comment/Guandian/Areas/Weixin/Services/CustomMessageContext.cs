@@ -2,7 +2,7 @@ using Senparc.NeuChar.Context;
 using Senparc.NeuChar.Entities;
 using Senparc.Weixin.MP.Entities;
 
-namespace Comment.Services
+namespace Guandian.Services
 {
     public class CustomMessageContext : MessageContext<IRequestMessageBase, IResponseMessageBase>
     {

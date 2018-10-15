@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Comment.Models;
+using Guandian.Models;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
-using Comment.Data;
+using Guandian.Data;
 
-namespace Comment.Controllers
+namespace Guandian.Controllers
 {
     public class HomeController : Controller
     {

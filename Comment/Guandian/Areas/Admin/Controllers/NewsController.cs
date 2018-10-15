@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Comment.Data;
-using Comment.Data.Entity;
+using Guandian.Data;
+using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Comment.Areas.Admin.Controllers
+namespace Guandian.Areas.Admin.Controllers
 {
     public class NewsController : CommonController
     {

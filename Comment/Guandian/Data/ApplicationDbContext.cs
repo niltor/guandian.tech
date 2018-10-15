@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Comment.Data.Entity;
+using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Comment.Data
+namespace Guandian.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
@@ -13,11 +10,17 @@ namespace Comment.Data
         public DbSet<Article> Articles { get; set; }
         public DbSet<Entity.Comment> Comments { get; set; }
         public DbSet<News> News { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
 
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
         }
     }
 }

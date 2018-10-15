@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Comment.Areas.Admin.Models
+namespace Guandian.Areas.Admin.Models
 {
     public class BingNewsEntity
     {

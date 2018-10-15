@@ -4,7 +4,7 @@ using MSDev.DB;
 using MSDev.MetaWeblog;
 using Newtonsoft.Json;
 
-namespace Comment.Areas.Admin.Controllers
+namespace Guandian.Areas.Admin.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,13 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Comment.Data.Entity
+namespace Guandian.Data.Entity
 {
     public class Blog : Article
     {
         /// <summary>
         /// 英文标题
         /// </summary>
-        [MaxLength(120)]
+        [MaxLength(200)]
         public string TitleEn { get; set; }
         /// <summary>
         /// 英文内容
@@ -16,12 +16,12 @@ namespace Comment.Data.Entity
         /// <summary>
         /// 链接
         /// </summary>
-        [MaxLength(250)]
+        [MaxLength(300)]
         public string Link { get; set; }
         /// <summary>
         /// 目录标签
         /// </summary>
-        [MaxLength(100)]
+        [MaxLength(300)]
         public string Categories { get; set; }
     }
 }

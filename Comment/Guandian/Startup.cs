@@ -1,6 +1,6 @@
 using System;
-using Comment.Data;
-using Comment.Services;
+using Guandian.Data;
+using Guandian.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +22,7 @@ using Senparc.Weixin.Entities;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
 
-namespace Comment
+namespace Guandian
 {
     public class Startup
     {

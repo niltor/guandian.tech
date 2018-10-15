@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace Comment.Services
+namespace Guandian.Services
 {
     public class IdentityVerifyService : IDisposable
     {

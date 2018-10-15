@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Comment.Data;
+using Guandian.Data;
 using Senparc.CO2NET.Extensions;
 using Senparc.CO2NET.HttpUtility;
 using Senparc.Weixin.Entities;
@@ -15,7 +15,7 @@ using Senparc.Weixin.MP.Containers;
 using Senparc.Weixin.MP.Entities;
 using Senparc.Weixin.MP.Entities.Menu;
 
-namespace Comment.Areas.Weixin.Controllers
+namespace Guandian.Areas.Weixin.Controllers
 {
     /// <summary>
     /// 菜单操作参考类

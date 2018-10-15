@@ -1,5 +1,5 @@
 using System;
-using Comment.Data;
+using Guandian.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: HostingStartup(typeof(Comment.Areas.Identity.IdentityHostingStartup))]
-namespace Comment.Areas.Identity
+[assembly: HostingStartup(typeof(Guandian.Areas.Identity.IdentityHostingStartup))]
+namespace Guandian.Areas.Identity
 {
     public class IdentityHostingStartup : IHostingStartup
     {

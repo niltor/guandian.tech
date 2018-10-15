@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Comment.Data;
-using Comment.Data.Entity;
+using Guandian.Data;
+using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
-namespace Comment.Controllers
+namespace Guandian.Controllers
 {
     public class NewsController : Controller
     {
