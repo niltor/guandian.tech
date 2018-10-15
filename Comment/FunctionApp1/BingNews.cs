@@ -25,7 +25,7 @@ namespace Functions
             if (!string.IsNullOrEmpty(connstr))
             {
                 // 获取新闻
-                var keywords = new string[] { "微软", "Microsoft", "三星", "谷歌", "科技", "阿里", "英特尔", "编程" };
+                var keywords = new string[] { "微软", "Microsoft", "三星", "谷歌", "科技", "阿里", "英特尔", "互联网", "人工智能" };
                 var service = new NewsService(log, searchKey);
                 foreach (var keyword in keywords)
                 {

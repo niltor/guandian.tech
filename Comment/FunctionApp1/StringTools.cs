@@ -12,12 +12,11 @@ namespace Functions
         /// </summary>
         public static double Similarity(string source, string target)
         {
-            if ((source == null) || (target == null))
+            if (string.IsNullOrEmpty(source) && string.IsNullOrEmpty(target))
             {
-                return 0.0;
+                return 1.0;
             }
-
-            if ((source.Length == 0) || (target.Length == 0))
+            else if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
             {
                 return 0.0;
             }
@@ -28,19 +27,18 @@ namespace Functions
             }
 
             int stepsToSame = ComputeLevenshteinDistance(source, target);
-            return (1.0 - ((double)stepsToSame / (double)Math.Max(source.Length, target.Length)));
+            return (1.0 - (stepsToSame / (double)Math.Max(source.Length, target.Length)));
         }
         /// <summary>
         /// 计算两字符串转变距离
         /// </summary>
         public static int ComputeLevenshteinDistance(string source, string target)
         {
-            if ((source == null) || (target == null))
+            if (string.IsNullOrEmpty(source) && string.IsNullOrEmpty(target))
             {
-                return 0;
+                return 1;
             }
-
-            if ((source.Length == 0) || (target.Length == 0))
+            else if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
             {
                 return 0;
             }
