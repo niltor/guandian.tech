@@ -5,6 +5,7 @@ using Guandian.Areas.Admin.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Guandian.Services;
+using Guandian.Utilities;
 using Markdig;
 using Markdig.SyntaxHighlighting;
 using Microsoft.AspNetCore.Authorization;
@@ -90,5 +91,28 @@ namespace Guandian.Areas.Admin.Controllers
             var num = await _context.SaveChangesAsync();
             return Ok(num);
         }
+        /// <summary>
+        /// 去重博客
+        /// </summary>
+        /// <param name="blogs"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult<List<string>> UniqueBlogs([FromBody]List<string> blogs)
+        {
+            // 取库中数据 
+            var currentBlogs = _context.Blogs
+                .OrderByDescending(b => b.UpdatedTime)
+                .Take(20)
+                .ToList();
+            // 筛选
+            blogs = blogs.Where(b =>
+                !currentBlogs.Any(c =>
+                    StringTools.Similarity(c.TitleEn, b) >= 0.5))
+                .ToList();
+
+            return Json(blogs);
+        }
+
     }
 }

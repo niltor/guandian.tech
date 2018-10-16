@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Guandian.Data;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
@@ -23,14 +24,14 @@ namespace Guandian.Areas.Weixin.Controllers
 
         }
 
-        public async System.Threading.Tasks.Task<ActionResult> PushToWeixinAsync()
+        public async Task<ActionResult> PushToWeixinAsync()
         {
 
             // 获取新闻原内容
             var news = _context.News
                 .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date >= DateTime.Now.Date.AddDays(-3))
                 .OrderByDescending(n => n.CreatedTime)
-                .Take(6)
+                .Take(8)
                 .ToList();
 
             var blogs = _context.Blogs
@@ -87,7 +88,7 @@ namespace Guandian.Areas.Weixin.Controllers
                         title = "资讯一览:" + firstNews?.Title,
                         show_cover_pic = "0",
                         content_source_url = "https://guandian.tech",
-                        digest = firstNews.Description,
+                        digest = "",
                     };
                     newsList.Add(mainNews);
                 }
@@ -133,6 +134,13 @@ namespace Guandian.Areas.Weixin.Controllers
                                 // TODO:后面可删除该封面
                             }
 
+                            // 处理内容，微信消息最大长度为2W字符，小于1M
+                            Console.WriteLine("长度:" + item.Content.Length);
+                            if (item.Content.Length >= 20000)
+                            {
+                                item.Content = item.Content.Substring(0, 19500);
+                            }
+
                             // 构造图文消息体
                             var currentNews = new NewsModel
                             {
@@ -142,7 +150,7 @@ namespace Guandian.Areas.Weixin.Controllers
                                 title = item.Title,
                                 show_cover_pic = "0",
                                 content_source_url = "https://guandian.tech/blogs/" + item.Id,
-                                digest = item.Keywords,
+                                digest = "",
                             };
                             item.IsPublishMP = true;
                             newsList.Add(currentNews);
@@ -171,6 +179,14 @@ namespace Guandian.Areas.Weixin.Controllers
                 _context.SaveChanges();
             }
             return Ok();
+        }
+
+
+        public string Test()
+        {
+            string str = "一二三四五六七";
+            str = str.Substring(0, 3);
+            return str;
         }
     }
 }

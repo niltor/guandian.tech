@@ -10,7 +10,7 @@ namespace Guandian.Utilities
         /// <param name="target">对比字符串</param>
         /// <returns>返回0-1.0</returns>
         /// </summary>
-        public static double Similarity(string source, string target)
+        public static Double Similarity(string source, string target)
         {
             if ((source == null) || (target == null))
             {
@@ -28,7 +28,7 @@ namespace Guandian.Utilities
             }
 
             int stepsToSame = ComputeLevenshteinDistance(source, target);
-            return (1.0 - stepsToSame / (double)Math.Max(source.Length, target.Length));
+            return (1.0 - ((Double)stepsToSame / (Double)Math.Max(source.Length, target.Length)));
         }
 
         /// <summary>
