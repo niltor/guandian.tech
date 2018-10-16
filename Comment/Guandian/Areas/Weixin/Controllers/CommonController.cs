@@ -1,7 +1,7 @@
 using System;
+using Guandian.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Guandian.Data;
 using Senparc.Weixin;
 using Senparc.Weixin.Entities;
 namespace Guandian.Areas.Weixin.Controllers
@@ -22,6 +22,11 @@ namespace Guandian.Areas.Weixin.Controllers
         {
             _senparcWeixinSetting = senparcWeixinSetting.Value;
             _context = context;
+        }
+
+        public void DumpConsole(string content)
+        {
+            Console.WriteLine("=== " + content + " ===");
         }
     }
 }

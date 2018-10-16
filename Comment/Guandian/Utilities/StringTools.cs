@@ -28,7 +28,7 @@ namespace Guandian.Utilities
             }
 
             int stepsToSame = ComputeLevenshteinDistance(source, target);
-            return (1.0 - ((Double)stepsToSame / (Double)Math.Max(source.Length, target.Length)));
+            return (1.0 - (stepsToSame / (Double)Math.Max(source.Length, target.Length)));
         }
 
         /// <summary>
@@ -139,6 +139,13 @@ namespace Guandian.Utilities
             int startP = str.LastIndexOf(search);
             int endP = str.Substring(startP).IndexOf("\n");
             return str.Substring(startP, endP);
+        }
+
+
+        public static string GetTempFileName(string ext = "")
+        {
+            var now = DateTime.Now;
+            return now.ToString("MMdd") + "temp" + now.ToString("HHmmss.fff") + "." + ext;
         }
     }
 }

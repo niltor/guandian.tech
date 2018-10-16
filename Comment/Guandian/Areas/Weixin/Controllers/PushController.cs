@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Guandian.Data;
+using Guandian.Utilities;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -43,6 +45,7 @@ namespace Guandian.Areas.Weixin.Controllers
             var newsList = new List<NewsModel>();
             var token = AccessTokenContainer.TryGetAccessToken(AppId, AppSecret);
 
+            DumpConsole("开始处理新闻");
             // 新闻内容
             if (news != null && news.Count > 0)
             {
@@ -53,9 +56,10 @@ namespace Guandian.Areas.Weixin.Controllers
                     var firstNews = news.FirstOrDefault();
                     foreach (var item in news)
                     {
-                        wc.DownloadFile(item.ThumbnailUrl + "&w=600", "temp.jpg");
-                        var uploadImgResult = await MediaApi.UploadImgAsync(token, "temp.jpg");
-                        System.IO.File.Delete("temp.jpg");
+                        var tempFileName = StringTools.GetTempFileName("jpg");
+                        wc.DownloadFile(item.ThumbnailUrl + "&w=600", tempFileName);
+                        var uploadImgResult = await MediaApi.UploadImgAsync(token, tempFileName);
+                        System.IO.File.Delete(tempFileName);
 
                         // 替换图片链接
                         content += $@"<div class='row news-list bg-white m-0 mb-2 p-2'>
@@ -79,7 +83,6 @@ namespace Guandian.Areas.Weixin.Controllers
                     wc.DownloadFile(firstNews?.ThumbnailUrl + "&w=600", "temp.jpg");
                     var thumbImg = await MediaApi.UploadForeverMediaAsync(token, "temp.jpg");
                     // TODO:上传后可删除
-
                     var mainNews = new NewsModel
                     {
                         author = "MSDev_NilTor",
@@ -93,6 +96,8 @@ namespace Guandian.Areas.Weixin.Controllers
                     newsList.Add(mainNews);
                 }
             }
+            DumpConsole("新闻处理完成");
+            DumpConsole("开始处理博客");
             // 博客内容
             if (blogs != null && blogs.Count > 0)
             {
@@ -108,7 +113,8 @@ namespace Guandian.Areas.Weixin.Controllers
                             var images = htmlDoc.DocumentNode.SelectNodes(".//img")
                                 .Select(img => img.GetAttributeValue("src", null))
                                 .ToList();
-                            images = images.Where(i => i != null).ToList();
+                            images = images.Where(i => i != null && i.ToLower().EndsWith(".jpg"))
+                                .ToList();
                             string mediaId = "";
                             // 获取默认封面
                             if (images == null || images?.Count < 1)
@@ -118,19 +124,35 @@ namespace Guandian.Areas.Weixin.Controllers
                             }
                             else
                             {
+                                DumpConsole(item.Title + " 图片处理");
+                                var coverImage = "";
                                 foreach (var image in images)
                                 {
-                                    wc.DownloadFile(image, "temp.jpg");
-                                    var uploadImgResult = await MediaApi.UploadImgAsync(token, "temp.jpg");
-                                    System.IO.File.Delete("temp.jpg");
+                                    var tempFileName = StringTools.GetTempFileName("jpg");
+                                    wc.DownloadFile(image, tempFileName);
+                                    // 判断大小. TODO:处理图片大小
+                                    var file = new FileInfo(tempFileName);
+                                    if (file.Length > 1 * 1024 * 1024) continue;
+                                    var uploadImgResult = await MediaApi.UploadImgAsync(token, tempFileName);
+                                    DumpConsole("上传图片" + image + " " + file.Length / 1024);
+                                    System.IO.File.Delete(tempFileName);
                                     // 替换文本
                                     item.Content.Replace(image, uploadImgResult.url);
+                                    coverImage = image;
                                 }
-
                                 // 设置封面
-                                wc.DownloadFile(images.FirstOrDefault(), "temp.jpg");
-                                var uploadCoverResult = await MediaApi.UploadForeverMediaAsync(token, "temp.jpg");
-                                mediaId = uploadCoverResult.media_id;
+                                if (!string.IsNullOrEmpty(coverImage))
+                                {
+                                    wc.DownloadFile(coverImage, "temp.jpg");
+                                    var uploadCoverResult = await MediaApi.UploadForeverMediaAsync(token, "temp.jpg");
+                                    mediaId = uploadCoverResult.media_id;
+                                }
+                                else
+                                {
+                                    var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
+                                    mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
+                                }
+                                DumpConsole("设置封面，mediaId" + mediaId);
                                 // TODO:后面可删除该封面
                             }
 
