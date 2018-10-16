@@ -166,7 +166,7 @@ namespace Guandian.Areas.Weixin.Controllers
                             // 构造图文消息体
                             var currentNews = new NewsModel
                             {
-                                author = "MSDev_NilTor",
+                                author = item.AuthorName,
                                 thumb_media_id = mediaId,
                                 content = item.Content,
                                 title = item.Title,
