@@ -17,7 +17,7 @@ namespace MSBlogsFunction
         [FunctionName("MSBlogs")]
         //public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
 
-        public static async Task RunAsync([TimerTrigger("0 * */12 * * *")]TimerInfo myTimer, TraceWriter log)
+        public static async Task RunAsync([TimerTrigger("0 * */6 * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
             var blogs = await RssHelper.GetDevBlogs();

@@ -10,11 +10,16 @@ namespace PushService
         [FunctionName("Function1")]
         public static async void RunAsync([TimerTrigger("0 30 8 * * *")]TimerInfo myTimer, TraceWriter log)
         {
+            int retryNum = 3;
             using (var hc = new HttpClient())
             {
-                var response = await hc.GetStringAsync("https://guandian.tech/weixin/Push/PushToWeixinAsync");
+                var response = await hc.GetAsync("https://guandian.tech/weixin/Push/PushToWeixinAsync");
+                while (retryNum > 0 && !response.IsSuccessStatusCode)
+                {
+                    retryNum--;
+                    response = await hc.GetAsync("https://guandian.tech/weixin/Push/PushToWeixinAsync");
+                }
             }
-
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
         }
     }
