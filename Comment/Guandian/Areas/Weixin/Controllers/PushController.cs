@@ -187,7 +187,7 @@ namespace Guandian.Areas.Weixin.Controllers
                                     content = item.Content,
                                     title = item.Title,
                                     show_cover_pic = "0",
-                                    content_source_url = "https://guandian.tech/blogs/" + item.Id,
+                                    content_source_url = "https://guandian.tech/blogs/detail/" + item.Id,
                                     digest = "",
                                 };
                                 item.IsPublishMP = true;

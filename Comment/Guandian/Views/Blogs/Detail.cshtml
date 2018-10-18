@@ -1,4 +1,4 @@
-@model Guandian.Data.Entity.News
+@model Guandian.Data.Entity.Blog
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -25,14 +25,14 @@
         <h2 class="mt-3" style="font-family:segoe UI semibold">@Model.Title</h2>
         <div class="text-muted ">
             <span class="byline-name ">
-                @Model.Provider
+                @Model.AuthorName
             </span>
             <span class="dateline">
                 @Model.CreatedTime
             </span>
             <span class="text-primary">
                 &nbsp;&nbsp;
-                <a href="@Model.Url">原文</a>
+                <a href="@Model.Link">原文</a>
             </span>
         </div>
         <hr />
@@ -43,14 +43,11 @@
 </div>
 @section Scripts{
     <script>
-
         $(document).ready(function () {
             // edge浏览器 打开阅读模式
             if (navigator.userAgent.indexOf("Edge") > -1) {
                 location.href = "read:" + location.href;
             }
         });
-
-
     </script>
 }
