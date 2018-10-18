@@ -115,50 +115,61 @@ namespace Guandian.Areas.Weixin.Controllers
                             {
                                 // 处理文章内图片
                                 htmlDoc.LoadHtml(item.Content);
-                                var images = htmlDoc.DocumentNode.SelectNodes(".//img")
-                                    .Select(img => img.GetAttributeValue("src", null))
-                                    .ToList();
-                                images = images.Where(i => i != null && i.ToLower().EndsWith(".jpg"))
-                                    .ToList();
+                                var imageNodes = htmlDoc.DocumentNode.SelectNodes(".//img");
+
                                 string mediaId = "";
-                                // 获取默认封面
-                                if (images == null || images?.Count < 1)
+                                if (imageNodes != null)
                                 {
-                                    var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
-                                    mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
-                                }
-                                else
-                                {
-                                    DumpConsole(item.Title + " 图片处理");
-                                    var coverImage = "";
-                                    foreach (var image in images)
-                                    {
-                                        var tempFileName = StringTools.GetTempFileName("jpg");
-                                        wc.DownloadFile(image, tempFileName);
-                                        // 判断大小. TODO:处理图片大小
-                                        var file = new FileInfo(tempFileName);
-                                        if (file.Length > 1 * 1024 * 1024) continue;
-                                        var uploadImgResult = await MediaApi.UploadImgAsync(token, tempFileName);
-                                        DumpConsole("上传图片" + image + " " + file.Length / 1024);
-                                        System.IO.File.Delete(tempFileName);
-                                        // 替换文本
-                                        item.Content.Replace(image, uploadImgResult.url);
-                                        coverImage = image;
-                                    }
-                                    // 设置封面
-                                    if (!string.IsNullOrEmpty(coverImage))
-                                    {
-                                        wc.DownloadFile(coverImage, "temp.jpg");
-                                        var uploadCoverResult = await MediaApi.UploadForeverMediaAsync(token, "temp.jpg");
-                                        mediaId = uploadCoverResult.media_id;
-                                    }
-                                    else
+                                    var images = imageNodes.Select(img => img.GetAttributeValue("src", null))
+                                        .ToList();
+                                    images = images.Where(i => i != null && i.ToLower().EndsWith(".jpg"))
+                                        .ToList();
+
+                                    // 获取默认封面
+                                    if (images == null || images?.Count < 1)
                                     {
                                         var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
                                         mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
                                     }
-                                    DumpConsole("设置封面，mediaId" + mediaId);
-                                    // TODO:后面可删除该封面
+                                    else
+                                    {
+                                        DumpConsole(item.Title + " 图片处理");
+                                        var coverImage = "";
+                                        foreach (var image in images)
+                                        {
+                                            var tempFileName = StringTools.GetTempFileName("jpg");
+                                            wc.DownloadFile(image, tempFileName);
+                                            // 判断大小. TODO:处理图片大小
+                                            var file = new FileInfo(tempFileName);
+                                            if (file.Length > 1 * 1024 * 1024) continue;
+                                            var uploadImgResult = await MediaApi.UploadImgAsync(token, tempFileName);
+                                            DumpConsole("上传图片" + image + " " + file.Length / 1024);
+                                            System.IO.File.Delete(tempFileName);
+                                            // 替换文本
+                                            item.Content.Replace(image, uploadImgResult.url);
+                                            coverImage = image;
+                                        }
+                                        // 设置封面
+                                        if (!string.IsNullOrEmpty(coverImage))
+                                        {
+                                            wc.DownloadFile(coverImage, "temp.jpg");
+                                            var uploadCoverResult = await MediaApi.UploadForeverMediaAsync(token, "temp.jpg");
+                                            mediaId = uploadCoverResult.media_id;
+                                        }
+                                        else
+                                        {
+                                            var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
+                                            mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
+                                        }
+                                        DumpConsole("设置封面，mediaId" + mediaId);
+                                        // TODO:后面可删除该封面
+                                    }
+
+                                }
+                                else
+                                {
+                                    var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
+                                    mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
                                 }
 
                                 // 处理内容，微信消息最大长度为2W字符，小于1M

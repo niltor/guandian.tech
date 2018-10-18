@@ -15,9 +15,9 @@ namespace MSBlogsFunction
         //static readonly string baseApi = "http://localhost:3719/";
         static readonly string baseApi = "http://guandian.tech/";
         [FunctionName("MSBlogs")]
-        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
+        //public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
 
-        //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, TraceWriter log)
+        public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
             var blogs = await RssHelper.GetDevBlogs();
