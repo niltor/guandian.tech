@@ -25,7 +25,8 @@ namespace MSBlogsFunction
         public string TranslateText(string content)
         {
             string seperator = "<!--divider-->";
-            int maxNumber = 4500;
+            // TODO:拆分算法待优化通用。根据p标签的数量和长度去拆分。
+            int maxNumber = 4800;
             if (content.Length > maxNumber)
             {
                 //分解 content
@@ -35,8 +36,8 @@ namespace MSBlogsFunction
             string addSeperator(string str, int tagLevel)
             {
                 if (tagLevel > 5) return str; //避免无限递归
-
                 var result = "";
+                // 以标题标签分隔
                 var tag = $"</h{tagLevel}>";
                 if (str.Contains(tag))
                 {
@@ -56,6 +57,19 @@ namespace MSBlogsFunction
                 else
                 {
                     result = addSeperator(str, tagLevel + 1);
+                }
+                // 没有标签以空行分隔
+                if (result.Length > maxNumber)
+                {
+                    tag = "<p></p>";
+                    str = str.Replace(tag, tag + seperator);
+                    var contentParts = str.Split(new string[] { tag }, StringSplitOptions.None);
+                    foreach (var item in contentParts)
+                    {
+                        var row = item + tag;
+                        result += row;
+                    }
+                    return result;
                 }
                 return result;
             }
