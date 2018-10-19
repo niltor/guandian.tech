@@ -15,12 +15,12 @@ namespace MSBlogsFunction
         //static readonly string baseApi = "http://localhost:3719/";
         static readonly string baseApi = "http://guandian.tech/";
         [FunctionName("MSBlogs")]
-        //public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
+        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
 
-        public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, TraceWriter log)
+        //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
-            var blogs = await RssHelper.GetDevBlogs();
+            var blogs = await RssHelper.GetAllBlogs();
             var tobeAddBlogs = new List<BlogForm>();
             string subKey = Environment.GetEnvironmentVariable("SubKey");
             var translateHelper = new TranslateTextHelper(subKey);
@@ -40,10 +40,11 @@ namespace MSBlogsFunction
                 {
                     var blogForm = new BlogForm
                     {
-                        ContentEn = item.Description,
+                        ContentEn = item.Content,
                         AuthorName = item.Author,
                         Categories = item.Categories,
-                        Content = translateHelper.TranslateText(item.Description),
+                        Content = translateHelper.TranslateText(item.Content),
+                        Summary = translateHelper.TranslateText(item.Description),
                         Title = translateHelper.TranslateText(item.Title),
                         TitleEn = item.Title,
                         Link = item.Link,
@@ -52,35 +53,7 @@ namespace MSBlogsFunction
                     tobeAddBlogs.Add(blogForm);
                 }
             }
-
-            var cloudBlogs = await RssHelper.GetCloudNews();
-            // blogs去重
-            using (var hc = new HttpClient())
-            {
-                var response = await hc.PostAsJsonAsync(baseApi + "admin/tools/UniqueBlogs", cloudBlogs.Select(b => b.Title).ToList());
-                var json = await response.Content.ReadAsStringAsync();
-                var uniqueBlogs = JsonConvert.DeserializeObject<List<string>>(json);
-                cloudBlogs = cloudBlogs.Where(b => uniqueBlogs.Any(u => b.Title.Equals(u))).ToList();
-            }
-
-            if (cloudBlogs.Count > 0)
-            {
-                foreach (var item in cloudBlogs)
-                {
-                    var blogForm = new BlogForm
-                    {
-                        ContentEn = item.Description,
-                        AuthorName = item.Author,
-                        Categories = item.Categories,
-                        Content = translateHelper.TranslateText(item.Description),
-                        Title = translateHelper.TranslateText(item.Title),
-                        TitleEn = item.Title,
-                        Link = item.Link,
-                        CreatedTime = item.CreateTime
-                    };
-                    tobeAddBlogs.Add(blogForm);
-                }
-            }
+            
             // 发送请求入库
             if (tobeAddBlogs.Count > 0)
             {

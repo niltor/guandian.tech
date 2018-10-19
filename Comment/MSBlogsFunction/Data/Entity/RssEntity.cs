@@ -20,6 +20,6 @@ namespace MSBlogsFunction.Entity
 
         public DateTime LastUpdateTime { get; set; }
 
-        public string MobileContent { get; set; }
+        public string Content { get; set; }
     }
 }

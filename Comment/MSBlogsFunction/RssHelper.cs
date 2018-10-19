@@ -11,10 +11,6 @@ namespace MSBlogsFunction
     public static class RssHelper
     {
         private static readonly HttpClient httpClient;
-
-        private const string devBlogsFeedsLink = "http://sxp.microsoft.com/feeds/3.0/devblogs";
-        private const string cloudFeedsLink = "https://sxp.microsoft.com/feeds/3.0/cloud";
-
         static RssHelper()
         {
             if (httpClient == null)
@@ -35,10 +31,10 @@ namespace MSBlogsFunction
                 IEnumerable<XElement> xmlList = xmlDoc.Root.Element("channel")?.Elements("item");
                 // 根据作者进行筛选
                 string[] authorfilter = { "MSFT", "Team", "Microsoft", "Visual", "Office", "Blog" };
-                string[] htmlTagFilter = { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>" };
+                string[] htmlTagFilter = { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<p></p>" };
                 blogs = xmlList?.Where(x => x.Name == "item")
                     .Where(x => IsContainKey(authorfilter, x.Element("author").Value)
-                        && IsContainKey(htmlTagFilter, x.Element("description").Value))
+                        && IsContainKey(htmlTagFilter, x.Element("content:encoded").Value))
                     .Select(x =>
                     {
                         DateTime createTime = DateTime.Now;
@@ -52,13 +48,13 @@ namespace MSBlogsFunction
                         return new RssEntity
                         {
                             Title = x.Element("title")?.Value,
-                            Description = x.Element("description")?.Value?.Replace("<pre" , "<pre class=\"notranslate\""),
+                            Content = x.Element("content:encoded")?.Value?.Replace("<pre", "<pre class=\"notranslate\""),
+                            Description = x.Element("description")?.Value,
                             CreateTime = createTime,
                             Author = x.Element("author")?.Value,
                             Link = x.Element("link")?.Value,
                             Categories = x.Element("source")?.Value,
                             LastUpdateTime = createTime,
-                            //MobileContent = x.Element("sxp_MobileContent")?.Value
                         };
                     })
                     .ToList();
@@ -78,14 +74,28 @@ namespace MSBlogsFunction
             return false;
         }
 
-        public static async Task<ICollection<RssEntity>> GetDevBlogs()
+        /// <summary>
+        /// 获取所有rss内容
+        /// </summary>
+        /// <returns></returns>
+        public static async Task<ICollection<RssEntity>> GetAllBlogs()
         {
-            return await GetRss(devBlogsFeedsLink);
+            var result = new List<RssEntity>();
+            var feeds = new string[] {
+                "https://blogs.microsoft.com/on-the-issues/feed/",
+                "https://azurecomcdn.azureedge.net/en-us/blog/feed/",
+                "https://blogs.windows.com/buildingapps/feed/",
+                "https://blogs.microsoft.com/ai/feed/",
+                "https://blogs.microsoft.com/feed/",
+                "https://blogs.technet.microsoft.com/feed/"
+            };
+            foreach (var item in feeds)
+            {
+                var blogs = await GetRss(item);
+                result.AddRange(blogs);
+            }
+            return result;
         }
 
-        public static async Task<ICollection<RssEntity>> GetCloudNews()
-        {
-            return await GetRss(cloudFeedsLink);
-        }
     }
 }
