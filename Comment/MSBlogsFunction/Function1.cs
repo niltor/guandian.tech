@@ -16,7 +16,6 @@ namespace MSBlogsFunction
         static readonly string baseApi = "http://guandian.tech/";
         [FunctionName("MSBlogs")]
         public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
-
         //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
@@ -53,7 +52,7 @@ namespace MSBlogsFunction
                     tobeAddBlogs.Add(blogForm);
                 }
             }
-            
+
             // 发送请求入库
             if (tobeAddBlogs.Count > 0)
             {

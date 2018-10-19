@@ -34,14 +34,9 @@ namespace MSBlogsFunction
                 string[] authorfilter = { "MSFT", "Team", "Microsoft", "Visual", "Office", "Blog" };
                 string[] htmlTagFilter = { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<p></p>" };
 
-                var test = xmlList?.Where(x => x.Name == "item")
-                    .Where(x => IsContainKey(authorfilter, x.Element("creator")?.Value)
-                        && IsContainKey(htmlTagFilter, x.Element("encoded")?.Value))
-                        .ToList();
-
                 blogs = xmlList?.Where(x => x.Name == "item")
-                    .Where(x => IsContainKey(authorfilter, x.Element("author")?.Value)
-                        && IsContainKey(htmlTagFilter, x.Element("content:encoded")?.Value))
+                    .Where(i => IsContainKey(authorfilter, i.Element(nspcDc + "creator").Value)
+                        && IsContainKey(htmlTagFilter, i.Element(nspcContent + "encoded").Value))
                     .Select(x =>
                     {
                         DateTime createTime = DateTime.Now;
@@ -59,10 +54,10 @@ namespace MSBlogsFunction
                         return new RssEntity
                         {
                             Title = x.Element("title")?.Value,
-                            Content = x.Element("content:encoded")?.Value?.Replace("<pre", "<pre class=\"notranslate\""),
+                            Content = x.Element(nspcContent + "encoded")?.Value?.Replace("<pre", "<pre class=\"notranslate\""),
                             Description = x.Element("description")?.Value,
                             CreateTime = createTime,
-                            Author = x.Element("author")?.Value,
+                            Author = x.Element(nspcDc + "creator")?.Value,
                             Link = x.Element("link")?.Value,
                             Categories = string.Join(";", categories),
                             LastUpdateTime = createTime,
