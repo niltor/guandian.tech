@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Microsoft.Azure.WebJobs.Host;
 using MSBlogsFunction.Entity;
 
 namespace MSBlogsFunction
@@ -19,32 +20,42 @@ namespace MSBlogsFunction
             }
         }
 
-        public static async Task<List<RssEntity>> GetRss(string url)
+        public static async Task<List<RssEntity>> GetRss(string url, TraceWriter log)
         {
             var blogs = new List<RssEntity>();
             string xmlString = await httpClient.GetStringAsync(url);
             if (!string.IsNullOrEmpty(xmlString))
             {
                 var xmlDoc = XDocument.Parse(xmlString);
-
-                XNamespace nspc = "http://sxpdata.microsoft.com/metadata";
+                XNamespace nspcDc = "http://purl.org/dc/elements/1.1/";
+                XNamespace nspcContent = "http://purl.org/rss/1.0/modules/content/";
                 IEnumerable<XElement> xmlList = xmlDoc.Root.Element("channel")?.Elements("item");
                 // 根据作者进行筛选
                 string[] authorfilter = { "MSFT", "Team", "Microsoft", "Visual", "Office", "Blog" };
                 string[] htmlTagFilter = { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<p></p>" };
+
+                var test = xmlList?.Where(x => x.Name == "item")
+                    .Where(x => IsContainKey(authorfilter, x.Element("creator")?.Value)
+                        && IsContainKey(htmlTagFilter, x.Element("encoded")?.Value))
+                        .ToList();
+
                 blogs = xmlList?.Where(x => x.Name == "item")
-                    .Where(x => IsContainKey(authorfilter, x.Element("author").Value)
-                        && IsContainKey(htmlTagFilter, x.Element("content:encoded").Value))
+                    .Where(x => IsContainKey(authorfilter, x.Element("author")?.Value)
+                        && IsContainKey(htmlTagFilter, x.Element("content:encoded")?.Value))
                     .Select(x =>
                     {
                         DateTime createTime = DateTime.Now;
-
                         string createTimeString = x.Element("pubDate")?.Value;
                         if (!string.IsNullOrEmpty(createTimeString))
                         {
                             createTime = DateTime.Parse(createTimeString);
                         }
 
+                        var categories = x.Elements()
+                            .Where(e => e.Name.Equals("category"))?
+                            .Select(s => s.Value)
+                            .ToArray();
+                        log.Info(categories.ToString());
                         return new RssEntity
                         {
                             Title = x.Element("title")?.Value,
@@ -53,7 +64,7 @@ namespace MSBlogsFunction
                             CreateTime = createTime,
                             Author = x.Element("author")?.Value,
                             Link = x.Element("link")?.Value,
-                            Categories = x.Element("source")?.Value,
+                            Categories = string.Join(";", categories),
                             LastUpdateTime = createTime,
                         };
                     })
@@ -78,7 +89,7 @@ namespace MSBlogsFunction
         /// 获取所有rss内容
         /// </summary>
         /// <returns></returns>
-        public static async Task<ICollection<RssEntity>> GetAllBlogs()
+        public static async Task<ICollection<RssEntity>> GetAllBlogs(TraceWriter log)
         {
             var result = new List<RssEntity>();
             var feeds = new string[] {
@@ -91,7 +102,7 @@ namespace MSBlogsFunction
             };
             foreach (var item in feeds)
             {
-                var blogs = await GetRss(item);
+                var blogs = await GetRss(item, log);
                 result.AddRange(blogs);
             }
             return result;

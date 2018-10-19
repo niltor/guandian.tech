@@ -20,7 +20,7 @@ namespace MSBlogsFunction
         //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
-            var blogs = await RssHelper.GetAllBlogs();
+            var blogs = await RssHelper.GetAllBlogs(log);
             var tobeAddBlogs = new List<BlogForm>();
             string subKey = Environment.GetEnvironmentVariable("SubKey");
             var translateHelper = new TranslateTextHelper(subKey);
