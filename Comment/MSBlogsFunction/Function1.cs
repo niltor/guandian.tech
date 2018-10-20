@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using MSBlogsFunction.Models;
 using Newtonsoft.Json;
 
@@ -12,13 +12,13 @@ namespace MSBlogsFunction
 {
     public static class Function1
     {
-        //static readonly string baseApi = "http://localhost:3719/";
+        //static readonly string baseApi = "http://localhost:9843/";
         static readonly string baseApi = "http://guandian.tech/";
         [FunctionName("MSBlogs")]
-        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
-        //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, TraceWriter log)
+        //public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
+        public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, ILogger log)
         {
-            log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
+            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
             var blogs = await RssHelper.GetAllBlogs(log);
             var tobeAddBlogs = new List<BlogForm>();
             string subKey = Environment.GetEnvironmentVariable("SubKey");
@@ -30,6 +30,12 @@ namespace MSBlogsFunction
                 var response = await hc.PostAsJsonAsync(baseApi + "admin/tools/UniqueBlogs", blogs.Select(b => b.Title).ToList());
                 var json = await response.Content.ReadAsStringAsync();
                 var uniqueBlogs = JsonConvert.DeserializeObject<List<string>>(json);
+                if (uniqueBlogs == null)
+                {
+                    log.LogInformation("没有新增内容");
+                    return;
+                }
+                log.LogInformation("新增条数:" + uniqueBlogs?.Count);
                 blogs = blogs.Where(b => uniqueBlogs.Any(u => b.Title.Equals(u))).ToList();
             }
 
@@ -62,15 +68,15 @@ namespace MSBlogsFunction
                     if (response.IsSuccessStatusCode)
                     {
                         var result = await response.Content.ReadAsStringAsync();
-                        log.Info("success:" + result);
+                        log.LogInformation("success:" + result);
                     }
                     else
                     {
-                        log.Error(response.StatusCode + response.ReasonPhrase);
+                        log.LogError(response.StatusCode + response.ReasonPhrase);
                     }
                 }
             }
-            log.Info("finish");
+            log.LogInformation("finish");
         }
     }
 }

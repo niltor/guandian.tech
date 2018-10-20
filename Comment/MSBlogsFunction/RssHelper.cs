@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using MSBlogsFunction.Entity;
 
 namespace MSBlogsFunction
@@ -20,7 +21,7 @@ namespace MSBlogsFunction
             }
         }
 
-        public static async Task<List<RssEntity>> GetRss(string url, TraceWriter log)
+        public static async Task<List<RssEntity>> GetRss(string url, ILogger log)
         {
             var blogs = new List<RssEntity>();
             string xmlString = await httpClient.GetStringAsync(url);
@@ -50,7 +51,7 @@ namespace MSBlogsFunction
                             .Where(e => e.Name.Equals("category"))?
                             .Select(s => s.Value)
                             .ToArray();
-                        log.Info(categories.ToString());
+                        log.LogInformation(categories.ToString());
                         return new RssEntity
                         {
                             Title = x.Element("title")?.Value,
@@ -77,6 +78,7 @@ namespace MSBlogsFunction
                     return true;
                 }
             }
+            
             return false;
         }
 
@@ -84,7 +86,7 @@ namespace MSBlogsFunction
         /// 获取所有rss内容
         /// </summary>
         /// <returns></returns>
-        public static async Task<ICollection<RssEntity>> GetAllBlogs(TraceWriter log)
+        public static async Task<ICollection<RssEntity>> GetAllBlogs(ILogger log)
         {
             var result = new List<RssEntity>();
             var feeds = new string[] {
