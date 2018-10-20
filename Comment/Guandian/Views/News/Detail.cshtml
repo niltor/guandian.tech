@@ -1,6 +1,9 @@
 @model Guandian.Data.Entity.News
 @{
     ViewData["Title"] = Model.Title;
+    ViewData["ShareTitle"] = Model.Title;
+    ViewData["Description"] = Model.Description;
+    ViewData["ShareImage"] = Model.ThumbnailUrl;
 }
 <head>
     <style>
@@ -10,7 +13,7 @@
         }
 
             .content img {
-                max-width: 100%  !important;
+                max-width: 100% !important;
                 text-align: center;
                 margin: 0 auto;
                 margin-bottom: 16px;
