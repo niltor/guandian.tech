@@ -23,7 +23,7 @@ namespace MSBlogsFunction
             var tobeAddBlogs = new List<BlogForm>();
             string subKey = Environment.GetEnvironmentVariable("SubKey");
             var translateHelper = new TranslateTextHelper(subKey);
-
+            log.LogInformation("采集：" + blogs.Count + "条;\r\n" + string.Join(";\r\n", blogs.Select(b => b.Title).ToArray()));
             // blogs去重
             using (var hc = new HttpClient())
             {

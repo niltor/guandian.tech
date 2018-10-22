@@ -51,7 +51,7 @@ namespace MSBlogsFunction
                             .Where(e => e.Name.Equals("category"))?
                             .Select(s => s.Value)
                             .ToArray();
-                        log.LogInformation(categories.ToString());
+                    
                         return new RssEntity
                         {
                             Title = x.Element("title")?.Value,
@@ -95,7 +95,6 @@ namespace MSBlogsFunction
                 "https://blogs.windows.com/buildingapps/feed/",
                 "https://blogs.microsoft.com/ai/feed/",
                 "https://blogs.microsoft.com/feed/",
-                "https://blogs.technet.microsoft.com/feed/"
             };
             foreach (var item in feeds)
             {
