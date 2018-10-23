@@ -180,12 +180,12 @@ namespace MSBlogsFunction
                 var adUl = contentNode.SelectSingleNode("(.//ul)[last()]");
                 var adAlso = contentNode.SelectSingleNode("(.//h2)[last()]");
 
-                if (adVideo != null) contentNode.RemoveChild(adVideo);
-                if (adArticle != null) contentNode.RemoveChild(adArticle);
-                if (adSub != null) contentNode.RemoveChild(adSub);
-                if (adImage != null) contentNode.RemoveChild(adImage);
-                if (adUl != null) contentNode.RemoveChild(adUl);
-                if (adAlso != null) contentNode.RemoveChild(adAlso);
+                if (adVideo != null) adVideo.Remove();
+                if (adArticle != null) adArticle.Remove();
+                if (adSub != null) adSub.Remove();
+                if (adImage != null) adImage.Remove();
+                if (adUl != null) adUl.Remove();
+                if (adAlso != null) adAlso.Remove();
                 #endregion
                 var content = contentNode.InnerHtml;
                 return content;
