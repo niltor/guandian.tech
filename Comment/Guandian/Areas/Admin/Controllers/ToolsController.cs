@@ -101,18 +101,13 @@ namespace Guandian.Areas.Admin.Controllers
         public ActionResult<List<string>> UniqueBlogs([FromBody]List<string> blogs)
         {
 
-            var result = blogs;
+            var result = new List<string>(blogs);
             // 取库中数据 
             var currentBlogs = _context.Blogs
                 .OrderByDescending(b => b.UpdatedTime)
                 .Take(20)
                 .ToList();
             // 筛选
-            blogs = blogs.Where(b =>
-                !currentBlogs.Any(c =>
-                    StringTools.Similarity(c.TitleEn, b) >= 0.5))
-                .ToList();
-
             foreach (var item in blogs)
             {
                 if (currentBlogs.Any(c => StringTools.Similarity(c.TitleEn, item) >= 0.5))
