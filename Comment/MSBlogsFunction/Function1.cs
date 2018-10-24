@@ -13,8 +13,8 @@ namespace MSBlogsFunction
 {
     public static class Function1
     {
-        //static readonly string baseApi = "http://localhost:3719/";
-        static readonly string baseApi = "http://guandian.tech/";
+        static readonly string baseApi = "http://localhost:9843/";
+        //static readonly string baseApi = "http://guandian.tech/";
         [FunctionName("MSBlogs")]
         public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
         //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, ILogger log)
@@ -22,18 +22,18 @@ namespace MSBlogsFunction
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
             var helper = new RssHelper();
-            var MSBlogs = await helper.GetAllBlogs(log);
-            SaveMSBlogs(MSBlogs, log);
+            //var MSBlogs = await helper.GetAllBlogs(log);
+            //await SaveMSBlogs(MSBlogs, log);
 
             var techRePublicBlogs = helper.GetTechRePublicRss(log);
-            SaveTechRePublicBlogs(techRePublicBlogs, log);
+            await SaveTechRePublicBlogs(techRePublicBlogs, log);
 
             log.LogInformation("finish");
         }
 
 
 
-        static async void SaveTechRePublicBlogs(List<RssEntity> blogs, ILogger log)
+        static async Task SaveTechRePublicBlogs(List<RssEntity> blogs, ILogger log)
         {
             string subKey = Environment.GetEnvironmentVariable("GoogleTranslateKey");
             var translateHelper = new TranslateTextHelper(subKey);
@@ -97,7 +97,7 @@ namespace MSBlogsFunction
         /// </summary>
         /// <param name="blogs"></param>
         /// <param name="log"></param>
-        static async void SaveMSBlogs(List<RssEntity> blogs, ILogger log)
+        static async Task SaveMSBlogs(List<RssEntity> blogs, ILogger log)
         {
             string subKey = Environment.GetEnvironmentVariable("SubKey");
             var translateHelper = new TranslateTextHelper(subKey);
