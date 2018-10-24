@@ -35,7 +35,7 @@ namespace MSBlogsFunction
 
         static async void SaveTechRePublicBlogs(List<RssEntity> blogs, ILogger log)
         {
-            string subKey = Environment.GetEnvironmentVariable("SubKey");
+            string subKey = Environment.GetEnvironmentVariable("GoogleTranslateKey");
             var translateHelper = new TranslateTextHelper(subKey);
 
             var tobeAddBlogs = new List<BlogForm>();
@@ -64,9 +64,9 @@ namespace MSBlogsFunction
                             ContentEn = content,
                             AuthorName = item.Author,
                             Categories = item.Categories,
-                            Content = translateHelper.TranslateText(content),
-                            Summary = translateHelper.TranslateText(item.Description),
-                            Title = translateHelper.TranslateText(item.Title),
+                            Content = await translateHelper.GetTranslateByGoogle(content),
+                            Summary = await translateHelper.GetTranslateByGoogle(item.Description),
+                            Title = await translateHelper.GetTranslateByGoogle(item.Title),
                             TitleEn = item.Title,
                             Link = item.Link,
                             CreatedTime = item.CreateTime

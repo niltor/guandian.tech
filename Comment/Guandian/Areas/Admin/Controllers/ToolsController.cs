@@ -117,6 +117,5 @@ namespace Guandian.Areas.Admin.Controllers
             }
             return Json(result);
         }
-
     }
 }
