@@ -134,7 +134,6 @@ namespace MSBlogsFunction
             }
             var client = TranslationClient.CreateFromApiKey(SubScriptKey);
             var response = await client.TranslateHtmlAsync(content, LanguageCodes.ChineseSimplified);
-            Console.WriteLine($"Result: {response.TranslatedText}; detected language {response.DetectedSourceLanguage}");
             return response.TranslatedText;
         }
     }

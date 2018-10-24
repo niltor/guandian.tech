@@ -86,8 +86,15 @@ namespace Guandian.Areas.Admin.Controllers
                 Title = b.Title,
                 TitleEn = b.TitleEn
             }).ToList();
-
-            _context.AddRange(blogs);
+            // 插入前再去重
+            var oldBlogs = _context.Blogs.OrderByDescending(b => b.CreatedTime)
+                .Take(50)
+                .ToList();
+            foreach (var blog in blogs)
+            {
+                if (oldBlogs.Any(b => b.TitleEn == blog.TitleEn)) continue;
+                _context.Add(blog);
+            }
             var num = await _context.SaveChangesAsync();
             return Ok(num);
         }
@@ -105,7 +112,7 @@ namespace Guandian.Areas.Admin.Controllers
             // 取库中数据 
             var currentBlogs = _context.Blogs
                 .OrderByDescending(b => b.UpdatedTime)
-                .Take(20)
+                .Take(40)
                 .ToList();
             // 筛选
             foreach (var item in blogs)

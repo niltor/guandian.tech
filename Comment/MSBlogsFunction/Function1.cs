@@ -13,8 +13,8 @@ namespace MSBlogsFunction
 {
     public static class Function1
     {
-        static readonly string baseApi = "http://localhost:9843/";
-        //static readonly string baseApi = "http://guandian.tech/";
+        //static readonly string baseApi = "http://localhost:9843/";
+        static readonly string baseApi = "https://guandian.tech/";
         [FunctionName("MSBlogs")]
         public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
         //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, ILogger log)
@@ -44,6 +44,11 @@ namespace MSBlogsFunction
             using (var hc = new HttpClient())
             {
                 var response = await hc.PostAsJsonAsync(baseApi + "admin/tools/UniqueBlogs", blogs.Select(b => b.Title).ToList());
+                if (!response.IsSuccessStatusCode)
+                {
+                    log.LogError("请求去重接口失败" + response.StatusCode);
+                    return;
+                }
                 var json = await response.Content.ReadAsStringAsync();
                 var uniqueBlogs = JsonConvert.DeserializeObject<List<string>>(json);
                 if (uniqueBlogs == null)

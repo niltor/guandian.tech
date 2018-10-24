@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -170,7 +169,8 @@ namespace MSBlogsFunction
                 var title = root.SelectSingleNode(".//h1[@class='title']").InnerText.Trim();
                 var author = root.SelectSingleNode(".//a[@class='author']").InnerText.Trim();
                 var createTime = root.SelectSingleNode(".//span[@class='date']").InnerText.Trim();
-                var pubDate = DateTime.ParseExact(createTime.Replace("PST", "-08"), "MMMM dd, yyyy, m:ss tt zz", CultureInfo.CreateSpecificCulture("en-US"));
+                //var pubDate = DateTimeOffset.ParseExact(createTime.Replace("PST", "-08"), "MMMM dd, yyyy, m:ss tt zz", CultureInfo.CreateSpecificCulture("en-US"));
+                var pubDate = DateTime.Now;
                 var contentNode = root.SelectSingleNode(".//div[@id='content']//article//div[@class='content']");
                 #region 去除无用内容
                 var adVideo = contentNode.SelectSingleNode(".//div[@class='shortcode video large']");
