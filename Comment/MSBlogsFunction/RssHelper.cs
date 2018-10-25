@@ -169,8 +169,11 @@ namespace MSBlogsFunction
                 var title = root.SelectSingleNode(".//h1[@class='title']").InnerText.Trim();
                 var author = root.SelectSingleNode(".//a[@class='author']").InnerText.Trim();
                 var createTime = root.SelectSingleNode(".//span[@class='date']").InnerText.Trim();
-                //var pubDate = DateTimeOffset.ParseExact(createTime.Replace("PST", "-08"), "MMMM dd, yyyy, m:ss tt zz", CultureInfo.CreateSpecificCulture("en-US"));
-                var pubDate = DateTime.Now;
+                DateTime pubDate = DateTime.Now;
+                if (!string.IsNullOrEmpty(createTime))
+                {
+                    DateTime.TryParse(createTime.Replace("PST", "-08"), out pubDate);
+                }
                 var contentNode = root.SelectSingleNode(".//div[@id='content']//article//div[@class='content']");
                 #region 去除无用内容
                 var adVideo = contentNode.SelectSingleNode(".//div[@class='shortcode video large']");

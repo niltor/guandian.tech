@@ -98,7 +98,7 @@ namespace Guandian.Areas.Weixin.Controllers
                 {
                     name = "技术分享",
                     type = "view",
-                    url = "https://guandian.tech/blog",
+                    url = "https://guandian.tech/blogs",
                 },
                 new MenuFull_RootButton
                 {

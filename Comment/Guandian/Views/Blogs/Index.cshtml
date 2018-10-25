@@ -1,0 +1,35 @@
+@using System.Web;
+@{
+    ViewData["Title"] = "TechViews";
+}
+@model List<Blog>
+
+
+<div class="row">
+    <div class="col-md-8 offset-md-2 p-0">
+
+        @foreach (var blog in Model)
+        {
+            var Url = HttpUtility.ParseQueryString(new Uri(blog.Link).Query);
+
+            <div class="row news-list bg-white mb-2 p-1">
+                <div class="content col-md-8">
+                    <div class="news-title">
+                        <a asp-controller="news" asp-action="detail" asp-route-id="@blog.Id" target="_blank">
+                            <strong>
+                                @blog.Title
+                            </strong>
+                        </a>
+                    </div>
+                    <div class="news-sectitle">
+                        @blog.UpdatedTime.ToString("MM-dd H:mm") @blog.AuthorName
+                    </div>
+                    <div class="news-description col-md-10 p-0">
+                        @blog.Summary
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

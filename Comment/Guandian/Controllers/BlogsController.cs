@@ -15,9 +15,14 @@ namespace Guandian.Controllers
         {
             _context = context;
         }
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, int pageSize = 20)
         {
-            return View();
+            var blogs = _context.Blogs
+                .OrderByDescending(n => n.UpdatedTime)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            return View(blogs);
         }
         /// <summary>
         /// 博客详情页

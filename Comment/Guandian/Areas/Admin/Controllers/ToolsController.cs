@@ -77,11 +77,12 @@ namespace Guandian.Areas.Admin.Controllers
             blogs = blogForms.Select(b => new Blog
             {
                 AuthorName = b.AuthorName,
-                Categories = "MSBlogRSS",
+                Categories = "BlogRss",
                 Content = b.Content,
                 ContentEn = b.ContentEn,
                 CreatedTime = b.CreatedTime,
                 Keywords = b.Categories,
+                Summary = b.Summary,
                 Link = b.Link,
                 Title = b.Title,
                 TitleEn = b.TitleEn

@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Guandian.Models;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Guandian.Data;
+using Guandian.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Guandian.Controllers
 {
@@ -67,7 +63,22 @@ namespace Guandian.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// 联系
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult Contact()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 关于
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult About()
+        {
+            return View();
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
