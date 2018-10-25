@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Guandian.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Guandian.Data;
 using Senparc.CO2NET.Extensions;
 using Senparc.CO2NET.HttpUtility;
 using Senparc.Weixin.Entities;
@@ -33,8 +34,10 @@ namespace Guandian.Areas.Weixin.Controllers
         /// </summary>
         private string GetIP()
         {
-            try {
-                if (!string.IsNullOrEmpty(IP)) {
+            try
+            {
+                if (!string.IsNullOrEmpty(IP))
+                {
                     return IP;
                 }
 
@@ -43,12 +46,14 @@ namespace Guandian.Areas.Weixin.Controllers
 
                 var htmlContent = RequestUtility.HttpGet(url, cookieContainer: null);
                 var result = Regex.Match(htmlContent, @"(?<=本机IP:[^\d+]*)(\d+\.\d+\.\d+\.\d+)(?=</span>)");
-                if (result.Success) {
+                if (result.Success)
+                {
                     IP = result.Value;
                 }
                 return IP;
             }
-            catch {
+            catch
+            {
                 return null;
             }
         }
@@ -59,9 +64,11 @@ namespace Guandian.Areas.Weixin.Controllers
             GetMenuResult result = new GetMenuResult(new ButtonGroup());
 
             //初始化
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++)
+            {
                 var subButton = new SubButton();
-                for (int j = 0; j < 5; j++) {
+                for (int j = 0; j < 5; j++)
+                {
                     var singleButton = new SingleClickButton();
                     subButton.sub_button.Add(singleButton);
                 }
@@ -76,28 +83,61 @@ namespace Guandian.Areas.Weixin.Controllers
         public ActionResult InitMenu()
         {
             var token = AccessTokenContainer.TryGetAccessToken(AppId, AppSecret);
-            var buttonGroups = new ButtonGroup();
+            var buttonGroups = new MenuFull_ButtonGroup();
+
             // 定义按钮
-            buttonGroups.button.Add(
-                new SingleViewButton {
-                    name = "我的订单",
-                    type = "click",
-                    url = "http://beijichong.guandian.tech/weixin/auth/callbackasync?redirectPath=/weixin/home/OrderList"
-                });
+            buttonGroups.button = new List<MenuFull_RootButton>
+            {
+                new MenuFull_RootButton
+                {
+                    name = "科技资讯",
+                    type = "view",
+                    url = "https://guandian.tech",
+                },
+                new MenuFull_RootButton
+                {
+                    name = "技术分享",
+                    type = "view",
+                    url = "https://guandian.tech/blog",
+                },
+                new MenuFull_RootButton
+                {
+                    name = "关于我们",
+                    sub_button =new List<MenuFull_RootButton>
+                    {
+                        new MenuFull_RootButton
+                        {
+                            name="我们是谁",
+                            type="view",
+                            url = "https://guandian.tech/home/about"
+                        },
+                        new MenuFull_RootButton
+                        {
+                            name= "联系方式",
+                            type ="view",
+                            url= "https://guandian.tech/home/contact"
+                        }
+                    }
+                }
+            };
+
             var result = CommonApi.CreateMenu(token, buttonGroups);
             return Json(result.errmsg);
         }
 
         public ActionResult GetToken(string appId, string appSecret)
         {
-            try {
+            try
+            {
                 var result = AccessTokenContainer.TryGetAccessToken(appId, appSecret);
                 return Json(result, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
-            catch (ErrorJsonResultException ex) {
+            catch (ErrorJsonResultException ex)
+            {
                 return Json(new { error = "API 调用发生错误：{0}".FormatWith(ex.JsonResult.ToJson()) }, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Json(new { error = "执行过程发生错误：{0}".FormatWith(ex.Message) }, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
         }
@@ -107,15 +147,18 @@ namespace Guandian.Areas.Weixin.Controllers
         {
             var useAddCondidionalApi = menuMatchRule != null && !menuMatchRule.CheckAllNull();
             var apiName = string.Format("使用接口：{0}。", (useAddCondidionalApi ? "个性化菜单接口" : "普通自定义菜单接口"));
-            try {
-                if (token.IsNullOrEmpty()) {
+            try
+            {
+                if (token.IsNullOrEmpty())
+                {
                     throw new WeixinException("Token不能为空！");
                 }
 
                 //重新整理按钮信息
                 WxJsonResult result = null;
                 IButtonGroupBase buttonGroup = null;
-                if (useAddCondidionalApi) {
+                if (useAddCondidionalApi)
+                {
                     //个性化接口
                     buttonGroup = CommonApi.GetMenuFromJsonResult(resultFull, new ConditionalButtonGroup()).menu;
 
@@ -124,19 +167,22 @@ namespace Guandian.Areas.Weixin.Controllers
                     result = CommonApi.CreateMenuConditional(token, addConditionalButtonGroup);
                     apiName += string.Format("menuid：{0}。", (result as CreateMenuConditionalResult).menuid);
                 }
-                else {
+                else
+                {
                     //普通接口
                     buttonGroup = CommonApi.GetMenuFromJsonResult(resultFull, new ButtonGroup()).menu;
                     result = CommonApi.CreateMenu(token, buttonGroup);
                 }
 
-                var json = new {
+                var json = new
+                {
                     Success = result.errmsg == "ok",
                     Message = "菜单更新成功。" + apiName
                 };
                 return Json(json, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 var json = new { Success = false, Message = string.Format("更新失败：{0}。{1}", ex.Message, apiName) };
                 return Json(json, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
@@ -148,7 +194,8 @@ namespace Guandian.Areas.Weixin.Controllers
             //TODO:根据"conditionalmenu"判断自定义菜单
 
             var apiName = "使用JSON更新";
-            try {
+            try
+            {
                 GetMenuResultFull resultFull = Newtonsoft.Json.JsonConvert.DeserializeObject<GetMenuResultFull>(fullJson);
 
                 //重新整理按钮信息
@@ -158,13 +205,15 @@ namespace Guandian.Areas.Weixin.Controllers
                 buttonGroup = CommonApi.GetMenuFromJsonResult(resultFull, new ButtonGroup()).menu;
                 result = CommonApi.CreateMenu(token, buttonGroup);
 
-                var json = new {
+                var json = new
+                {
                     Success = result.errmsg == "ok",
                     Message = "菜单更新成功。" + apiName
                 };
                 return Json(json, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 var json = new { Success = false, Message = string.Format("更新失败：{0}。{1}", ex.Message, apiName) };
                 return Json(json, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
@@ -172,32 +221,39 @@ namespace Guandian.Areas.Weixin.Controllers
 
         public ActionResult GetMenu(string token)
         {
-            try {
+            try
+            {
                 var result = CommonApi.GetMenu(token);
-                if (result == null) {
+                if (result == null)
+                {
                     return Json(new { error = "菜单不存在或验证失败！" }, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
                 }
                 return Json(result, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
-            catch (WeixinMenuException ex) {
+            catch (WeixinMenuException ex)
+            {
                 return Json(new { error = "菜单不存在或验证失败：" + ex.Message }, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Json(new { error = "菜单不存在或验证失败：" + ex.Message }, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
         }
 
         public ActionResult DeleteMenu(string token)
         {
-            try {
+            try
+            {
                 var result = CommonApi.DeleteMenu(token);
-                var json = new {
+                var json = new
+                {
                     Success = result.errmsg == "ok",
                     Message = result.errmsg
                 };
                 return Json(json, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 var json = new { Success = false, Message = ex.Message };
                 return Json(json, new JsonSerializerSettings() { ContractResolver = new DefaultContractResolver() });
             }

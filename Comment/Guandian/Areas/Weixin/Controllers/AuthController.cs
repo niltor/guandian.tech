@@ -142,9 +142,7 @@ namespace Guandian.Areas.Weixin.Controllers
             postModel.EncodingAESKey = EncodingAESKey;//根据自己后台的设置保持一致
             postModel.AppId = AppId;//根据自己后台的设置保持一致
             var messageHandler = new CustomMessageHandler(Request.GetRequestMemoryStream(), postModel);
-            messageHandler.Execute();//执行微信处理过程
-                                     //return Content(messageHandler.ResponseDocument.ToString());//v0.7-
-                                     //return new WeixinResult(messageHandler);//v0.8+
+            messageHandler.Execute();
             return new FixWeixinBugWeixinResult(messageHandler);//v0.8+
         }
 

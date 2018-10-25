@@ -6,6 +6,9 @@ using Senparc.Weixin;
 using Senparc.Weixin.Entities;
 namespace Guandian.Areas.Weixin.Controllers
 {
+    /// <summary>
+    /// 微信相关接口
+    /// </summary>
     [Area("Weixin")]
     public class CommonController : Controller
     {
