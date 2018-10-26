@@ -36,13 +36,13 @@ namespace Guandian.Areas.Weixin.Controllers
             var news = _context.News
                 .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date >= DateTime.Now.Date.AddDays(-3))
                 .OrderByDescending(n => n.CreatedTime)
-                .Take(8)
+                .Take(10)
                 .ToList();
 
             var blogs = _context.Blogs
                 .Where(b => b.IsPublishMP == false && b.UpdatedTime.Date >= DateTime.Now.Date.AddDays(-3))
                 .OrderByDescending(b => b.UpdatedTime)
-                .Take(2)
+                .Take(3)
                 .ToList();
 
             var newsList = new List<NewsModel>();

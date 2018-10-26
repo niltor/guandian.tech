@@ -1,14 +1,14 @@
 using System;
 using System.Net.Http;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 
 namespace PushService
 {
     public static class Function1
     {
         [FunctionName("Function1")]
-        public static async void RunAsync([TimerTrigger("0 30 0 * * *")]TimerInfo myTimer, TraceWriter log)
+        public static async void RunAsync([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
         {
             int retryNum = 3;
             using (var hc = new HttpClient())
@@ -20,7 +20,7 @@ namespace PushService
                     response = await hc.GetAsync("https://guandian.tech/weixin/Push/PushToWeixinAsync");
                 }
             }
-            log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
+            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
         }
     }
 }

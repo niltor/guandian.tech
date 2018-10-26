@@ -151,7 +151,7 @@ namespace MSBlogsFunction
         /// <param name="url"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        public static string GetTechRePublicContent(string url, ILogger log)
+        public static (string, string) GetTechRePublicContent(string url, ILogger log)
         {
             using (var wc = new WebClient())
             {
@@ -165,33 +165,39 @@ namespace MSBlogsFunction
                     .ToList()
                     .ForEach(n => n.Remove());
 
-                var categories = root.SelectSingleNode(".//p[@class='categories']").InnerText.Trim();
-                var title = root.SelectSingleNode(".//h1[@class='title']").InnerText.Trim();
-                var author = root.SelectSingleNode(".//a[@class='author']").InnerText.Trim();
-                var createTime = root.SelectSingleNode(".//span[@class='date']").InnerText.Trim();
-                DateTime pubDate = DateTime.Now;
-                if (!string.IsNullOrEmpty(createTime))
-                {
-                    DateTime.TryParse(createTime.Replace("PST", "-08"), out pubDate);
-                }
+                var description = root.SelectSingleNode(".//p[@class='takeaway']")?.InnerText.Trim();
+
+                //var categories = root.SelectSingleNode(".//p[@class='categories']")?.InnerText.Trim();
+                //var title = root.SelectSingleNode(".//h1[@class='title']")?.InnerText.Trim();
+                //var author = root.SelectSingleNode(".//a[@class='author']")?.InnerText.Trim();
+                //var createTime = root.SelectSingleNode(".//span[@class='date']")?.InnerText.Trim();
+                //DateTime pubDate = DateTime.Now;
+                //if (!string.IsNullOrEmpty(createTime))
+                //{
+                //    DateTime.TryParse(createTime.Replace("PST", "-08"), out pubDate);
+                //}
                 var contentNode = root.SelectSingleNode(".//div[@id='content']//article//div[@class='content']");
                 #region 去除无用内容
+                var allOther = contentNode.SelectNodes("(.//p)[last()]/following-sibling::*");
                 var adVideo = contentNode.SelectSingleNode(".//div[@class='shortcode video large']");
                 var adArticle = contentNode.SelectSingleNode(".//div[@class='sharethrough-article']");
                 var adSub = contentNode.SelectSingleNode(".//div[@class='newsletter-promo']");
-                var adImage = contentNode.SelectSingleNode(".//figure[@class='image pull-none image-large']");
-                var adUl = contentNode.SelectSingleNode("(.//ul)[last()]");
-                var adAlso = contentNode.SelectSingleNode("(.//h2)[last()]");
+                //var adImage = contentNode.SelectSingleNode(".//figure[@class='image pull-none image-large']");
 
                 if (adVideo != null) adVideo.Remove();
                 if (adArticle != null) adArticle.Remove();
                 if (adSub != null) adSub.Remove();
-                if (adImage != null) adImage.Remove();
-                if (adUl != null) adUl.Remove();
-                if (adAlso != null) adAlso.Remove();
+                if (allOther != null && allOther.Count > 0)
+                {
+                    foreach (var item in allOther)
+                    {
+                        item.Remove();
+                    }
+                }
+
                 #endregion
                 var content = contentNode.InnerHtml;
-                return content;
+                return (description, content);
             }
         }
 
@@ -221,7 +227,9 @@ namespace MSBlogsFunction
                 "https://blogs.windows.com/buildingapps/feed/",
                 "https://blogs.microsoft.com/ai/feed/",
                 "https://blogs.microsoft.com/feed/",
-                "https://blogs.technet.microsoft.com/feed/"
+                "https://blogs.technet.microsoft.com/feed/",
+                "https://blogs.msdn.microsoft.com/dotnet/feed/",
+                "http://feeds.feedburner.com/microsoft/devblog"
             };
             foreach (var item in feeds)
             {

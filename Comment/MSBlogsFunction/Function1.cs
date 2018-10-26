@@ -57,20 +57,20 @@ namespace MSBlogsFunction
                     return;
                 }
                 log.LogInformation("新增条数:" + uniqueBlogs?.Count);
-                blogs = blogs.Where(b => uniqueBlogs.Any(u => b.Title.Equals(u))).ToList();
+                //blogs = blogs.Where(b => uniqueBlogs.Any(u => b.Title.Equals(u))).ToList();
                 if (blogs.Count > 0)
                 {
                     foreach (var item in blogs)
                     {
                         // 获取具体内容
-                        var content = RssHelper.GetTechRePublicContent(item.Link, log);
+                        var (description, content) = RssHelper.GetTechRePublicContent(item.Link, log);
                         var blogForm = new BlogForm
                         {
                             ContentEn = content,
                             AuthorName = item.Author,
                             Categories = item.Categories,
                             Content = await translateHelper.GetTranslateByGoogle(content),
-                            Summary = await translateHelper.GetTranslateByGoogle(item.Description),
+                            Summary = await translateHelper.GetTranslateByGoogle(description),
                             Title = await translateHelper.GetTranslateByGoogle(item.Title),
                             TitleEn = item.Title,
                             Link = item.Link,
