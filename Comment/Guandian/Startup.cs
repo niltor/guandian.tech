@@ -92,6 +92,13 @@ namespace Guandian
                 options.AddPolicy("Guest", policy => policy.RequireRole("Guest"));
             });
 
+            services.AddAuthentication()
+                .AddGitHub(options =>
+                {
+                    options.ClientId = Configuration.GetSection("OAuth")["Github:ClientId"];
+                    options.ClientSecret = Configuration.GetSection("OAuth")["Github:ClientSecret"];
+                    options.Scope.Add("user:email");
+                });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                  .AddJsonOptions(options =>
                  {
@@ -127,13 +134,14 @@ namespace Guandian
                 //app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             //app.UseCookiePolicy();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
+
             app.UseAuthentication();
 
             app.UseMvc(routes =>

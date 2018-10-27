@@ -25,8 +25,8 @@ namespace MSBlogsFunction
             var MSBlogs = await helper.GetAllBlogs(log);
             await SaveMSBlogs(MSBlogs, log);
 
-            var techRePublicBlogs = helper.GetTechRePublicRss(log);
-            await SaveTechRePublicBlogs(techRePublicBlogs, log);
+            //var techRePublicBlogs = helper.GetTechRePublicRss(log);
+            //await SaveTechRePublicBlogs(techRePublicBlogs, log);
 
             log.LogInformation("finish");
         }
