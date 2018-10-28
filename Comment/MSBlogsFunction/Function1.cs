@@ -87,7 +87,6 @@ namespace MSBlogsFunction
                     if (response.IsSuccessStatusCode)
                     {
                         var result = await response.Content.ReadAsStringAsync();
-                        log.LogInformation("success:" + result);
                     }
                     else
                     {
@@ -119,8 +118,8 @@ namespace MSBlogsFunction
                     log.LogInformation("没有新增内容");
                     return;
                 }
-                log.LogInformation("新增条数:" + uniqueBlogs?.Count);
                 blogs = blogs.Where(b => uniqueBlogs.Any(u => b.Title.Equals(u))).ToList();
+                log.LogInformation("新增条数:" + uniqueBlogs?.Count + "\r\n" + string.Join(";\r\n", blogs.Select(b => b.Title).ToArray()));
 
                 if (blogs.Count > 0)
                 {
@@ -149,7 +148,6 @@ namespace MSBlogsFunction
                     if (response.IsSuccessStatusCode)
                     {
                         var result = await response.Content.ReadAsStringAsync();
-                        log.LogInformation("success:" + result);
                     }
                     else
                     {
