@@ -1,0 +1,527 @@
+<p>今天, 我们将发布质量汇总的2018年10月预览。</p>
+<h2><a href=" quality-and-reliability" id="user-content-quality-and-reliability" class="anchor"></a>质量和可靠性</h2>
+<p>此版本包含以下质量和可靠性改进。</p>
+<h3><a href=" clr" id="user-content-clr" class="anchor"></a>Clr</h3>
+<ul>
+    <li>更新了在纪元中的第一年格式化的日语日期, 格式模式使用 "y年"。该年份的格式连同符号 "元" 支持, 而不是使用年份1。此外, 还支持格式化包含 "元" 的日数字。[646179]</li>
+    <li>
+        更新委内瑞拉货币信息, 这一变化影响了 "es" 的文化在以下方面。[616146]<br>1) 货币符号更改为 "Bs S"<br>2) 英国货币名称改为 "玻利瓦尔奇瓦瓦索贝拉诺喜来"<br>3) 本机货币名称改为
+        "玻利瓦尔奇瓦瓦索贝拉诺喜来"<br>4) 国际货币代码更改为 "VES"
+    </li>
+    <li>解决了 System.Security.Cryptography.Algorithms 引用在. NET Framework 4.7.1 7 b/8 b 修补程序后未正确加载的情况。[673870]</li>
+</ul>
+<h3><a href=" wf" id="user-content-wf" class="anchor"></a>WF</h3>
+<ul>
+    <li>在某些. NET 远程处理方案中, 当使用 TransactionScopeAsyncFlowOption 时, 可以将事务. 当前重置为 null 在远程处理调用后。[669153]</li>
+</ul>
+<h3>Winforms</h3>
+<ul>
+    <li>解决了应用程序在排列中创建了许多 Windows 窗体文本框的问题, 仅对 comctl32.dll 进行了少量调用。[638365]</li>
+</ul>
+<h3><a href=" wpf" id="user-content-wpf" class="anchor"></a>Wpf</h3>
+<ul>
+    <li>解决了涉及临时文件和某些防病毒扫描程序的争用条件。这是导致崩溃的消息 "进程无法访问该文件"。[638468]</li>
+    <li>解决了由于 TaskCanceledException 在某些 WPF 应用程序关闭期间可能发生的崩溃问题。在应用程序运行后继续执行涉及弱事件或数据绑定的应用程序. Run () 返回已知易受此崩溃的影响。[655427]</li>
+</ul>
+<p>
+    注意: 有关这些改进的其他信息不可用。每个改进提供的<a href="https://www.visualstudio.com/team-services/" rel="nofollow">VSTS</a> bug 编号是一个唯一的
+    ID, 您可以给<a href="https://support.microsoft.com/contactus/" rel="nofollow">Microsoft 客户支持</a>, 包括在<a href="https://stackoverflow.com/questions/tagged/.net"
+                                                                                                        rel="nofollow">计算器注释</a>或在 web 搜索中使用。
+</p>
+<h2><a href=" getting-the-update" id="user-content-getting-the-update" class="anchor"></a>获取更新</h2>
+<p>安全和质量汇总可通过 windows 更新、windows 服务器更新服务和 Microsoft 更新目录提供。</p>
+<h3><a href=" microsoft-update-catalog" id="user-content-microsoft-update-catalog" class="anchor"></a>微软更新目录</h3>
+<p>您可以通过 Microsoft 更新目录获取更新。对于 windows 10,. NET Framework 更新是 windows 10 月度汇总的一部分。</p>
+<p>下表适用于 windows 10 和 windows Server 2016 + 版本。</p>
+<table>
+    <thead>
+        <tr>
+            <th>产品版本</th>
+            <th>预览质量汇总 KB</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>视窗 10 1709 (秋季创作者更新)</strong></td>
+            <td>
+                <strong>
+                    <a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462932" rel="nofollow">目录</a><br>
+                    <a href="https://support.microsoft.com/kb/4462932" rel="nofollow">4462932</a>
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td>. NET Framework 3.5, 4.7.1, 4.7。2</td>
+            <td><a href="https://support.microsoft.com/kb/4462932" rel="nofollow">4462932</a></td>
+        </tr>
+        <tr>
+            <td><strong>视窗 10 1703 (创作者更新)</strong></td>
+            <td>
+                <strong>
+                    <a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462939" rel="nofollow">目录</a><br>
+                    <a href="https://support.microsoft.com/kb/4462939" rel="nofollow">4462939</a>
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td>. NET Framework 3.5, 4.7, 4.7.1, 4.7。2</td>
+            <td><a href="https://support.microsoft.com/kb/4462939" rel="nofollow">4462939</a></td>
+        </tr>
+        <tr>
+            <td><strong>视窗 10 1607 (周年更新)<br>Windows 服务器2016</strong></td>
+            <td>
+                <strong>
+                    <a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462930" rel="nofollow">目录</a><br>
+                    <a href="https://support.microsoft.com/kb/4462930" rel="nofollow">4462930</a>
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td>. NET Framework 3.5, 4.6.2, 4.7, 4.7.1, 4.7。2</td>
+            <td><a href="https://support.microsoft.com/kb/4462930" rel="nofollow">4462930</a></td>
+        </tr>
+    </tbody>
+</table>
+<p>下表适用于早期的 windows 和 windows 服务器版本。</p>
+<table>
+    <thead>
+        <tr>
+            <th>产品版本</th>
+            <th>预览质量汇总 KB</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>视窗8。1<br>视窗 RT 8。1<br>Windows 服务器 2012 R2</strong></td>
+            <td>
+                <strong>
+                    <a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462502" rel="nofollow">目录</a><br>
+                    <a href="https://support.microsoft.com/kb/4462502" rel="nofollow">4462502</a>
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td>. NET 框架3。5</td>
+            <td><a href="https://support.microsoft.com/kb/4459935" rel="nofollow">4459935</a></td>
+        </tr>
+        <tr>
+            <td>. NET 框架4.5。2</td>
+            <td><a href="https://support.microsoft.com/kb/4459943" rel="nofollow">4459943</a></td>
+        </tr>
+        <tr>
+            <td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+            <td><a href="https://support.microsoft.com/kb/4459941" rel="nofollow">4459941</a></td>
+        </tr>
+        <tr>
+            <td><strong>Windows 服务器2012</strong></td>
+            <td>
+                <strong>
+                    <a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462501" rel="nofollow">目录</a><br>
+                    <a href="https://support.microsoft.com/kb/4462501" rel="nofollow">4462501</a>
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td>. NET 框架3。5</td>
+            <td><a href="https://support.microsoft.com/kb/4459932" rel="nofollow">4459932</a></td>
+        </tr>
+        <tr>
+            <td>. NET 框架4.5。2</td>
+            <td><a href="https://support.microsoft.com/kb/4459944" rel="nofollow">4459944</a></td>
+        </tr>
+        <tr>
+            <td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+            <td><a href="https://support.microsoft.com/kb/4459940" rel="nofollow">4459940</a></td>
+        </tr>
+        <tr>
+            <td><strong>视窗7<br>Windows 服务器 2008 R2</strong></td>
+            <td>
+                <strong>
+                    <a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462500" rel="nofollow">目录</a><br>
+                    <a href="https://support.microsoft.com/kb/4462500" rel="nofollow">4462500</a>
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td>. NET 框架3.5。1</td>
+            <td><a href="https://support.microsoft.com/kb/4459934" rel="nofollow">4459934</a></td>
+        </tr>
+        <tr>
+            <td>. NET 框架4.5。2</td>
+            <td><a href="https://support.microsoft.com/kb/4459945" rel="nofollow">4459945</a></td>
+        </tr>
+        <tr>
+            <td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+            <td><a href="https://support.microsoft.com/kb/4459942" rel="nofollow">4459942</a></td>
+        </tr>
+        <tr>
+            <td><strong>Windows 服务器2008</strong></td>
+            <td>
+                <strong>
+                    <a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462503" rel="nofollow">目录</a><br>
+                    <a href="https://support.microsoft.com/kb/4462503" rel="nofollow">4462503</a>
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td>. NET Framework 2.0, 3。0</td>
+            <td><a href="https://support.microsoft.com/kb/4459933" rel="nofollow">4459933</a></td>
+        </tr>
+        <tr>
+            <td>. NET 框架4.5。2</td>
+            <td><a href="https://support.microsoft.com/kb/4459945" rel="nofollow">4459945</a></td>
+        </tr>
+        <tr>
+            <td>. NET 框架4。6</td>
+            <td><a href="https://support.microsoft.com/kb/4459942" rel="nofollow">4459942</a></td>
+        </tr>
+    </tbody>
+</table>
+<h3><a href=" previous-monthly-rollups" id="user-content-previous-monthly-rollups" class="anchor"></a>以前的月度汇总</h3><p>今天, 我们将发布质量汇总的2018年10月预览。</p>
+<h2><a href="#quality-and-reliability" id="user-content-quality-and-reliability" class="anchor"></a>质量和可靠性</h2>
+<p>此版本包含以下质量和可靠性改进。</p>
+<h3><a href="#clr" id="user-content-clr" class="anchor"></a>Clr</h3>
+<ul>
+<li>更新了在纪元中的第一年格式化的日语日期, 格式模式使用 "y年"。该年份的格式连同符号 "元" 支持, 而不是使用年份1。此外, 还支持格式化包含 "元" 的日数字。[646179]</li>
+<li>更新委内瑞拉货币信息, 这一变化影响了 "es" 的文化在以下方面。[616146]<br>1) 货币符号更改为 "Bs S"<br>2) 英国货币名称改为 "玻利瓦尔奇瓦瓦索贝拉诺喜来"<br>3) 本机货币名称改为 "玻利瓦尔奇瓦瓦索贝拉诺喜来"<br>4) 国际货币代码更改为 "VES"</li>
+<li>解决了 System.Security.Cryptography.Algorithms 引用在. NET Framework 4.7.1 7 b/8 b 修补程序后未正确加载的情况。[673870]</li>
+</ul>
+<h3><a href="#wf" id="user-content-wf" class="anchor"></a>WF</h3>
+<ul>
+<li>在某些. NET 远程处理方案中, 当使用 TransactionScopeAsyncFlowOption 时, 可以将事务. 当前重置为 null 在远程处理调用后。[669153]</li>
+</ul>
+<h3>Winforms</h3>
+<ul>
+<li>解决了应用程序在排列中创建了许多 Windows 窗体文本框的问题, 仅对 comctl32.dll 进行了少量调用。[638365]</li>
+</ul>
+<h3><a href="#wpf" id="user-content-wpf" class="anchor"></a>Wpf</h3>
+<ul>
+<li>解决了涉及临时文件和某些防病毒扫描程序的争用条件。这是导致崩溃的消息 "进程无法访问该文件"。[638468]</li>
+<li>解决了由于 TaskCanceledException 在某些 WPF 应用程序关闭期间可能发生的崩溃问题。在应用程序运行后继续执行涉及弱事件或数据绑定的应用程序. Run () 返回已知易受此崩溃的影响。[655427]</li>
+</ul>
+<p>注意: 有关这些改进的其他信息不可用。每个改进提供的<a href="https://www.visualstudio.com/team-services/" rel="nofollow">VSTS</a> bug 编号是一个唯一的 ID, 您可以给<a href="https://support.microsoft.com/contactus/" rel="nofollow">Microsoft 客户支持</a>, 包括在<a href="https://stackoverflow.com/questions/tagged/.net" rel="nofollow">计算器注释</a>或在 web 搜索中使用。</p>
+<h2><a href="#getting-the-update" id="user-content-getting-the-update" class="anchor"></a>获取更新</h2>
+<p>安全和质量汇总可通过 windows 更新、windows 服务器更新服务和 Microsoft 更新目录提供。</p>
+<h3><a href="#microsoft-update-catalog" id="user-content-microsoft-update-catalog" class="anchor"></a>微软更新目录</h3>
+<p>您可以通过 Microsoft 更新目录获取更新。对于 windows 10,. NET Framework 更新是 windows 10 月度汇总的一部分。</p>
+<p>下表适用于 windows 10 和 windows Server 2016 + 版本。</p>
+<table>
+<thead>
+<tr>
+<th>产品版本</th>
+<th>预览质量汇总 KB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>视窗 10 1709 (秋季创作者更新)</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462932" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462932" rel="nofollow">4462932</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 3.5, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4462932" rel="nofollow">4462932</a></td>
+</tr>
+<tr>
+<td><strong>视窗 10 1703 (创作者更新)</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462939" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462939" rel="nofollow">4462939</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 3.5, 4.7, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4462939" rel="nofollow">4462939</a></td>
+</tr>
+<tr>
+<td><strong>视窗 10 1607 (周年更新)<br>Windows 服务器2016</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462930" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462930" rel="nofollow">4462930</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 3.5, 4.6.2, 4.7, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4462930" rel="nofollow">4462930</a></td>
+</tr>
+</tbody>
+</table>
+<p>下表适用于早期的 windows 和 windows 服务器版本。</p>
+<table>
+<thead>
+<tr>
+<th>产品版本</th>
+<th>预览质量汇总 KB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>视窗8。1<br>视窗 RT 8。1<br>Windows 服务器 2012 R2</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462502" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462502" rel="nofollow">4462502</a></strong></td>
+</tr>
+<tr>
+<td>. NET 框架3。5</td>
+<td><a href="https://support.microsoft.com/kb/4459935" rel="nofollow">4459935</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459943" rel="nofollow">4459943</a></td>
+</tr>
+<tr>
+<td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4459941" rel="nofollow">4459941</a></td>
+</tr>
+<tr>
+<td><strong>Windows 服务器2012</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462501" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462501" rel="nofollow">4462501</a></strong></td>
+</tr>
+<tr>
+<td>. NET 框架3。5</td>
+<td><a href="https://support.microsoft.com/kb/4459932" rel="nofollow">4459932</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459944" rel="nofollow">4459944</a></td>
+</tr>
+<tr>
+<td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4459940" rel="nofollow">4459940</a></td>
+</tr>
+<tr>
+<td><strong>视窗7<br>Windows 服务器 2008 R2</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462500" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462500" rel="nofollow">4462500</a></strong></td>
+</tr>
+<tr>
+<td>. NET 框架3.5。1</td>
+<td><a href="https://support.microsoft.com/kb/4459934" rel="nofollow">4459934</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459945" rel="nofollow">4459945</a></td>
+</tr>
+<tr>
+<td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4459942" rel="nofollow">4459942</a></td>
+</tr>
+<tr>
+<td><strong>Windows 服务器2008</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462503" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462503" rel="nofollow">4462503</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 2.0, 3。0</td>
+<td><a href="https://support.microsoft.com/kb/4459933" rel="nofollow">4459933</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459945" rel="nofollow">4459945</a></td>
+</tr>
+<tr>
+<td>. NET 框架4。6</td>
+<td><a href="https://support.microsoft.com/kb/4459942" rel="nofollow">4459942</a></td>
+</tr>
+</tbody>
+</table>
+<h3><a href="#previous-monthly-rollups" id="user-content-previous-monthly-rollups" class="anchor"></a>以前的月度汇总</h3><p>您是否曾经在运行 PowerShell 脚本并点击 CTRL C 来阻止它, 并意识到您刚刚丢失了所有已完成的工作和/或收集到该点的信息的跟踪？当您将 PowerShell 作业用于多线程处理或远程计算机会话时, 这甚至更糟糕, 因为您可能只是孤立所有这些作业。如果能够报告出哪些工作有进展, 或者能够优雅地关闭这些工作并将其删除, 那岂不是很好吗？如果是这样, 那么这个博客文章是给你的。</p>
+<h1>背景</h1>
+<p>这一切都是在我编写<a href="https://gallery.technet.microsoft.com/Generate-Message-Profile-7d0b1ef4?redir=0">Exchange 消息配置文件生成器脚本</a>的2.0 版时开始的, 在这里我以后台 PowerShell 作业的形式添加了多线程。在添加多线程功能的过程中, 我曾想过, 如果有人要取消正在运行的脚本, 我就不会让在后台运行孤立的工作。因此, 我开始研究, 并最终添加到脚本作为新的 v2.0 版本的一部分的确切能力。下面是在消息跟踪日志数据收集阶段按下 CTRL C 时, 该脚本的操作示例:<br><img width="678" height="33" class="alignnone size-full wp-image-1035" alt="" src="http://mmbiz.qpic.cn/mmbiz_jpg/WP5OYLC9j6K9UVUNhOZpICrITTuDJNsicJWib5y1CicS4WJOfzVoR3mElicX8XL4XDVQxXLH4VZ28OYKkiahJ4uA7aQ/0"></p>
+<p>你可能会问自己为什么 Dan 使用 PowerShell 的工作, 已经在2.0 版与运行空间或其他多线程机制。嗯, 我本来尝试运行空间, 因为他们的开销很低, 但我最终放弃了他们, 当我不能压制从获取 MessageTrackingLog 的进度栏 (它是物理上不可能做, 因为它的硬编码在 cmdlet 始终显示进度栏无论你做什么)。如果我没有, 你会看到多个进度条互相争斗的屏幕优势, 这将不会是一个良好的最终用户体验。切换到作业允许我封装/隐藏<span>进度栏, 仅当我将这些作业导入主 PowerShell 窗口时才简要显示它们。但我离题了..。<p>
+<h1>PowerShell 魔术代码</h1></span>
+<p>没有进一步的 ado, 这里是一个略有修改的代码段从我的消息配置文件生成器脚本, 告诉你我如何抑制默认操作 "CTRL-c" 时, PowerShell 正在运行, 而不是拦截它, 所以我可以选择采取什么行动作为该退出的一部分过程：<br>[代码语言 = "powershell"]</p>
+<p># 更改 CTRL C 的默认行为, 以便脚本可以拦截和使用它, 而不是只终止脚本。<br>[控制台]:: TreatControlCAsInput = $True<br># 休眠1秒, 然后刷新密钥缓冲区, 因此任何以前按下的键被丢弃, 循环可以监视使用<br># C。休眠命令可确保缓冲区正确刷新。<br>开始-休眠-秒1<br>$Host. UI.RawUI.FlushInputBuffer ()</p>
+<p># 在有待定或当前正在执行的作业时继续循环。<br>($PendingJobs 或 $CurrentJobCount) {<br># 如果在循环执行过程中按下了某个键, 请检查它是否为 CTRL C (又名为 "3"), 如果是, 则在清除后退出脚本<br># 退出任何正在运行的作业并将 CTRL C 设置回正常状态。<br>如果 ($Host. UI.RawUI.KeyAvailable 和 ($Key = $Host. UI.RawUI.ReadKey ("AllowCtrlC、NoEcho、IncludeKeyUp"))) {<br>如果 ([Int] $Key. 字符-eq 3) {<br>写主机 ""<br>写警告 "CTRL-c 已被使用-在退出脚本之前关闭所有正在运行的作业"。<br>获取工作 |其中-对象 {$ _。名称-类似 "MessageProfile *"} |移除-作业-强制-确认: $False<br>[控制台]:: TreatControlCAsInput = $False<br>_Exit-脚本-HardExit $True<br>}<br># 再次刷新密钥缓冲区的下一个循环。<br>$Host. UI.RawUI.FlushInputBuffer ()<br>}</p>
+<p># 在这里执行其他工作, 如处理未决作业或处理当前作业。<br>}<br>[/代码]<br>为了快速总结上面发生的情况, 代码执行以下操作:</p>
+<ol>
+<li>PowerShell 控制台被告知将 CTRL C 视为输入, 而不是终止操作。</li>
+<li>1秒的睡眠执行 (以确保键盘中键入的所有内容) 后跟键盘缓冲区刷新只是为了确保在执行 while 循环之前未按下任何键。</li>
+<li>while 循环构造开始时, 您可以在脚本中放置任何要签入的条件, 脚本将在其中检查是否存在任何挂起或当前正在运行的作业。如果没有, 则脚本自然退出。</li>
+<li>每个 while 循环迭代的第一部分是检查是否有任何键被按下 (和释放), 如果有它检查是否是字符 "3", 这是等效的 CTRL C。</li>
+<li>如果是这样, 脚本通知用户它看到执行的操作, 然后继续正常关闭任何正在运行的作业。</li>
+<li>在作业关闭后, PowerShell 控制台被告知要像正常一样对待 CRTL, 然后调用一个函数, 以便在执行其他清理时正常退出脚本。</li>
+</ol>
+<p>您可以为所需的任何循环构造执行此代码并替换 while 循环, 使用您希望保持循环运行的任何条件, 并使用 CTRL-c 检测来执行所需的任何清理操作。例如, 您可以使用 ForEach 循环构造以某种方式处理100K 邮箱, 如果按下 ctrl 键, 则可以转储到文件中执行的操作, 直到按下 ctrl c 的点, 而将其全部丢失, 这是 PowerSh 的默认操作。ell.</p>
+<p>要清除此代码方法不是 Exchange 特定的, 我只是使用一个 exchange 大型数据收集脚本, 我第一次创建此示例。</p>
+<h1>关闭的想法</h1>
+<p>希望在 PowerShell 控制台控件上的这个小的趣闻可以帮助你与任何大/长运行的脚本, 你不希望倾倒所有收集/执行/运行在后台-部分方式通过脚本的执行。</p>
+<p>我在许多短时间运行的脚本中不使用此项, 但我将返回重新评估以前发布的脚本, 以查看它们是否可以从这种类型的控件中受益。</p>
+<p>如果您愿意, 请随时给我留言, 我保证我会尽力回应每一种。</p>
+<p>谢谢！<br>丹<br>高级现场工程师</p>
+<p><span>今天, 我们宣布<a href="https://www.microsoft.com/net/download/dotnet-core/2.2">. NET Core 2.2 预览 3</a>。</span><span>我们已经对整个版本进行了更多改进, 我们希望在评论或</span> <a href="https://github.com/dotnet/core/issues/2004">dotnet/核心 #2004</a>上获得您的反馈<span>.</span></p>
+<p><a href="https://blogs.msdn.microsoft.com/webdev/2018/10/17/asp-net-core-2-2-0-preview3-now-available/">ASP.NET 核心2.2 预览 3</a><span>以及</span><a href="https://blogs.msdn.microsoft.com/dotnet/2018/10/17/announcing-entity-framework-core-2-2-preview-3/">实体框架2.2 预览 3</a><span>今天也被释放了.</span></p>
+<p>您可以在<span> </span><a href="https://github.com/dotnet/core/blob/master/release-notes/2.2/preview/2.2.0-preview3.md">. NET Core 2.2 预览3发行说明</a>中查看版本的更多详细信息。相关说明、已知问题和变通办法包括在<a href="https://github.com/dotnet/core/blob/master/release-notes/2.2/preview/2.2.0-preview3.md">发行说明</a>中。请报告您在评论或<span> <a href="https://github.com/dotnet/core/issues/2004">dotnet/核心 #2004</a> </span>中发现的任何问题。</p>
+<p>请参阅<a href="https://blogs.msdn.microsoft.com/dotnet/2018/09/12/announcing-net-core-2-2-preview-2/">. net core 2.2 预览 2</a> post 以了解有关. net core 2.2 的新功能的详细信息。</p>
+<p>感谢为. NET Core 2.2 做出贡献的每个人。你帮我做了. NET Core 更好的产品!</p>
+<h2>下载. NET Core 2。2</h2>
+<p>您可以下载并开始使用. NET Core 2.2, 在 Windows、macOS 和 Linux 上:</p>
+<ul>
+<li><a href="https://www.microsoft.com/net/download/dotnet-core/2.2" rel="nofollow">. NET Core 2.2 预览 3 SDK</a><span> </span>(包括运行时)</li>
+<li><a href="https://www.microsoft.com/net/download/dotnet-core/2.2" rel="nofollow">. NET Core 2.2 预览3运行时</a></li>
+</ul>
+<p>Docker 映像可在<span> </span><a href="https://hub.docker.com/r/microsoft/dotnet/" rel="nofollow">microsoft/dotnet</a><span> </span>中提供. NET core 和 ASP.NET 核心。</p>
+<p>. NET Core 2.2 预览3可用于<span> </span><a href="https://visualstudio.microsoft.com/vs/preview/">visual studio 15.9 预览 3 (或更高版本)</a>、用于 Mac 和 visual studio 代码的 visual studio。</p>
+<h2>平台支持</h2>
+<p><span> </span><a href="https://github.com/dotnet/core/blob/master/release-notes/2.2/2.2-supported-os.md">以下操作系统支持</a>. NET Core 2.2:</p>
+<ul>
+<li>Windows 客户端: 7, 8.1, 10 (1607 +)</li>
+<li>视窗服务器: 2008 R2 SP1+</li>
+<li>macOS: 10.12 +</li>
+<li>RHEL: 6 +</li>
+<li>Fedora:27 +</li>
+<li>Ubuntu: 14.04 +</li>
+<li>Debian: 8 +</li>
+<li>SLES:12 +</li>
+<li>openSUSE: 42.3 +</li>
+<li>高山: 3.7 +</li>
+</ul>
+<p>芯片支持如下:</p>
+<ul>
+<li>x64 在 Windows、macOS 和 Linux 上的</li>
+<li>x86 在窗口上</li>
+<li>ARM32 上的 Linux (Ubuntu 18.04 +, Debian 9 +)</li>
+</ul>
+<h2>关闭</h2>
+<p>请下载并测试<span> </span><a href="https://www.microsoft.com/net/download/dotnet-core/2.2">. NET Core 2.2 预览 3</a>。我们正在寻找有关发布的反馈, 目的是在今年晚些时候交付最终版本。</p>
+<p>今天, 我们将发布质量汇总的2018年10月预览。</p>
+<h2><a href="#quality-and-reliability" id="user-content-quality-and-reliability" class="anchor"></a>质量和可靠性</h2>
+<p>此版本包含以下质量和可靠性改进。</p>
+<h3><a href="#clr" id="user-content-clr" class="anchor"></a>Clr</h3>
+<ul>
+<li>更新了在纪元中的第一年格式化的日语日期, 格式模式使用 "y年"。该年份的格式连同符号 "元" 支持, 而不是使用年份1。此外, 还支持格式化包含 "元" 的日数字。[646179]</li>
+<li>更新委内瑞拉货币信息, 这一变化影响了 "es" 的文化在以下方面。[616146]<br>1) 货币符号更改为 "Bs S"<br>2) 英国货币名称改为 "玻利瓦尔奇瓦瓦索贝拉诺喜来"<br>3) 本机货币名称改为 "玻利瓦尔奇瓦瓦索贝拉诺喜来"<br>4) 国际货币代码更改为 "VES"</li>
+<li>解决了 System.Security.Cryptography.Algorithms 引用在. NET Framework 4.7.1 7 b/8 b 修补程序后未正确加载的情况。[673870]</li>
+</ul>
+<h3><a href="#wf" id="user-content-wf" class="anchor"></a>WF</h3>
+<ul>
+<li>在某些. NET 远程处理方案中, 当使用 TransactionScopeAsyncFlowOption 时, 可以将事务. 当前重置为 null 在远程处理调用后。[669153]</li>
+</ul>
+<h3>Winforms</h3>
+<ul>
+<li>解决了应用程序在排列中创建了许多 Windows 窗体文本框的问题, 仅对 comctl32.dll 进行了少量调用。[638365]</li>
+</ul>
+<h3><a href="#wpf" id="user-content-wpf" class="anchor"></a>Wpf</h3>
+<ul>
+<li>解决了涉及临时文件和某些防病毒扫描程序的争用条件。这是导致崩溃的消息 "进程无法访问该文件"。[638468]</li>
+<li>解决了由于 TaskCanceledException 在某些 WPF 应用程序关闭期间可能发生的崩溃问题。在应用程序运行后继续执行涉及弱事件或数据绑定的应用程序. Run () 返回已知易受此崩溃的影响。[655427]</li>
+</ul>
+<p>注意: 有关这些改进的其他信息不可用。每个改进提供的<a href="https://www.visualstudio.com/team-services/" rel="nofollow">VSTS</a> bug 编号是一个唯一的 ID, 您可以给<a href="https://support.microsoft.com/contactus/" rel="nofollow">Microsoft 客户支持</a>, 包括在<a href="https://stackoverflow.com/questions/tagged/.net" rel="nofollow">计算器注释</a>或在 web 搜索中使用。</p>
+<h2><a href="#getting-the-update" id="user-content-getting-the-update" class="anchor"></a>获取更新</h2>
+<p>安全和质量汇总可通过 windows 更新、windows 服务器更新服务和 Microsoft 更新目录提供。</p>
+<h3><a href="#microsoft-update-catalog" id="user-content-microsoft-update-catalog" class="anchor"></a>微软更新目录</h3>
+<p>您可以通过 Microsoft 更新目录获取更新。对于 windows 10,. NET Framework 更新是 windows 10 月度汇总的一部分。</p>
+<p>下表适用于 windows 10 和 windows Server 2016 + 版本。</p>
+<table>
+<thead>
+<tr>
+<th>产品版本</th>
+<th>预览质量汇总 KB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>视窗 10 1709 (秋季创作者更新)</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462932" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462932" rel="nofollow">4462932</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 3.5, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4462932" rel="nofollow">4462932</a></td>
+</tr>
+<tr>
+<td><strong>视窗 10 1703 (创作者更新)</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462939" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462939" rel="nofollow">4462939</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 3.5, 4.7, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4462939" rel="nofollow">4462939</a></td>
+</tr>
+<tr>
+<td><strong>视窗 10 1607 (周年更新)<br>Windows 服务器2016</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462930" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462930" rel="nofollow">4462930</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 3.5, 4.6.2, 4.7, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4462930" rel="nofollow">4462930</a></td>
+</tr>
+</tbody>
+</table>
+<p>下表适用于早期的 windows 和 windows 服务器版本。</p>
+<table>
+<thead>
+<tr>
+<th>产品版本</th>
+<th>预览质量汇总 KB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>视窗8。1<br>视窗 RT 8。1<br>Windows 服务器 2012 R2</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462502" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462502" rel="nofollow">4462502</a></strong></td>
+</tr>
+<tr>
+<td>. NET 框架3。5</td>
+<td><a href="https://support.microsoft.com/kb/4459935" rel="nofollow">4459935</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459943" rel="nofollow">4459943</a></td>
+</tr>
+<tr>
+<td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4459941" rel="nofollow">4459941</a></td>
+</tr>
+<tr>
+<td><strong>Windows 服务器2012</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462501" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462501" rel="nofollow">4462501</a></strong></td>
+</tr>
+<tr>
+<td>. NET 框架3。5</td>
+<td><a href="https://support.microsoft.com/kb/4459932" rel="nofollow">4459932</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459944" rel="nofollow">4459944</a></td>
+</tr>
+<tr>
+<td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4459940" rel="nofollow">4459940</a></td>
+</tr>
+<tr>
+<td><strong>视窗7<br>Windows 服务器 2008 R2</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462500" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462500" rel="nofollow">4462500</a></strong></td>
+</tr>
+<tr>
+<td>. NET 框架3.5。1</td>
+<td><a href="https://support.microsoft.com/kb/4459934" rel="nofollow">4459934</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459945" rel="nofollow">4459945</a></td>
+</tr>
+<tr>
+<td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4459942" rel="nofollow">4459942</a></td>
+</tr>
+<tr>
+<td><strong>Windows 服务器2008</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462503" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462503" rel="nofollow">4462503</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 2.0, 3。0</td>
+<td><a href="https://support.microsoft.com/kb/4459933" rel="nofollow">4459933</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459945" rel="nofollow">4459945</a></td>
+</tr>
+<tr>
+<td>. NET 框架4。6</td>
+<td><a href="https://support.microsoft.com/kb/4459942" rel="nofollow">4459942</a></td>
+</tr>
+</tbody>
+</table>
+<h3><a href="#previous-monthly-rollups" id="user-content-previous-monthly-rollups" class="anchor"></a>以前的月度汇总</h3>

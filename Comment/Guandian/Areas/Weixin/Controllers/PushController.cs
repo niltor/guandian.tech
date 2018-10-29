@@ -40,7 +40,9 @@ namespace Guandian.Areas.Weixin.Controllers
                 .ToList();
 
             var blogs = _context.Blogs
-                .Where(b => b.IsPublishMP == false && b.UpdatedTime.Date >= DateTime.Now.Date.AddDays(-3))
+                .Where(b => b.IsPublishMP == false
+                && !string.IsNullOrEmpty(b.Content)
+                && b.UpdatedTime.Date >= DateTime.Now.Date.AddDays(-3))
                 .OrderByDescending(b => b.UpdatedTime)
                 .Take(3)
                 .ToList();
@@ -68,19 +70,19 @@ namespace Guandian.Areas.Weixin.Controllers
 
                             // 替换图片链接
                             content += $@"<div class='row news-list bg-white m-0 mb-2 p-2'>
-        <div class='content col-md-8'>
-            <div class='news-title my-1'>
-                <h5>
-                    <strong>{item.Title}</strong>
-                </h5>
-            </div>
-            <div>
-                <img src='{uploadImgResult.url}' width='100%' />
-            </div>
-            <div class='news-description'>{item.Description}</div>
-        </div>
-        <br />
-    </div>";
+                    <div class='content col-md-8'>
+                        <div class='news-title my-1'>
+                            <h5>
+                                <strong>{item.Title}</strong>
+                            </h5>
+                        </div>
+                        <div>
+                            <img src='{uploadImgResult.url}' width='100%' />
+                        </div>
+                        <div class='news-description'>{item.Description}</div>
+                    </div>
+                    <br />
+                </div>";
                             item.IsPublishToMP = true;
                         }
 
@@ -115,37 +117,34 @@ namespace Guandian.Areas.Weixin.Controllers
                             {
                                 // 处理文章内图片
                                 htmlDoc.LoadHtml(item.Content);
-                                var imageNodes = htmlDoc.DocumentNode.SelectNodes(".//img");
+                                var root = htmlDoc.DocumentNode;
+                                var imageNodes = root.SelectNodes(".//img");
                                 // 移除视频元素
-                                var videoNodes = htmlDoc.DocumentNode.SelectNodes(".//video");
+                                var videoNodes = root.SelectNodes(".//video");
                                 if (videoNodes != null && videoNodes.Count > 0)
                                 {
                                     foreach (var video in videoNodes)
                                     {
-                                        video.Remove();
+                                        root.SelectSingleNode(video.XPath).Remove();
                                     }
                                 }
 
                                 string mediaId = "";
                                 if (imageNodes != null)
                                 {
-                                    var images = imageNodes.Select(img => img.GetAttributeValue("src", null))
-                                        .ToList();
-                                    images = images.Where(i => i != null && i.ToLower().EndsWith(".jpg"))
-                                        .ToList();
-
-                                    // 获取默认封面
-                                    if (images == null || images?.Count < 1)
+                                    for (int i = 0; i < imageNodes.Count; i++)
                                     {
-                                        var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
-                                        mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
-                                    }
-                                    else
-                                    {
-                                        DumpConsole(item.Title + " 图片处理");
-                                        var coverImage = "";
-                                        foreach (var image in images)
+                                        var url = imageNodes[i].GetAttributeValue("src", null);
+                                        // 只保留jpg图片
+                                        if (!url.EndsWith(".jpg"))
                                         {
+                                            root.SelectSingleNode(imageNodes[i].XPath).Remove();
+                                        }
+                                        else
+                                        {
+                                            DumpConsole(item.Title + " 图片处理");
+                                            var coverImage = "";
+                                            var image = imageNodes[i].Attributes["src"].Value;
                                             var tempFileName = StringTools.GetTempFileName("jpg");
                                             wc.DownloadFile(image, tempFileName);
                                             // 判断大小. TODO:处理图片大小
@@ -155,25 +154,26 @@ namespace Guandian.Areas.Weixin.Controllers
                                             DumpConsole("上传图片" + image + " " + file.Length / 1024);
                                             System.IO.File.Delete(tempFileName);
                                             // 替换文本
-                                            htmlDoc.DocumentNode.InnerHtml.Replace(image, uploadImgResult.url);
+                                            imageNodes[i].SetAttributeValue("src", uploadImgResult.url);
                                             coverImage = image;
-                                        }
-                                        // 设置封面
-                                        if (!string.IsNullOrEmpty(coverImage))
-                                        {
-                                            wc.DownloadFile(coverImage, "temp.jpg");
-                                            var uploadCoverResult = await MediaApi.UploadForeverMediaAsync(token, "temp.jpg");
-                                            mediaId = uploadCoverResult.media_id;
-                                        }
-                                        else
-                                        {
-                                            var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
-                                            mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
-                                        }
-                                        DumpConsole("设置封面，mediaId" + mediaId);
-                                        // TODO:后面可删除该封面
-                                    }
 
+                                            // 设置封面
+                                            if (!string.IsNullOrEmpty(coverImage))
+                                            {
+                                                tempFileName = StringTools.GetTempFileName("jpg");
+                                                wc.DownloadFile(coverImage, tempFileName);
+                                                var uploadCoverResult = await MediaApi.UploadForeverMediaAsync(token, tempFileName);
+                                                mediaId = uploadCoverResult.media_id;
+                                            }
+                                            else
+                                            {
+                                                var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
+                                                mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
+                                            }
+                                            DumpConsole("设置封面，mediaId" + mediaId);
+                                            // TODO:后面可删除该封面
+                                        }
+                                    }
                                 }
                                 else
                                 {
@@ -182,18 +182,19 @@ namespace Guandian.Areas.Weixin.Controllers
                                 }
 
                                 // 处理内容，微信消息最大长度为2W字符，小于1M
-                                Console.WriteLine("长度:" + htmlDoc.DocumentNode.InnerHtml.Length);
-                                if (htmlDoc.DocumentNode.InnerHtml.Length >= 20000)
+                                Console.WriteLine("长度:" + root.InnerHtml.Length);
+                                if (root.InnerHtml.Length >= 20000)
                                 {
-                                    item.Content = htmlDoc.DocumentNode.InnerHtml.Substring(0, 19500);
+                                    root.InnerHtml = root.InnerHtml.Substring(0, 19500);
                                 }
-
+                                System.IO.File.AppendAllText("output.html", root.InnerHtml);
                                 // 构造图文消息体
                                 var currentNews = new NewsModel
                                 {
                                     author = item.AuthorName,
                                     thumb_media_id = mediaId,
-                                    content = item.Content,
+                                    // html如果有#，会报错
+                                    content = root.InnerHtml.Replace("#", ""),
                                     title = item.Title,
                                     show_cover_pic = "0",
                                     content_source_url = "https://guandian.tech/blogs/detail/" + item.Id,
@@ -214,6 +215,7 @@ namespace Guandian.Areas.Weixin.Controllers
                     DumpConsole("无可推送内容");
                     return Ok();
                 }
+
                 // 上传图文
                 var uploadNewsResult = await MediaApi.UploadNewsAsync(token, news: newsList.ToArray());
                 if (uploadNewsResult.media_id != null)
@@ -223,19 +225,19 @@ namespace Guandian.Areas.Weixin.Controllers
                     // 预览
                     var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "EstNil");
                     // 群发消息
-                    var sendNewsResult = await GroupMessageApi.SendGroupMessageByTagIdAsync(token, null, uploadNewsResult.media_id, Senparc.Weixin.MP.GroupMessageType.mpnews, true);
+                    //var sendNewsResult = await GroupMessageApi.SendGroupMessageByTagIdAsync(token, null, uploadNewsResult.media_id, Senparc.Weixin.MP.GroupMessageType.mpnews, true);
                     // 未成功则删除上传的素材
-                    if (sendNewsResult.errcode != 0)
-                    {
-                        var deleteResult = await MediaApi.DeleteForeverMediaAsync(token, uploadNewsResult.media_id);
-                    }
-                    else
-                    {
-                        // 成功后更新数据库标识 
-                        _context.UpdateRange(news);
-                        _context.UpdateRange(blogs);
-                        _context.SaveChanges();
-                    }
+                    //if (sendNewsResult.errcode != 0)
+                    //{
+                    //    var deleteResult = await MediaApi.DeleteForeverMediaAsync(token, uploadNewsResult.media_id);
+                    //}
+                    //else
+                    //{
+                    //    // 成功后更新数据库标识 
+                    //    _context.UpdateRange(news);
+                    //    _context.UpdateRange(blogs);
+                    //    _context.SaveChanges();
+                    //}
                 }
             }
             catch (Exception e)
