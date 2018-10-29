@@ -225,19 +225,19 @@ namespace Guandian.Areas.Weixin.Controllers
                     // 预览
                     var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "EstNil");
                     // 群发消息
-                    //var sendNewsResult = await GroupMessageApi.SendGroupMessageByTagIdAsync(token, null, uploadNewsResult.media_id, Senparc.Weixin.MP.GroupMessageType.mpnews, true);
-                    // 未成功则删除上传的素材
-                    //if (sendNewsResult.errcode != 0)
-                    //{
-                    //    var deleteResult = await MediaApi.DeleteForeverMediaAsync(token, uploadNewsResult.media_id);
-                    //}
-                    //else
-                    //{
-                    //    // 成功后更新数据库标识 
-                    //    _context.UpdateRange(news);
-                    //    _context.UpdateRange(blogs);
-                    //    _context.SaveChanges();
-                    //}
+                    var sendNewsResult = await GroupMessageApi.SendGroupMessageByTagIdAsync(token, null, uploadNewsResult.media_id, Senparc.Weixin.MP.GroupMessageType.mpnews, true);
+                    未成功则删除上传的素材
+                    if (sendNewsResult.errcode != 0)
+                    {
+                        var deleteResult = await MediaApi.DeleteForeverMediaAsync(token, uploadNewsResult.media_id);
+                    }
+                    else
+                    {
+                        // 成功后更新数据库标识 
+                        _context.UpdateRange(news);
+                        _context.UpdateRange(blogs);
+                        _context.SaveChanges();
+                    }
                 }
             }
             catch (Exception e)
