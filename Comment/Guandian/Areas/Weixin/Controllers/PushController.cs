@@ -116,6 +116,15 @@ namespace Guandian.Areas.Weixin.Controllers
                                 // 处理文章内图片
                                 htmlDoc.LoadHtml(item.Content);
                                 var imageNodes = htmlDoc.DocumentNode.SelectNodes(".//img");
+                                // 移除视频元素
+                                var videoNodes = htmlDoc.DocumentNode.SelectNodes(".//video");
+                                if (videoNodes.Count > 0)
+                                {
+                                    foreach (var video in videoNodes)
+                                    {
+                                        video.Remove();
+                                    }
+                                }
 
                                 string mediaId = "";
                                 if (imageNodes != null)
@@ -146,7 +155,7 @@ namespace Guandian.Areas.Weixin.Controllers
                                             DumpConsole("上传图片" + image + " " + file.Length / 1024);
                                             System.IO.File.Delete(tempFileName);
                                             // 替换文本
-                                            item.Content.Replace(image, uploadImgResult.url);
+                                            htmlDoc.DocumentNode.InnerHtml.Replace(image, uploadImgResult.url);
                                             coverImage = image;
                                         }
                                         // 设置封面
@@ -173,10 +182,10 @@ namespace Guandian.Areas.Weixin.Controllers
                                 }
 
                                 // 处理内容，微信消息最大长度为2W字符，小于1M
-                                Console.WriteLine("长度:" + item.Content.Length);
-                                if (item.Content.Length >= 20000)
+                                Console.WriteLine("长度:" + htmlDoc.DocumentNode.InnerHtml.Length);
+                                if (htmlDoc.DocumentNode.InnerHtml.Length >= 20000)
                                 {
-                                    item.Content = item.Content.Substring(0, 19500);
+                                    item.Content = htmlDoc.DocumentNode.InnerHtml.Substring(0, 19500);
                                 }
 
                                 // 构造图文消息体
@@ -199,6 +208,11 @@ namespace Guandian.Areas.Weixin.Controllers
                             throw;
                         }
                     }
+                }
+                if (newsList.Count < 1)
+                {
+                    DumpConsole("无可推送内容");
+                    return Ok();
                 }
                 // 上传图文
                 var uploadNewsResult = await MediaApi.UploadNewsAsync(token, news: newsList.ToArray());
