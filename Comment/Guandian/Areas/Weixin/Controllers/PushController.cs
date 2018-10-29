@@ -247,5 +247,6 @@ namespace Guandian.Areas.Weixin.Controllers
             }
             return Ok();
         }
+
     }
 }

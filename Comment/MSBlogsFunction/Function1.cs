@@ -103,7 +103,7 @@ namespace MSBlogsFunction
         /// <param name="log"></param>
         static async Task SaveMSBlogs(List<RssEntity> blogs, ILogger log)
         {
-            string subKey = Environment.GetEnvironmentVariable("SubKey");
+            string subKey = Environment.GetEnvironmentVariable("GoogleTranslateKey");
             var translateHelper = new TranslateTextHelper(subKey);
             var tobeAddBlogs = new List<BlogForm>();
             log.LogInformation("采集微软RSS：" + blogs.Count + "条;\r\n" + string.Join(";\r\n", blogs.Select(b => b.Title).ToArray()));
@@ -130,9 +130,9 @@ namespace MSBlogsFunction
                             ContentEn = item.Content,
                             AuthorName = item.Author,
                             Categories = item.Categories,
-                            Content = translateHelper.TranslateText(item.Content),
-                            Summary = translateHelper.TranslateText(item.Description),
-                            Title = translateHelper.TranslateText(item.Title),
+                            Content = await translateHelper.GetTranslateByGoogle(item.Content),
+                            Summary = await translateHelper.GetTranslateByGoogle(item.Description),
+                            Title = await translateHelper.GetTranslateByGoogle(item.Title),
                             TitleEn = item.Title,
                             Link = item.Link,
                             CreatedTime = item.CreateTime
