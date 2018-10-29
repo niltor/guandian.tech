@@ -118,7 +118,7 @@ namespace Guandian.Areas.Weixin.Controllers
                                 var imageNodes = htmlDoc.DocumentNode.SelectNodes(".//img");
                                 // 移除视频元素
                                 var videoNodes = htmlDoc.DocumentNode.SelectNodes(".//video");
-                                if (videoNodes.Count > 0)
+                                if (videoNodes != null && videoNodes.Count > 0)
                                 {
                                     foreach (var video in videoNodes)
                                     {
