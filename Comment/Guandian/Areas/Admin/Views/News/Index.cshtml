@@ -1,6 +1,6 @@
 @model IEnumerable<Guandian.Data.Entity.News>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "资讯";
 }
 
 <table class="table">
@@ -64,7 +64,6 @@
             @{
                 var nextPage = ViewBag.Page + 1;
                 var prePage = ViewBag.Page > 2 ? ViewBag.Page - 1 : 1;
-
             }
             <a href="http://@Context.Request.Host/admin/news?page=@prePage">上一页</a>
             <a href="http://@Context.Request.Host/admin/news?page=@nextPage">下一页</a>

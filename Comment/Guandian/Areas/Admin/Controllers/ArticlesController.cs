@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Guandian.Data;
 using Guandian.Data.Entity;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Guandian.Areas.Admin.Controllers
 {
@@ -22,9 +19,16 @@ namespace Guandian.Areas.Admin.Controllers
         }
 
         // GET: Admin/Articles
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1, int pageSize = 12)
         {
-            return View(await _context.Articles.ToListAsync());
+            page = page < 1 ? 1 : page;
+            ViewBag.Page = page;
+            var result = _context.Blogs
+                .OrderByDescending(n => n.CreatedTime)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            return View(result);
         }
 
         // GET: Admin/Articles/Details/5
