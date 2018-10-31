@@ -18,7 +18,6 @@ namespace Guandian.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Admin/Articles
         public IActionResult Index(int page = 1, int pageSize = 12)
         {
             page = page < 1 ? 1 : page;
@@ -32,7 +31,6 @@ namespace Guandian.Areas.Admin.Controllers
             return View(result);
         }
 
-        // GET: Admin/Articles/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -50,7 +48,6 @@ namespace Guandian.Areas.Admin.Controllers
             return View(article);
         }
 
-        // GET: Admin/Articles/Create
         public IActionResult Create()
         {
             return View();
@@ -73,7 +70,6 @@ namespace Guandian.Areas.Admin.Controllers
             return View(article);
         }
 
-        // GET: Admin/Articles/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -124,35 +120,30 @@ namespace Guandian.Areas.Admin.Controllers
             return View(article);
         }
 
-        // GET: Admin/Articles/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var article = await _context.Articles
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (article == null)
-            {
-                return NotFound();
-            }
-
-            return View(article);
-        }
-
-        // POST: Admin/Articles/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
+            if (id == null) return NotFound();
             var article = await _context.Articles.FindAsync(id);
             _context.Articles.Remove(article);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+
+        public async Task<IActionResult> Obsolete(Guid id)
+        {
+            if (id == null) return NotFound();
+            var article = await _context.Articles.FindAsync(id);
+            if (article == null) return NotFound();
+            article.Status = Status.Obsolete;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
         private bool ArticleExists(Guid id)
         {
             return _context.Articles.Any(e => e.Id == id);

@@ -29,8 +29,10 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// 已推送到微信公众号
         /// </summary>
-        IsPublishedMP
-
-
+        IsPublishedMP,
+        /// <summary>
+        /// 废弃的
+        /// </summary>
+        Obsolete
     }
 }

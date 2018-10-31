@@ -34,17 +34,19 @@ namespace Guandian.Areas.Weixin.Controllers
         {
             // 获取新闻原内容
             var news = _context.News
-                .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date >= DateTime.Now.Date.AddDays(-3))
+                .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date >= DateTime.Now.Date.AddDays(-5))
                 .OrderByDescending(n => n.CreatedTime)
                 .Take(10)
                 .ToList();
 
+            var random = new Random();
+            int number = random.Next(3, 6);
             var blogs = _context.Blogs
                 .Where(b => b.IsPublishMP == false
-                && !string.IsNullOrEmpty(b.Content)
-                && b.UpdatedTime.Date >= DateTime.Now.Date.AddDays(-3))
+                && b.Status != Data.Entity.Status.Obsolete
+                && !string.IsNullOrEmpty(b.Content))
                 .OrderByDescending(b => b.UpdatedTime)
-                .Take(3)
+                .Take(number)
                 .ToList();
 
             var newsList = new List<NewsModel>();

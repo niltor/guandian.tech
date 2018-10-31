@@ -15,7 +15,7 @@
                 创建时间
             </th>
             <th>
-                推送状态
+                状态
             </th>
             <th>
                 操作
@@ -27,7 +27,9 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    <a asp-action="Details" asp-route-id="@item.Id" target="_blank">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AuthorName)
@@ -36,12 +38,20 @@
                     @Html.DisplayFor(modelItem => item.CreatedTime)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsPublishMP)
+                    @if ((item.IsPublishMP))
+                    {
+
+                        <span class="badge badge-success">推</span>
+                    }
+                    @if (item.Status == Guandian.Data.Entity.Status.Obsolete)
+                    {
+                        <span class="badge badge-dark">废</span>
+                    }
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">编辑</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id" target="_blank">详情</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">删除</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">编</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger">删</a> |
+                    <a asp-action="Obsolete" asp-route-id="@item.Id" class="text-warning">废</a>
                 </td>
             </tr>
         }
