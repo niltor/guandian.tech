@@ -23,6 +23,55 @@ namespace MSBlogsFunction
         }
 
         /// <summary>
+        /// 微软technet博客
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public async Task<List<RssEntity>> GetRss(string url, ILogger log)
+        {
+            var blogs = new List<RssEntity>();
+            string xmlString = await _httpClient.GetStringAsync(url);
+            if (!string.IsNullOrEmpty(xmlString))
+            {
+                var xmlDoc = XDocument.Parse(xmlString);
+
+                XNamespace nspc = "http://sxpdata.microsoft.com/metadata";
+                IEnumerable<XElement> xmlList = xmlDoc.Root.Element("channel")?.Elements("item");
+                //TODO:根据作者进行筛选
+                string[] authorfilter = { "[MSFT]", "Team", "Microsoft", "Visual", "Office", "Blog" };
+
+                blogs = xmlList?.Where(x => x.Name == "item")
+                    .Where(x => IsContainKey(authorfilter, x.Element("author").Value))
+                    .Select(x =>
+                    {
+                        DateTime createTime = DateTime.Now;
+
+                        string createTimeString = x.Element("pubDate")?.Value;
+                        if (!string.IsNullOrEmpty(createTimeString))
+                        {
+                            createTime = DateTime.Parse(createTimeString);
+                        }
+
+                        return new RssEntity
+                        {
+                            Title = x.Element("title")?.Value,
+                            Description = "",
+                            Content = x.Element("description")?.Value,
+                            CreateTime = createTime,
+                            Author = x.Element("author")?.Value,
+                            Link = x.Element("link")?.Value,
+                            Categories = x.Element("source")?.Value,
+                            LastUpdateTime = createTime,
+                            //MobileContent = x.Element("sxp_MobileContent")?.Value
+                        };
+                    })
+                    .ToList();
+            }
+            return blogs;
+        }
+
+
+        /// <summary>
         /// 获取微软博客RSS
         /// </summary>
         /// <param name="url"></param>
@@ -227,13 +276,23 @@ namespace MSBlogsFunction
                 "https://blogs.windows.com/buildingapps/feed/",
                 "https://blogs.microsoft.com/ai/feed/",
                 "https://blogs.microsoft.com/feed/",
-                "https://blogs.technet.microsoft.com/feed/",
                 "https://blogs.msdn.microsoft.com/dotnet/feed/",
                 "http://feeds.feedburner.com/microsoft/devblog"
             };
             foreach (var item in feeds)
             {
                 var blogs = await GetMSBlogRss(item, log);
+                result.AddRange(blogs);
+            }
+
+            var technetFeeds = new string[]
+            {
+                "https://blogs.technet.microsoft.com/cloudplatform/rssfeeds/devblogs?tags=announcement",
+                "https://blogs.technet.microsoft.com/cloudplatform/rssfeeds/cloud"
+            };
+            foreach (var item in technetFeeds)
+            {
+                var blogs = await GetRss(item, log);
                 result.AddRange(blogs);
             }
             return result;
