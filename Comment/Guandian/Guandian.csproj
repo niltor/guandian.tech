@@ -28,6 +28,9 @@
 
   <ItemGroup>
     <Folder Include="App_Data\SenparcTraceLog\" />
+    <Folder Include="Areas\Auth\Data\" />
+    <Folder Include="Areas\Auth\Models\" />
+    <Folder Include="Areas\Auth\Views\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 

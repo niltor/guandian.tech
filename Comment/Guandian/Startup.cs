@@ -98,6 +98,12 @@ namespace Guandian
                     options.ClientId = Configuration.GetSection("OAuth")["Github:ClientId"];
                     options.ClientSecret = Configuration.GetSection("OAuth")["Github:ClientSecret"];
                     options.Scope.Add("user:email");
+                    options.SaveTokens = true;
+
+                    //options.Events = new OAuthEvents
+                    //{
+
+                    //};
                 });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                  .AddJsonOptions(options =>
