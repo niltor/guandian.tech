@@ -22,7 +22,7 @@ namespace MSBlogsFunction
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        public string TranslateText(string content)
+        public string TranslateText(string content, Provider provider = Provider.Google)
         {
             string seperator = "<!--divider-->";
             // TODO:拆分算法待优化通用。根据p标签的数量和长度去拆分。
@@ -79,7 +79,12 @@ namespace MSBlogsFunction
             foreach (var item in contentArray)
             {
                 if (string.IsNullOrWhiteSpace(item)) continue;
-                translation += GetTranslateAsync(item).Result;
+
+                if (provider == Provider.Microsoft)
+                {
+                    translation += GetTranslateAsync(item).Result;
+                }
+                translation += GetTranslateByGoogle(item);
             }
             return translation;
         }
@@ -136,5 +141,11 @@ namespace MSBlogsFunction
             var response = await client.TranslateHtmlAsync(content, LanguageCodes.ChineseSimplified);
             return response.TranslatedText;
         }
+        public enum Provider
+        {
+            Microsoft,
+            Google
+        }
     }
+
 }

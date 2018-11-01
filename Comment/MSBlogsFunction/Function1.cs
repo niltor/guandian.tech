@@ -16,8 +16,8 @@ namespace MSBlogsFunction
         //static readonly string baseApi = "http://localhost:9843/";
         static readonly string baseApi = "https://guandian.tech/";
         [FunctionName("MSBlogs")]
-        //public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
-        public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, ILogger log)
+        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
+        //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
@@ -69,9 +69,9 @@ namespace MSBlogsFunction
                             ContentEn = content,
                             AuthorName = item.Author,
                             Categories = item.Categories,
-                            Content = await translateHelper.GetTranslateByGoogle(content),
-                            Summary = await translateHelper.GetTranslateByGoogle(description),
-                            Title = await translateHelper.GetTranslateByGoogle(item.Title),
+                            Content = translateHelper.TranslateText(content),
+                            Summary = translateHelper.TranslateText(description),
+                            Title = translateHelper.TranslateText(item.Title),
                             TitleEn = item.Title,
                             Link = item.Link,
                             CreatedTime = item.CreateTime
@@ -130,9 +130,9 @@ namespace MSBlogsFunction
                             ContentEn = item.Content,
                             AuthorName = item.Author,
                             Categories = item.Categories,
-                            Content = await translateHelper.GetTranslateByGoogle(item.Content),
-                            Summary = await translateHelper.GetTranslateByGoogle(item.Description),
-                            Title = await translateHelper.GetTranslateByGoogle(item.Title),
+                            Content = translateHelper.TranslateText(item.Content),
+                            Summary = translateHelper.TranslateText(item.Description),
+                            Title = translateHelper.TranslateText(item.Title),
                             TitleEn = item.Title,
                             Link = item.Link,
                             CreatedTime = item.CreateTime
