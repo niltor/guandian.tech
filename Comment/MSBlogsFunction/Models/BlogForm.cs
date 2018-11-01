@@ -34,6 +34,7 @@ namespace MSBlogsFunction.Models
         /// 概要
         /// </summary>
         public string Summary { get; set; }
+        public string Thumbnail { get; set; }
         public DateTime CreatedTime { get; set; }
     }
 }

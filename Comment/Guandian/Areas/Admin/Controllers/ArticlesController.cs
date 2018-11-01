@@ -23,7 +23,9 @@ namespace Guandian.Areas.Admin.Controllers
             page = page < 1 ? 1 : page;
             ViewBag.Page = page;
             var result = _context.Blogs
-                .Where(b => !string.IsNullOrEmpty(b.Content))
+                .Where(b => !string.IsNullOrEmpty(b.Content)
+                && b.IsPublishMP == false
+                && b.Status != Data.Entity.Status.Obsolete)
                 .OrderByDescending(n => n.UpdatedTime)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)

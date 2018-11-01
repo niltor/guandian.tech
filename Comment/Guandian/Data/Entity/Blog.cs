@@ -27,5 +27,10 @@ namespace Guandian.Data.Entity
         /// 是否推送到微信
         /// </summary>
         public bool IsPublishMP { get; set; } = false;
+        /// <summary>
+        /// 缩略图
+        /// </summary>
+        [MaxLength(200)]
+        public string Thumbnail { get; set; }
     }
 }

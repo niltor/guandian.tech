@@ -35,11 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MetaWeblog\MetaWeblog.csproj" />
-    <ProjectReference Include="..\MSDev.DB\MSDev.DB.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="Areas\Admin\Views\Tools\Index.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

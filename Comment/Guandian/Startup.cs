@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using MSDev.DB;
+//using MSDev.DB;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Senparc.CO2NET;
@@ -47,14 +47,14 @@ namespace Guandian
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<MSDevContext>(options =>
-               options.UseSqlServer(
-                   Configuration.GetConnectionString("MSDev")));
+            //services.AddDbContext<MSDevContext>(options =>
+            //   options.UseSqlServer(
+            //       Configuration.GetConnectionString("MSDev")));
             // 身份验证服务 
             // TODO:这里之后改成自定义的User，已生成UI之后改model会出错 https://github.com/aspnet/Docs/issues/7764
             services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddEntityFrameworkStores<MSDevContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+                //.AddEntityFrameworkStores<MSDevContext>();
 
             services.Configure<IdentityOptions>(options =>
             {

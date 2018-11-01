@@ -35,5 +35,7 @@ namespace Guandian.Areas.Admin.Models
         /// </summary>
         public string Summary { get; set; }
         public DateTime CreatedTime { get; set; }
+
+        public string Thumbnail { get; set; }
     }
 }

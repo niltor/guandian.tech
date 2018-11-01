@@ -70,7 +70,6 @@ namespace MSBlogsFunction
             return blogs;
         }
 
-
         /// <summary>
         /// 获取微软博客RSS
         /// </summary>

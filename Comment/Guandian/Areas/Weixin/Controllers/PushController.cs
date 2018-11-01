@@ -167,29 +167,24 @@ namespace Guandian.Areas.Weixin.Controllers
                                                 var uploadCoverResult = await MediaApi.UploadForeverMediaAsync(token, tempFileName);
                                                 mediaId = uploadCoverResult.media_id;
                                             }
-                                            else
-                                            {
-                                                var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
-                                                mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
-                                            }
-                                            DumpConsole("设置封面，mediaId" + mediaId);
+
                                             // TODO:后面可删除该封面
                                         }
                                     }
                                 }
-                                else
-                                {
-                                    var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
-                                    mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
-                                }
-
                                 // 处理内容，微信消息最大长度为2W字符，小于1M
                                 Console.WriteLine("长度:" + root.InnerHtml.Length);
                                 if (root.InnerHtml.Length >= 20000)
                                 {
                                     root.InnerHtml = root.InnerHtml.Substring(0, 19500);
                                 }
-                                System.IO.File.AppendAllText("output.html", root.InnerHtml);
+                                if (string.IsNullOrEmpty(mediaId))
+                                {
+                                    var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
+                                    mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
+                                }
+                                DumpConsole("设置封面，mediaId:" + mediaId);
+
                                 // 构造图文消息体
                                 var currentNews = new NewsModel
                                 {

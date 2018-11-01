@@ -1,0 +1,272 @@
+<p>今天, 我们将发布质量汇总的2018年10月预览。</p>
+<h2><a href="#quality-and-reliability" id="user-content-quality-and-reliability" class="anchor"></a>质量和可靠性</h2>
+<p>此版本包含以下质量和可靠性改进。</p>
+<h3><a href="#clr" id="user-content-clr" class="anchor"></a>Clr</h3>
+<ul>
+<li>更新了在纪元中的第一年格式化的日语日期, 格式模式使用 "y年"。该年份的格式连同符号 "元" 支持, 而不是使用年份1。此外, 还支持格式化包含 "元" 的日数字。[646179]</li>
+<li>更新委内瑞拉货币信息, 这一变化影响了 "es" 的文化在以下方面。[616146]<br>1) 货币符号更改为 "Bs S"<br>2) 英国货币名称改为 "玻利瓦尔奇瓦瓦索贝拉诺喜来"<br>3) 本机货币名称改为 "玻利瓦尔奇瓦瓦索贝拉诺喜来"<br>4) 国际货币代码更改为 "VES"</li>
+<li>解决了 System.Security.Cryptography.Algorithms 引用在. NET Framework 4.7.1 7 b/8 b 修补程序后未正确加载的情况。[673870]</li>
+</ul>
+<h3><a href="#wf" id="user-content-wf" class="anchor"></a>WF</h3>
+<ul>
+<li>在某些. NET 远程处理方案中, 当使用 TransactionScopeAsyncFlowOption 时, 可以将事务. 当前重置为 null 在远程处理调用后。[669153]</li>
+</ul>
+<h3>Winforms</h3>
+<ul>
+<li>解决了应用程序在排列中创建了许多 Windows 窗体文本框的问题, 仅对 comctl32.dll 进行了少量调用。[638365]</li>
+</ul>
+<h3><a href="#wpf" id="user-content-wpf" class="anchor"></a>Wpf</h3>
+<ul>
+<li>解决了涉及临时文件和某些防病毒扫描程序的争用条件。这是导致崩溃的消息 "进程无法访问该文件"。[638468]</li>
+<li>解决了由于 TaskCanceledException 在某些 WPF 应用程序关闭期间可能发生的崩溃问题。在应用程序运行后继续执行涉及弱事件或数据绑定的应用程序. Run () 返回已知易受此崩溃的影响。[655427]</li>
+</ul>
+<p>注意: 有关这些改进的其他信息不可用。每个改进提供的<a href="https://www.visualstudio.com/team-services/" rel="nofollow">VSTS</a> bug 编号是一个唯一的 ID, 您可以给<a href="https://support.microsoft.com/contactus/" rel="nofollow">Microsoft 客户支持</a>, 包括在<a href="https://stackoverflow.com/questions/tagged/.net" rel="nofollow">计算器注释</a>或在 web 搜索中使用。</p>
+<h2><a href="#getting-the-update" id="user-content-getting-the-update" class="anchor"></a>获取更新</h2>
+<p>安全和质量汇总可通过 windows 更新、windows 服务器更新服务和 Microsoft 更新目录提供。</p>
+<h3><a href="#microsoft-update-catalog" id="user-content-microsoft-update-catalog" class="anchor"></a>微软更新目录</h3>
+<p>您可以通过 Microsoft 更新目录获取更新。对于 windows 10,. NET Framework 更新是 windows 10 月度汇总的一部分。</p>
+<p>下表适用于 windows 10 和 windows Server 2016 + 版本。</p>
+<table>
+<thead>
+<tr>
+<th>产品版本</th>
+<th>预览质量汇总 KB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>视窗 10 1709 (秋季创作者更新)</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462932" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462932" rel="nofollow">4462932</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 3.5, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4462932" rel="nofollow">4462932</a></td>
+</tr>
+<tr>
+<td><strong>视窗 10 1703 (创作者更新)</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462939" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462939" rel="nofollow">4462939</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 3.5, 4.7, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4462939" rel="nofollow">4462939</a></td>
+</tr>
+<tr>
+<td><strong>视窗 10 1607 (周年更新)<br>Windows 服务器2016</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462930" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462930" rel="nofollow">4462930</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 3.5, 4.6.2, 4.7, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4462930" rel="nofollow">4462930</a></td>
+</tr>
+</tbody>
+</table>
+<p>下表适用于早期的 windows 和 windows 服务器版本。</p>
+<table>
+<thead>
+<tr>
+<th>产品版本</th>
+<th>预览质量汇总 KB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>视窗8。1<br>视窗 RT 8。1<br>Windows 服务器 2012 R2</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462502" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462502" rel="nofollow">4462502</a></strong></td>
+</tr>
+<tr>
+<td>. NET 框架3。5</td>
+<td><a href="https://support.microsoft.com/kb/4459935" rel="nofollow">4459935</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459943" rel="nofollow">4459943</a></td>
+</tr>
+<tr>
+<td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4459941" rel="nofollow">4459941</a></td>
+</tr>
+<tr>
+<td><strong>Windows 服务器2012</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462501" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462501" rel="nofollow">4462501</a></strong></td>
+</tr>
+<tr>
+<td>. NET 框架3。5</td>
+<td><a href="https://support.microsoft.com/kb/4459932" rel="nofollow">4459932</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459944" rel="nofollow">4459944</a></td>
+</tr>
+<tr>
+<td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4459940" rel="nofollow">4459940</a></td>
+</tr>
+<tr>
+<td><strong>视窗7<br>Windows 服务器 2008 R2</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462500" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462500" rel="nofollow">4462500</a></strong></td>
+</tr>
+<tr>
+<td>. NET 框架3.5。1</td>
+<td><a href="https://support.microsoft.com/kb/4459934" rel="nofollow">4459934</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459945" rel="nofollow">4459945</a></td>
+</tr>
+<tr>
+<td>. NET Framework 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.1, 4.7。2</td>
+<td><a href="https://support.microsoft.com/kb/4459942" rel="nofollow">4459942</a></td>
+</tr>
+<tr>
+<td><strong>Windows 服务器2008</strong></td>
+<td><strong><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=4462503" rel="nofollow">目录</a><br>
+<a href="https://support.microsoft.com/kb/4462503" rel="nofollow">4462503</a></strong></td>
+</tr>
+<tr>
+<td>. NET Framework 2.0, 3。0</td>
+<td><a href="https://support.microsoft.com/kb/4459933" rel="nofollow">4459933</a></td>
+</tr>
+<tr>
+<td>. NET 框架4.5。2</td>
+<td><a href="https://support.microsoft.com/kb/4459945" rel="nofollow">4459945</a></td>
+</tr>
+<tr>
+<td>. NET 框架4。6</td>
+<td><a href="https://support.microsoft.com/kb/4459942" rel="nofollow">4459942</a></td>
+</tr>
+</tbody>
+</table>
+<h3><a href="#previous-monthly-rollups" id="user-content-previous-monthly-rollups" class="anchor"></a>以前的月度汇总</h3><p><span><a href="https://fosdem.org/2019/">FOSDEM 2019</a></span>会议的组织者于星期六2019年2月2日在比利时布鲁塞尔为. NET 和 TypeScript 讨论分配了一个 "开发人员室"。  FOSDEM 是欧洲最令人兴奋的免费软件会议之一, 在周末运行, 汇集了许多开源社区, 贡献者和活动家在一个地方, 以了解世界的状态。</p>
+<p>我们正在寻找:</p>
+<ul>
+<li>主旨演讲者, 以大胆和充满活力的想法与广大社区分享</li>
+<li>技术演示 (30 分钟, 包括问题和讨论) 有关的. NET, c#, f#, TypeScript</li>
+<li>关于使用. NET 或 TypeScript 用于商业、学术、业余爱好者和其他项目的演示文稿</li>
+<li>教程</li>
+<li>闪电会谈 (每5分钟)</li>
+</ul>
+<p>这是一个部分的想法, 可能会感兴趣的观众, 它绝不是全面的, 所以如果你的项目或想法不包括在内, 随时提交建议, 无论如何:</p>
+<ul>
+<li>创新的想法, 新鲜的新旧问题的服务器应用程序, 客户端应用程序。</li>
+<li>与其他生态系统的互操作性</li>
+<li>最佳实践、代码质量、测试、</li>
+<li>为用户构建软件</li>
+<li>编译器、运行时、库</li>
+<li>Ide</li>
+<li>提示和技巧</li>
+</ul>
+<h1>提交</h1>
+<p>要提交讨论建议, 请包括:</p>
+<ul>
+<li>标题</li>
+<li>摘要 (至少两段)<ul>
+<li>描述您的项目或演示文稿的内容。</li>
+<li>观众将从谈话中学到什么。</li>
+<li>人们如何能帮助项目, 你在寻找什么反馈？</li>
+</ul>
+</li>
+<li><strong>在音频和/或视频上录制我</strong>
+<ul>
+<li>可在<span><a href="https://creativecommons.org/licenses/by/2.0/">2.0 个 CC</a></span>许可下接受 (<strong>默认</strong>)</li>
+<li>不可接受</li>
+</ul>
+</li>
+<li>简介生物</li>
+<li>微博网址</li>
+<li>博客网址</li>
+</ul>
+<p>要提交您的建议, 请在<span><a href="https://penta.fosdem.org/user/new_account">https://penta.fosdem.org/user/new_account</a></span>的 FOSDEM 网站上创建一个帐户, 并提交您的建议在<a href="https://penta.fosdem.org/submission/FOSDEM19">https://penta.fosdem.org/submission/FOSDEM19</a> , 并确保您标记它作为一部分. NET 和 TypeScript 开发人员室。</p>
+<h2>最后 期限</h2>
+<p>收到意见书的截止日期为2018年12月3日。发言人将于12月18日通知接受或拒绝。</p>
+<p>
+<blockquote><p>这篇文章是由<a href="https://github.com/vkvenkat">维萨卡帕瓦伦文卡特桑</a>,<a href="https://github.com/litian2025">李田</a>,<a href="https://github.com/dp7">丹尼斯普拉夫金</a>, 谁是工程师在英特尔。他们很兴奋地分享了英特尔对 VTune 放大器2019所做的特定于内核的增强功能。<span>您可以使用此工具在英特尔处理器上更快地创建. NET Core 应用程序</span>。</p></blockquote>
+<p>去年在<span>. net 博客</span>中, 我们讨论了. net core 性能分析与英特尔 VTune 放大器2018包括分析实时 (JIT) 编译的. net 核心代码在微软 windows* 和 Linux 操作系统。今年,<span><a href="https://software.intel.com/en-us/intel-vtune-amplifier-2019-release-notes-what-s-new">英特尔 VTune 放大器 2019</a></span>于2018年9月12日启动, 改进了对. NET Core 应用程序的源代码分析。它包括用于分析远程 Linux 目标和分析 Windows 主机上的结果的. NET Core 支持。我们将引导您完成一些方案, 了解这些新的 VTune 放大器功能如何用于优化. NET 核心应用程序。</p>
+<p>请注意, VTune 放大器是一种商业产品。在某些情况下, 您可能有资格根据特定条款获取 VTune 放大器的免费副本。要查看您是否符合资格, 请参阅<span><a href="https://software.intel.com/en-us/qualify-for-free-software">https://software.intel.com/en-us/qualify-for-free-software</a></span>并在<span><a href="https://software.intel.com/en-us/vtune/choose-download">https://software.intel.com/en-us/vtune/choose-download</a></span>选择下载选项。</p>
+<h1>背景</h1>
+<p>在此版本之前, Linux 和有限支持在 Windows 上不支持用于 JIT 编译的. NET 核心代码的 VTune 放大器热点的源代码分析。热点函数仅在程序集级别可用, 而不是在源级别提供, 如下图所示。</p>
+<p>
+<p>VTune 放大器2019解决了此问题, 并提供了在 Windows 和 Linux 上 JIT 编译代码的完整源代码分析。它还支持从 Windows 主机远程分析 Linux 目标。让我们看看这些功能如何使用本地 Linux 主机上的示例. NET 核心应用程序、本地 windows 主机和使用 Windows 主机分析的远程 Linux 分析。</p>
+<p>以下是测试系统的硬件/软件配置:</p>
+<ul>
+<li>处理器: 英特尔 (R) 内核 (TM) i7-5960X CPU @ 3.00GHz</li>
+<li>内存:32 GB</li>
+<li>Ubuntu * 16.04 LTS (64 位)</li>
+<li>微软视窗 10 Pro 版本 1803 (64 位)</li>
+<li>. NET Core SDK 2.1.401</li>
+</ul>
+<h1>在本地 Linux 主机上分析. NET 核心应用程序</h1>
+<p>让我们在 Linux 上创建一个示例. NET Core 应用程序, 使用<span><a href="https://gist.github.com/vkvenkat/f4beadb3fb178a70010002d7753980b2">此处</a></span>可用的代码相乘两个矩阵。下面是感兴趣的 c# 源代码片段:</p>
+<p>
+<p>现在, 让我们参考前面的<span><a href="https://blogs.msdn.microsoft.com/dotnet/2017/10/23/net-core-performance-profiling-with-intel-vtune-amplifier-2018/">. net 博客</a></span>中的说明, 使用. net Core 命令行界面 (CLI) 生成并运行此应用程序。接下来, 让我们使用 VTune 放大器, 使用启动应用程序目标类型和基于硬件事件的采样模式来分析此应用程序, 如下图所述。</p>
+<p>
+<p>下面是进程/模块/函数/线程/调用堆栈分组下的热点:</p>
+<p>
+<p>现在, 让我们来看看程序的源级别热点:: 乘法函数, 这是整个 CPU 时间的主要贡献者。</p>
+<p>
+<p>上图显示, 大部分时间都在62行进行矩阵算术运算。此源程序集映射可帮助. NET Core 应用程序和编译器开发人员识别其源级别热点并确定优化机会。</p>
+<p>现在, 让我们使用新的源代码分析功能来检查与高亮显示的源行相对应的程序集代码段。</p>
+<p>
+<p>从上面的配置文件, 很明显, 减少在矩阵算术运算中花费的时间将有助于降低总的应用程序时间。此处可能的优化之一是替换用于表示具有交错数组的单个矩阵的矩形数组数据结构。下面的 c# 源代码片段显示了如何执行此操作 (<span><a href="https://gist.github.com/vkvenkat/f35b8ff9552e33c6a11453bcea7d25fa">此处</a></span>提供了完整的代码)。</p>
+<p>
+<p>以下是 VTune 放大器的热点功能更新列表:</p>
+<p>
+<p>我们可以看到, 整个应用时间减少了约 21%<sup>1</sup> (从16.660 秒到13.175 秒)。</p>
+<p>下图显示了程序的源程序集映射:: 乘法函数。我们看到, 执行矩阵算术运算的高亮源线的 CPU 时间相应减少。请注意, JIT 生成的代码的大小也已减少。</p>
+<p>
+<p>这是关于 Linux 上的功能的简要描述。与上面的矩阵乘法样本类似的分析可以在 Windows 上做, 我们把它作为一个练习, 你尝试。现在, 让我们使用另一个示例来查看源代码分析在 Windows 上的工作原理。</p>
+<h1>在本地 Windows 主机上分析. NET 核心应用程序</h1>
+<p>让我们在 Windows 上创建一个示例. NET Core 应用程序, 它使用<span><a href="https://gist.github.com/vkvenkat/960b9c4704f8e63066833bb4c6e65db8">此处</a></span>可用的代码反转整数数组。下面是感兴趣的 c# 源代码片段:</p>
+<p>
+<p>现在, 让我们参考前面的<span><a href="https://blogs.msdn.microsoft.com/dotnet/2017/10/23/net-core-performance-profiling-with-intel-vtune-amplifier-2018/">. net 博客</a></span>中的说明, 使用. net Core 命令行界面 (CLI) 生成并运行此应用程序。接下来, 让我们使用 VTune 放大器, 使用启动应用程序目标类型和基于硬件事件的采样模式来分析此应用程序, 如下图所述。此外, 在分析之前, 我们需要使用搜索源/二进制按钮在 Windows 上提供源文件位置。</p>
+<p>
+<p>下面是进程/模块/函数/线程/调用堆栈分组下的热点:</p>
+<p>
+<p>现在让我们来看一看程序的源级热点:: IterativeReverse 函数, 它是整个 CPU 时间的主要贡献者。</p>
+<p>
+<p>上面的图显示大部分时间都花在48行中执行数组元素重新分配。现在, 让我们使用新的源代码分析功能来检查与高亮显示的源行相对应的程序集代码段。</p>
+<p>
+<p>此处可能的优化之一是使用递归反转整型数组, 而不是遍历数组内容。下面的 c# 源代码片段显示了如何执行此操作 (<span><a href="https://gist.github.com/vkvenkat/02a7541e095b1cc5775f88ce9f69e931">此处</a></span>提供了完整的代码)。</p>
+<p>
+<p>以下是 VTune 放大器的热点功能更新列表:</p>
+<p>
+<p>我们可以看到, 整个应用时间减少了约 42%<sup>2</sup> (从13.095 秒到7.600 秒)。</p>
+<p>下图显示了程序的源程序集映射:: RecursiveReverse 函数。</p>
+<p>
+<p>正如我们所看到的, 缩短时间反映在上面的源代码行中, 使开发人员能够清楚地了解其应用程序的执行情况。</p>
+<h1>在远程 Linux 目标上分析. NET 核心应用程序并分析 Windows 主机上的结果</h1>
+<p>有时. NET Core 开发人员可能需要收集远程目标系统上的性能数据, 然后在另一台计算机上最后确定数据, 以便解决目标系统上的资源限制, 或者在最后完成收集的数据时降低开销。VTune 放大器2019添加了. NET Core 支持从远程 Linux 目标系统收集分析数据并分析 Windows 主机系统上的结果。本节阐释了如何利用此功能使用的矩阵乘法. NET Core 应用程序前面讨论 (源代码<span><a href="https://gist.github.com/vkvenkat/f4beadb3fb178a70010002d7753980b2">在这里</a></span>可用)。</p>
+<p>首先让我们在主机或目标上发布 x64 目标类型的示例应用程序: dotnet 发布–c 发布–r linux-x64。然后, 我们需要将整个文件夹与源和二进制文件复制到另一台计算机。接下来, 让我们设置一个无密码的 SSH 访问目标与腻子, 使用<span><a href="https://software.intel.com/en-us/vtune-amplifier-help-configuring-ssh-access-for-remote-collection">此处</a></span>的说明。我们还需要设置/进程/系统/内核/perf_event_paranoid 和/进程/系统/内核/kptr_restrict 到0在目标系统中, 以启用无人驾驶分析, 以便用户不需要安装目标包, 而 VTune 放大器自动安装目标系统上的适当收集器。</p>
+<p>回声 0 |sudo 三通/进程/系统/内核/perf_event_paranoid</p>
+<p>回声 0 |sudo 三通/进程/系统/内核/kptr_restrict</p>
+<p>
+<p>现在, 让我们在主机上使用 VTune 放大器, 开始在目标上运行应用程序的远程分析。首先, 我们需要将分析目标设置为远程 Linux (ssh), 并提供必要的详细信息以建立与目标的 SSH 连接。VTune 放大器会自动在 vtune_amplifier_ &lt; 版本 &gt;. &lt; package_num &gt; 目录中的目标系统上安装适当的收集者。</p>
+<p>
+<p>然后, 让我们选择启动应用程序目标类型和基于硬件事件的采样模式。此外, 在分析之前, 我们需要使用搜索源/二进制按钮在 Windows 上提供二进制和源文件位置。</p>
+<p>
+<p>下面是进程/模块/函数/线程/调用堆栈分组下的热点:</p>
+<p>
+<p>让我们通过选择一个热点函数来查看操作中的源代码分析。</p>
+<p>
+<p>对远程分析的支持将使开发人员能够在资源受限的目标平台上收集低开销的分析数据, 然后在主机上分析此信息。</p>
+<h1><strong>总结</strong></h1>
+<p>源代码分析功能可作为. NET Core 社区的有用值添加, 尤其是对性能优化感兴趣的开发人员, 因为他们可以深入了解源代码和程序集级别的热点, 然后处理目标优化。我们继续寻找额外的. NET 核心方案, 可以受益于 VTune 放大器的功能增强。如果您有任何建议, 请让我们在下面的评论中知道。</p>
+<h1><strong>引用</strong></h1>
+<p>VTune 放大器产品页面: <span> <a href="https://software.intel.com/en-us/intel-vtune-amplifier-xe">https://software.intel.com/en-us/intel-vtune-amplifier-xe</a></span></p>
+<p>有关使用 VTune 放大器的更多详细信息, 请参阅产品<span><a href="https://software.intel.com/en-us/vtune-amplifier-help">联机帮助</a></span>。</p>
+<p>有关编译器优化的更完整信息, 请参阅我们的<span><a href="https://software.intel.com/en-us/articles/optimization-notice#opt-en">优化通知</a></span>。</p>
+<p>
+<p>本文件不授予任何知识产权的许可 (明示或默示、禁止反悔或其他方式)。</p>
+<p>英特尔不承担所有明示和默示保证, 包括但不限于适销性、特定用途适用性和不侵权的默示保证, 以及在执行过程、交易过程中产生的任何保证,或在贸易中的使用。</p>
+<p>本文档包含有关开发中的产品、服务和/或流程的信息。 此处提供的所有信息如有更改, 恕不另行通知。请与您的英特尔代表联系以获取最新的预测、计划、规格和路线图。</p>
+<p>所描述的产品和服务可能包含缺陷或错误称为勘误表, 可能会导致偏离已发布的规范。可根据要求提供当前特征勘误表。</p>
+<p>有订单号且在本文档中引用的单据副本可通过拨打<span>1-800-548-4725</span>或访问<span><strong><a href="http://www.intel.com/design/literature.htm">www.intel.com/design/literature.htm</a></strong></span>获得。</p>
+<p>英特尔、英特尔徽标、英特尔酷睿、VTune 是英特尔公司在美国和/或其他国家的商标。</p>
+<p>* 其他名称和品牌可能被声称为其他人的财产</p>
+<p>©英特尔公司。</p>
+<p>您使用了多少云存储服务？我目前正在使用三个，所有这些都通过一种方式或另一种方式同步到我的桌面。但是，在这些云源之间进行同步可能会成为一个后勤噩梦（最重要的是，一个递归的头痛并添加可能的冗余同步，占用宝贵的云空间）。当这成为问题时，多云服务用户要做什么？幸运的是，有一项名为<a href="https://www.multcloud.com/" target="_blank" rel="noopener noreferrer">MultCloud</a>的服务允许您在云帐户之间传输和同步数据。 MultCloud支持大量的云服务，包括： </p><div data-shortcode=""></div><div class="relatedContent pinbox pull-right"><h3>必读云</h3><ul><li> <a href="https://www.techrepublic.com/article/new-amazon-class-certifies-cloud-pros-in-securing-data-on-aws/" data-omniture-track="moduleClick" data-omniture-track-data='{"moduleInfo": "pinbox"}'>Google云平台：内部人士指南（免费PDF）</a> </li><li> <a href="https://www.techrepublic.com/article/how-to-get-a-job-in-cloud-computing-10-skills-to-master/" data-omniture-track="moduleClick" data-omniture-track-data='{"moduleInfo": "pinbox"}'>如何获得云计算工作：掌握10项技能</a> </li><li> <a href="https://www.techrepublic.com/article/how-to-get-a-free-month-trial-of-upgraded-icloud-storage/" data-omniture-track="moduleClick" data-omniture-track-data='{"moduleInfo": "pinbox"}'>如何获得升级的iCloud存储的免费月份试用版</a> </li><li> <a href="https://www.techrepublic.com/article/the-cloud-act-5-things-businesses-need-to-know-about-the-data-privacy-law/" data-omniture-track="moduleClick" data-omniture-track-data='{"moduleInfo": "pinbox"}'>云计算政策（Tech Pro Research）</a> </li></ul></div><ul><li> Google云端硬盘</li><li> Dropbox的</li><li>谷歌照片</li><li>一个驱动器</li><li>亚马逊驱动器</li><li>亚马逊S3 </li><li>兆</li><li>框</li><li> Flickr的</li><li>主人MediaFire </li><li> SugarSync的</li><li> MySQL的</li><li> Evernote的</li><li> pCloud </li><li>和更多</li></ul><p> MultCloud提供免费帐户，允许每月50GB的数据流量和两种同步模式。您可以将免费帐户升级为每月（9.99美元/月）或每年（119.00美元/年），每个帐户都提供其他功能（请访问<a href="https://www.multcloud.com/price" target="_blank" rel="noopener noreferrer">此处</a>的比较表）。 </p><p>一旦您注册了计划，就可以开始使用MultCloud。我们来看看如何添加和同步帐户。 </p><p> <strong>参见： <a href="http://www.techproresearch.com/downloads/quick-glossary-cloud-platform-services/" target="_blank" rel="noopener noreferrer">快速词汇表：云平台服务</a> （Tech Pro Research）</strong> </p><h2>添加帐户</h2><p>登录您的MultCloud帐户，然后单击Cloud Explorer选项卡（ <strong>图A</strong> ）。 </p><div id="inpage-video-top-5bd204d91f388" class="ad-inpage-video-top" data-ad="inpage-video-top"></div><p> <strong>图A.</strong> </p><figure class="image pull-none image-original" style="width: 800px"> <span class="img aspect-set " style="padding-bottom: 44%"><img src="http://mmbiz.qpic.cn/mmbiz_jpg/WP5OYLC9j6L7s5Ewsyrl1J8U1cBXTFxWiaZTch7jicpaPh8wnUpSico4ibcePb8MEMWv7fo1icXSnwgye1uPJgF5Www/0" class="" alt="图A."></span> <figcaption><div class="caption"><p> MultCloud Cloud Explorer选项卡，您可以在其中添加帐户。 </p><br></div></figcaption></figure><p>单击左侧导航中的Add Cloud Drives按钮，选择要添加的服务，然后单击Next。在结果窗口中，系统将提示您为该帐户命名，然后单击以添加该帐户（ <strong>图B</strong> ）。 </p><p> <strong>图B.</strong> </p><figure class="image pull-none image-original" style="width: 689px"> <span class="img aspect-set " style="padding-bottom: 44%"></span> <noscript> <span class="img aspect-set " style="padding-bottom: 44%"><img src="http://mmbiz.qpic.cn/mmbiz_jpg/WP5OYLC9j6L7s5Ewsyrl1J8U1cBXTFxWd00wrc3lzWf4ygibYn9Aic6Qm1ib7zZUoMWJXzVyIgqnYnOgwkSlFxrGA/0" class="" alt="图B."></span> </noscript><figcaption><div class="caption"><p>将Dropbox添加到MultCloud。 </p><br></div></figcaption></figure><p>如果您已使用用于MultCloud的同一浏览器登录该云帐户，则不会提示您输入凭据（否则，您将需要登录正在添加的帐户）。返回云资源管理器选项卡并继续添加云帐户，直到您添加了要使用的所有内容。 </p><h2>转移和同步帐户</h2><p>添加完所有必需的云帐户后，单击Cloud Transfer选项卡。在此窗口（ <strong>图C</strong> ）中，选择要在传输中使用的源和目标目录。 </p><p> <strong>图C.</strong> </p><figure class="image pull-none image-original" style="width: 800px"> <span class="img aspect-set " style="padding-bottom: 32%"></span> <noscript> <span class="img aspect-set " style="padding-bottom: 32%"><img src="http://mmbiz.qpic.cn/mmbiz_jpg/WP5OYLC9j6L7s5Ewsyrl1J8U1cBXTFxWpLIZRN6xrztFyDng4YpyDrmF3cBtfe6up8qCPBMxuzpFU127icdvsrg/0" class="" alt="图C."></span> </noscript><figcaption><div class="caption"><p>在云帐户之间传输文件。 </p><br></div></figcaption></figure><p>如果要在云帐户之间同步目录，请单击“云同步”选项卡。在同步窗口中，单击以选择源和目标（ <strong>图D</strong> ）。为同步命名，然后选择同步类型（单向，双向，其他方式）。 </p><p> <strong>图D.</strong> </p><figure class="image pull-none image-original" style="width: 800px"> <span class="img aspect-set " style="padding-bottom: 34%"></span> <noscript> <span class="img aspect-set " style="padding-bottom: 34%"><img src="http://mmbiz.qpic.cn/mmbiz_jpg/WP5OYLC9j6L7s5Ewsyrl1J8U1cBXTFxWXKBFIic3RvhhCLicKEmIAYmBbyIILva3hBkRZJDCWZBQXc8sA8dKTwtQ/0" class="" alt="图D."></span> </noscript><figcaption><div class="caption"><p>在云帐户之间同步目录。 </p><br></div></figcaption></figure><p>配置同步对后，单击“立即同步”按钮，将创建同步对（但不会同步）。创建同步对后，单击任务管理器按钮（直接在您的MultCloud用户名左侧。在结果窗口（ <strong>图E</strong> ）中，您可以单击菜单并访问同步对的选项和计划。确保单击立即同步按钮，这样文件夹对将实际同步。 </p><p> <strong>图E.</strong> </p><figure class="image pull-none image-original" style="width: 800px"> <span class="img aspect-set " style="padding-bottom: 17%"></span> <noscript> <span class="img aspect-set " style="padding-bottom: 17%"><img src="http://mmbiz.qpic.cn/mmbiz_jpg/WP5OYLC9j6L7s5Ewsyrl1J8U1cBXTFxW1QE80y5hQHiaKicQLbxBGgfYiaIQPwibabTMcq3iajogfRYfNcz3aSmFxSA/0" class="" alt="图E."></span> </noscript><figcaption><div class="caption"><p>我们的同步对任务。 </p><br></div></figcaption></figure><p> <strong>注意：</strong>任务管理器中的某些功能仅在付费版本的MultCloud中可用（例如云同步调度）。 </p><h2>简单的云帐户同步</h2><p>如果您曾经需要将云帐户彼此同步（或不同云帐户中的目录），则使用MultCloud可以非常简单地完成此过程。 Power Cloud用户应该发现这项服务非常有用。试一试，看看它是否无法解决您的多云帐户同步需求。 </p><div data-shortcode=""></div><div class="relatedContent pinbox pull-right"><h3>必读云</h3><ul><li> <a href="https://www.techrepublic.com/article/new-amazon-class-certifies-cloud-pros-in-securing-data-on-aws/" data-omniture-track="moduleClick" data-omniture-track-data='{"moduleInfo": "pinbox"}'>Google云平台：内部人士指南（免费PDF）</a> </li><li> <a href="https://www.techrepublic.com/article/how-to-get-a-job-in-cloud-computing-10-skills-to-master/" data-omniture-track="moduleClick" data-omniture-track-data='{"moduleInfo": "pinbox"}'>如何获得云计算工作：掌握10项技能</a> </li><li> <a href="https://www.techrepublic.com/article/how-to-get-a-free-month-trial-of-upgraded-icloud-storage/" data-omniture-track="moduleClick" data-omniture-track-data='{"moduleInfo": "pinbox"}'>如何获得升级的iCloud存储的免费月份试用版</a> </li><li> <a href="https://www.techrepublic.com/article/the-cloud-act-5-things-businesses-need-to-know-about-the-data-privacy-law/" data-omniture-track="moduleClick" data-omniture-track-data='{"moduleInfo": "pinbox"}'>云计算政策（Tech Pro Research）</a> </li></ul></div><p>数据库即服务（DBaaS）是一种云计算服务模型，无需物理硬件或安装软件即可访问数据库。管理任务全部由服务提供商处理，让用户专注于充分利用数据库。 </p><p> <strong>参见： <a href="http://www.techproresearch.com/downloads/end-user-data-backup-policy-copy1-copy1/" target="_blank" rel="noopener noreferrer">最终用户数据备份政策</a> （Tech Pro Research）</strong> </p><p>现在的问题是选择哪个DBaaS品牌。 SlashData调查了1,800多名后端开发人员，以确定市场上排名前15位的DBaaS品牌。报告参考了类似的可扩展性，易用性和开发，定价，支持/文档的速度，与其他系统集成，学习曲线，服务管理API的质量，以多帐户属性，根据该报告的<a href="https://www.slashdata.co/developer-satisfaction-tracker/database-as-a-service?utm_source=SlashData+subscriber+list&amp;utm_campaign=98e2feb86d-EMAIL_CAMPAIGN_2018_10_10_12_05&amp;utm_medium=email&amp;utm_term=0_efe0e34ffa-98e2feb86d-399906513" target="_blank" rel="noopener noreferrer">小册子</a> 。 </p><p>以下是15个最受欢迎的DBaaS品牌。 </p><ol><li> Microsoft Azure SQL数据库</li><li>亚马逊RDS </li><li>亚马逊DynamoDB </li><li> Microsoft Azure表存储</li><li> Microsoft DocumentDB </li><li> MongoDB地图集</li><li> Google Cloud SQL </li><li> Google Cloud数据存储区</li><li>亚马逊极光</li><li> Oracle数据库云服务</li><li> Amazon SimpleDB </li><li> Google Cloud Bigtable </li><li> IBM Cloudant </li><li>撰写（IBM） </li><li> Google Cloud Spanner </li></ol><p> DBaaS简化了业务运营，并且通常无需高级内部IT人员来处理系统的复杂性。随着公司开始放弃内部服务器机房并依靠自动化来运行其数据库，DBaaS处于运营的最前沿。 </p><h2>对技术领导者的重大启示： </h2><ul><li> <em>高评级数据库解决方案的一些主要属性包括可扩展性，定价，学习曲线等。 -  SlashData，2018</em> </li><li> <em>Microsoft Azure SQL数据库和Amazon RDS是排名前两位的领先者，其中Microsoft Azure SQL数据库占据首位。 -  SlashData，2018</em> </li></ul>

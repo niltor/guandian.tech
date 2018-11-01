@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MSDev.MetaWeblog;
+//using MSDev.MetaWeblog;
 
 namespace Guandian.Services
 {
@@ -9,7 +9,7 @@ namespace Guandian.Services
     /// </summary>
     interface ISyncService
     {
-        Task SyncTo(List<PostInfo> blogs, string categories = null);
-        void SyncFrom(List<PostInfo> blogs, string categories = null);
+        //Task SyncTo(List<PostInfo> blogs, string categories = null);
+        //void SyncFrom(List<PostInfo> blogs, string categories = null);
     }
 }

@@ -16,8 +16,8 @@ namespace MSBlogsFunction
         //static readonly string baseApi = "http://localhost:9843/";
         static readonly string baseApi = "https://guandian.tech/";
         [FunctionName("MSBlogs")]
-        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
-        //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, ILogger log)
+        //public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
+        public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
@@ -31,8 +31,7 @@ namespace MSBlogsFunction
             log.LogInformation("finish");
         }
 
-
-
+        [Obsolete]
         static async Task SaveTechRePublicBlogs(List<RssEntity> blogs, ILogger log)
         {
             string subKey = Environment.GetEnvironmentVariable("GoogleTranslateKey");
@@ -74,7 +73,8 @@ namespace MSBlogsFunction
                             Title = translateHelper.TranslateText(item.Title),
                             TitleEn = item.Title,
                             Link = item.Link,
-                            CreatedTime = item.CreateTime
+                            CreatedTime = item.CreateTime,
+                            //Thumbnail = ""
                         };
                         tobeAddBlogs.Add(blogForm);
                     }
@@ -123,8 +123,11 @@ namespace MSBlogsFunction
 
                 if (blogs.Count > 0)
                 {
+                    var intelligence = new IntelligenceHelper();
                     foreach (var item in blogs)
                     {
+                        var thumbnail = await intelligence.GetImageFromTextAsync(item.Title);
+
                         var blogForm = new BlogForm
                         {
                             ContentEn = item.Content,
@@ -135,7 +138,8 @@ namespace MSBlogsFunction
                             Title = translateHelper.TranslateText(item.Title),
                             TitleEn = item.Title,
                             Link = item.Link,
-                            CreatedTime = item.CreateTime
+                            CreatedTime = item.CreateTime,
+                            Thumbnail = thumbnail
                         };
                         tobeAddBlogs.Add(blogForm);
                     }

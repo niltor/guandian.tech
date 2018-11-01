@@ -11,18 +11,23 @@ using Markdig.SyntaxHighlighting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MSDev.DB;
-using MSDev.MetaWeblog;
+//using MSDev.DB;
+//using MSDev.MetaWeblog;
 
 namespace Guandian.Areas.Admin.Controllers
 {
     public class ToolsController : CommonController
     {
-        readonly MSDevContext _msdevContext;
+        //readonly MSDevContext _msdevContext;
         readonly ApplicationDbContext _context;
-        public ToolsController(MSDevContext context, ApplicationDbContext applicationDbContext)
+        //public ToolsController(MSDevContext context, ApplicationDbContext applicationDbContext)
+        //{
+        //    _msdevContext = context;
+        //    _context = applicationDbContext;
+        //}
+
+        public ToolsController(ApplicationDbContext applicationDbContext)
         {
-            _msdevContext = context;
             _context = applicationDbContext;
         }
         public ActionResult Index()
@@ -30,38 +35,38 @@ namespace Guandian.Areas.Admin.Controllers
             return View();
         }
 
-        public async Task<ActionResult> SyncToCnBlogsAsync()
-        {
-            var service = new SyncCnBlogsService("niltor", "$54NilTor");
-            var currentBlogs = _msdevContext.Blog
-                .Where(b => b.Catalog.Name.Equals("从零开始学编程"))
-                .OrderBy(b => b.CreatedTime)
-                .Include(b => b.Catalog)
-                .Include(b => b.Video)
-                .ToList();
+        //public async Task<ActionResult> SyncToCnBlogsAsync()
+        //{
+        //    var service = new SyncCnBlogsService("niltor", "$54NilTor");
+        //    var currentBlogs = _msdevContext.Blog
+        //        .Where(b => b.Catalog.Name.Equals("从零开始学编程"))
+        //        .OrderBy(b => b.CreatedTime)
+        //        .Include(b => b.Catalog)
+        //        .Include(b => b.Video)
+        //        .ToList();
 
-            var cnblogs = new List<PostInfo>();
-            var pipeline = new MarkdownPipelineBuilder()
-                .UseAdvancedExtensions()
-                .UseSyntaxHighlighting()
-                .Build();
+        //    var cnblogs = new List<PostInfo>();
+        //    var pipeline = new MarkdownPipelineBuilder()
+        //        .UseAdvancedExtensions()
+        //        .UseSyntaxHighlighting()
+        //        .Build();
 
-            foreach (var item in currentBlogs)
-            {
-                cnblogs = currentBlogs.Select(s =>
-                {
-                    var videoBlock = $"<p>本篇博客对应<a target=\"_blank\" href=\"http://msdevcc.azurewebsites.net/Video/Detail/{s.Video.Id}\" style=\"color:red\"><strong>视频讲解</strong></a></p>";
-                    return new PostInfo
-                    {
-                        DateCreated = s.CreatedTime,
-                        Description = videoBlock + Markdown.ToHtml(s.Content, pipeline),
-                        Title = s.Title,
-                    };
-                }).ToList();
-            }
-            service.SyncTo(cnblogs, currentBlogs.FirstOrDefault()?.Catalog.Name);
-            return Content("完成");
-        }
+        //    foreach (var item in currentBlogs)
+        //    {
+        //        cnblogs = currentBlogs.Select(s =>
+        //        {
+        //            var videoBlock = $"<p>本篇博客对应<a target=\"_blank\" href=\"http://msdevcc.azurewebsites.net/Video/Detail/{s.Video.Id}\" style=\"color:red\"><strong>视频讲解</strong></a></p>";
+        //            return new PostInfo
+        //            {
+        //                DateCreated = s.CreatedTime,
+        //                Description = videoBlock + Markdown.ToHtml(s.Content, pipeline),
+        //                Title = s.Title,
+        //            };
+        //        }).ToList();
+        //    }
+        //    service.SyncTo(cnblogs, currentBlogs.FirstOrDefault()?.Catalog.Name);
+        //    return Content("完成");
+        //}
 
         /// <summary>
         /// 添加博客
@@ -85,7 +90,8 @@ namespace Guandian.Areas.Admin.Controllers
                 Summary = b.Summary,
                 Link = b.Link,
                 Title = b.Title,
-                TitleEn = b.TitleEn
+                TitleEn = b.TitleEn,
+                Thumbnail = b.Thumbnail
             }).ToList();
             // 插入前再去重
             var oldBlogs = _context.Blogs.OrderByDescending(b => b.CreatedTime)
