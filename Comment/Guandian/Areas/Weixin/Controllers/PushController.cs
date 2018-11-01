@@ -130,7 +130,6 @@ namespace Guandian.Areas.Weixin.Controllers
                                         root.SelectSingleNode(video.XPath).Remove();
                                     }
                                 }
-
                                 string mediaId = "";
                                 if (imageNodes != null)
                                 {
@@ -145,7 +144,6 @@ namespace Guandian.Areas.Weixin.Controllers
                                         else
                                         {
                                             DumpConsole(item.Title + " 图片处理");
-                                            var coverImage = "";
                                             var image = imageNodes[i].Attributes["src"].Value;
                                             var tempFileName = StringTools.GetTempFileName("jpg");
                                             wc.DownloadFile(image, tempFileName);
@@ -157,33 +155,31 @@ namespace Guandian.Areas.Weixin.Controllers
                                             System.IO.File.Delete(tempFileName);
                                             // 替换文本
                                             imageNodes[i].SetAttributeValue("src", uploadImgResult.url);
-                                            coverImage = image;
-
-                                            // 设置封面
-                                            if (!string.IsNullOrEmpty(coverImage))
-                                            {
-                                                tempFileName = StringTools.GetTempFileName("jpg");
-                                                wc.DownloadFile(coverImage, tempFileName);
-                                                var uploadCoverResult = await MediaApi.UploadForeverMediaAsync(token, tempFileName);
-                                                mediaId = uploadCoverResult.media_id;
-                                            }
 
                                             // TODO:后面可删除该封面
                                         }
                                     }
                                 }
+                                // 没有缩略图
+                                if (string.IsNullOrEmpty(item.Thumbnail))
+                                {
+                                    var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
+                                    mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
+                                }
+                                else
+                                {
+                                    var tempFileName = StringTools.GetTempFileName("jpg");
+                                    wc.DownloadFile(item.Thumbnail, tempFileName);
+                                    var thumbImg = await MediaApi.UploadForeverMediaAsync(token, tempFileName);
+                                    mediaId = thumbImg.media_id;
+                                }
+                                DumpConsole("设置封面，mediaId:" + mediaId + ";url:" + item.Thumbnail);
                                 // 处理内容，微信消息最大长度为2W字符，小于1M
                                 Console.WriteLine("长度:" + root.InnerHtml.Length);
                                 if (root.InnerHtml.Length >= 20000)
                                 {
                                     root.InnerHtml = root.InnerHtml.Substring(0, 19500);
                                 }
-                                if (string.IsNullOrEmpty(mediaId))
-                                {
-                                    var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
-                                    mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
-                                }
-                                DumpConsole("设置封面，mediaId:" + mediaId);
 
                                 // 构造图文消息体
                                 var currentNews = new NewsModel
