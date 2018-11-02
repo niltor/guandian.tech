@@ -58,7 +58,7 @@ namespace Guandian.Areas.Weixin.Controllers
                 // 新闻内容
                 if (news != null && news.Count > 0)
                 {
-                    string content = "<h6>TechViews今日资讯一览!</h6>";
+                    string content = "";
                     // 上传文章内图片
                     using (var wc = new WebClient())
                     {
@@ -71,19 +71,15 @@ namespace Guandian.Areas.Weixin.Controllers
                             System.IO.File.Delete(tempFileName);
 
                             // 替换图片链接
-                            content += $@"<div class='row news-list bg-white m-0 mb-2 p-2'>
-                    <div class='content col-md-8'>
-                        <div class='news-title my-1'>
-                            <h5>
-                                <strong>{item.Title}</strong>
-                            </h5>
+                            content += $@"<div class='row'>
+                        <div class='news-title mt-1'>
+                            <strong style='font-size:18px;color:#015cda'>{item.Title}</strong>
                         </div>
                         <div>
                             <img src='{uploadImgResult.url}' width='100%' />
                         </div>
-                        <div class='news-description'>{item.Description}</div>
-                    </div>
-                    <br />
+                        <div class='news-description'>{item.Description}</div> 
+                        <br /><br />
                 </div>";
                             item.IsPublishToMP = true;
                         }
