@@ -1,6 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using Guandian.Data;
 using Guandian.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 //using MSDev.DB;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
@@ -54,7 +60,7 @@ namespace Guandian
             // TODO:这里之后改成自定义的User，已生成UI之后改model会出错 https://github.com/aspnet/Docs/issues/7764
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-                //.AddEntityFrameworkStores<MSDevContext>();
+            //.AddEntityFrameworkStores<MSDevContext>();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -92,19 +98,41 @@ namespace Guandian
                 options.AddPolicy("Guest", policy => policy.RequireRole("Guest"));
             });
 
+
             services.AddAuthentication()
                 .AddGitHub(options =>
                 {
                     options.ClientId = Configuration.GetSection("OAuth")["Github:ClientId"];
                     options.ClientSecret = Configuration.GetSection("OAuth")["Github:ClientSecret"];
-                    options.Scope.Add("user:email");
+                    options.ClaimActions.MapJsonKey("urn:github:avatar", "avatar_url");
+                    options.ClaimActions.MapJsonKey("urn:github:name", "name");
+                    options.Scope.Add("read:user");
                     options.SaveTokens = true;
 
-                    //options.Events = new OAuthEvents
-                    //{
+                    options.Events = new OAuthEvents
+                    {
+                        OnCreatingTicket = async context =>
+                        {
+                            var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
+                            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
 
-                    //};
+                            var response = await context.Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, context.HttpContext.RequestAborted);
+                            response.EnsureSuccessStatusCode();
+                            var user = JObject.Parse(await response.Content.ReadAsStringAsync());
+                            context.RunClaimActions(user);
+
+                            List<AuthenticationToken> tokens = context.Properties.GetTokens() as List<AuthenticationToken>;
+                            tokens.Add(new AuthenticationToken()
+                            {
+                                Name = "TicketCreated",
+                                Value = DateTime.UtcNow.ToString()
+                            });
+                            context.Properties.StoreTokens(tokens);
+                        }
+                    };
                 });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                  .AddJsonOptions(options =>
                  {

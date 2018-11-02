@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -28,15 +28,14 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
         }
         [Display(Name = "登录名")]
         public string Username { get; set; }
-
         public bool IsEmailConfirmed { get; set; }
-
         [TempData]
         public string StatusMessage { get; set; }
-
         [BindProperty]
         public InputModel Input { get; set; }
 
+        public string GithubName { get; set; }
+        public string Avatar { get; set; }
         public class InputModel
         {
             [Required]
@@ -60,9 +59,23 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            if (User.Identity.IsAuthenticated)
+            {
+                GithubName = User.FindFirst(c => c.Type == "urn:github:name")?.Value;
+                GithubName = User.FindFirst(c => c.Type == "urn:github:name")?.Value;
+                Avatar = User.FindFirst(c => c.Type == "urn:github:avatar")?.Value;
+                ViewData["token"] = await HttpContext.GetTokenAsync("access_token");
+
+                Console.WriteLine(GithubName + Avatar + ViewData["token"]);
+            }
+            else
+            {
+                Console.WriteLine("no Authenticated");
+            }
+
+
 
             Username = userName;
-
             Input = new InputModel
             {
                 Email = email,

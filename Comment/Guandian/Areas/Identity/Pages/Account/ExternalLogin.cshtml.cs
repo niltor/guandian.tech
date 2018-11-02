@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -78,12 +77,15 @@ namespace Guandian.Areas.Identity.Pages.Account
 
             if (result.Succeeded)
             {
-                // 存储token
-                await _signInManager.UpdateExternalAuthenticationTokensAsync(info);
+                // TODO： 处理添加逻辑  https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/social/additional-claims?view=aspnetcore-2.1
+                var user = await _userManager.FindByLoginAsync(info.LoginProvider,
+                    info.ProviderKey);
 
-                //await userManager.GetAuthenticationTokenAsync(user, "Facebook", "<tokenName>")
+                //var props = new AuthenticationProperties();
+                //props.StoreTokens(info.AuthenticationTokens);
 
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
+
                 return LocalRedirect(returnUrl);
             }
             if (result.IsLockedOut)
@@ -123,6 +125,7 @@ namespace Guandian.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    // TODO： 处理添加逻辑 https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/social/additional-claims?view=aspnetcore-2.1
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
