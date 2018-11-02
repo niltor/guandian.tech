@@ -33,7 +33,7 @@ namespace MSBlogsFunction
             // 调用文本分析提取关键词
             var textClient = new TextAnalyticsClient(new ApiKeyServiceClientCredentials(TextKey))
             {
-                Endpoint = "https://eastasia.api.cognitive.microsoft.com/text/analytics/v2.0"
+                Endpoint = "https://eastasia.api.cognitive.microsoft.com"
             };
             // 根据关键词查询图片
             var result = await textClient.KeyPhrasesAsync(new MultiLanguageBatchInput(new List<MultiLanguageInput>()
