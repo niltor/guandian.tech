@@ -84,7 +84,7 @@ namespace MSBlogsFunction
                 {
                     translation += GetTranslateAsync(item).Result;
                 }
-                translation += GetTranslateByGoogle(item);
+                translation += GetTranslateByGoogle(item).Result;
             }
             return translation;
         }
