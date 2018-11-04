@@ -45,17 +45,20 @@ namespace MSBlogsFunction
                     Language ="en"
                 }
             }));
-            var keyword = result.Documents[0].KeyPhrases.Last();
 
-            var imageClient = new ImageSearchAPI(new ApiKeyServiceClientCredentials(ImageKey));
-            var imageResults = await imageClient.Images.SearchAsync(query: keyword, acceptLanguage: "EN", color: "ColorOnly", freshness: "Month", count: 5, size: "Medium");
-
-            if (imageResults != null)
+            foreach (var keyword in result.Documents[0].KeyPhrases)
             {
-                var firstImageResult = imageResults.Value
-                    .Where(img => img.EncodingFormat.Equals("jpeg"))
-                    .First();
-                return firstImageResult.ContentUrl;
+                var imageClient = new ImageSearchAPI(new ApiKeyServiceClientCredentials(ImageKey));
+                var imageResults = await imageClient.Images.SearchAsync(query: keyword, acceptLanguage: "EN", color: "ColorOnly", freshness: "Month", count: 5, size: "Medium");
+                if (imageResults.Value?.Count > 0)
+                {
+                    var firstImageResult = imageResults.Value?.First();
+                    return firstImageResult.ContentUrl;
+                }
+                else
+                {
+                    continue;
+                }
             }
             return default;
         }

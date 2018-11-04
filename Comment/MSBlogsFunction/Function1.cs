@@ -16,14 +16,14 @@ namespace MSBlogsFunction
         //static readonly string baseApi = "http://localhost:9843/";
         static readonly string baseApi = "https://guandian.tech/";
         [FunctionName("MSBlogs")]
-        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
-        //public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, ILogger log)
+        //public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
+        public static async Task RunAsync([TimerTrigger("0 0 */6 * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
             var helper = new RssHelper();
             var MSBlogs = await helper.GetAllBlogs(log);
-            await SaveMSBlogs(MSBlogs, log);
+           await SaveMSBlogs(MSBlogs, log);
 
             //var techRePublicBlogs = helper.GetTechRePublicRss(log);
             //await SaveTechRePublicBlogs(techRePublicBlogs, log);

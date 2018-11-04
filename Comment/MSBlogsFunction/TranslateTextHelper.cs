@@ -24,6 +24,10 @@ namespace MSBlogsFunction
         /// <returns></returns>
         public string TranslateText(string content, Provider provider = Provider.Google)
         {
+            if (string.IsNullOrEmpty(content))
+            {
+                return "";
+            }
             string seperator = "<!--divider-->";
             // TODO:拆分算法待优化通用。根据p标签的数量和长度去拆分。
             int maxNumber = 4800;
