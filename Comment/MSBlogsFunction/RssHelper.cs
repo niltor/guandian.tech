@@ -281,7 +281,17 @@ namespace MSBlogsFunction
             foreach (var item in feeds)
             {
                 var blogs = await GetMSBlogRss(item, log);
-                result.AddRange(blogs);
+                // 去重添加
+                if (blogs.Count > 0)
+                {
+                    foreach (var blog in blogs)
+                    {
+                        if (!result.Any(r => r.Title.Equals(blog.Title)))
+                        {
+                            result.Add(blog);
+                        }
+                    }
+                }
             }
 
             var technetFeeds = new string[]

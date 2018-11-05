@@ -26,6 +26,14 @@ namespace Guandian.Areas.Admin.Controllers
                 .Where(b => !string.IsNullOrEmpty(b.Content)
                 && b.IsPublishMP == false
                 && b.Status != Data.Entity.Status.Obsolete)
+                .Select(s => new Blog
+                {
+                    Title = s.Title,
+                    AuthorName = s.AuthorName,
+                    CreatedTime = s.CreatedTime,
+                    Status = s.Status,
+                    UpdatedTime = s.UpdatedTime
+                })
                 .OrderByDescending(n => n.UpdatedTime)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
