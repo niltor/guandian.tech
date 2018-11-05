@@ -8,9 +8,9 @@ namespace Guandian.Data.Entity
     /// </summary>
     public class Article : BaseDb
     {
-        [MaxLength(100)]
+        [MaxLength(200)]
         public string Title { get; set; }
-        [MaxLength(60)]
+        [MaxLength(120)]
         public string AuthorName { get; set; }
         public Author Author { get; set; }
         /// <summary>
@@ -33,7 +33,7 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// 概要
         /// </summary>
-        [MaxLength(500)]
+        [MaxLength(1000)]
         public string Summary { get; set; }
     }
 }

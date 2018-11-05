@@ -4,13 +4,10 @@ using System.Threading.Tasks;
 using Guandian.Areas.Admin.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
-using Guandian.Services;
 using Guandian.Utilities;
-using Markdig;
-using Markdig.SyntaxHighlighting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 //using MSDev.DB;
 //using MSDev.MetaWeblog;
 
@@ -97,6 +94,8 @@ namespace Guandian.Areas.Admin.Controllers
             var oldBlogs = _context.Blogs.OrderByDescending(b => b.CreatedTime)
                 .Take(50)
                 .ToList();
+
+            System.IO.File.WriteAllText("newblogs.json", JsonConvert.SerializeObject(blogs));
             foreach (var blog in blogs)
             {
                 if (oldBlogs.Any(b => b.TitleEn == blog.TitleEn)) continue;
