@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using Guandian.Data;
 using Guandian.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -105,31 +105,14 @@ namespace Guandian
                     options.ClientId = Configuration.GetSection("OAuth")["Github:ClientId"];
                     options.ClientSecret = Configuration.GetSection("OAuth")["Github:ClientSecret"];
                     options.ClaimActions.MapJsonKey("urn:github:avatar", "avatar_url");
-                    options.ClaimActions.MapJsonKey("urn:github:name", "name");
+                    options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
                     options.Scope.Add("read:user");
+                    options.Scope.Add("user:email");
                     options.SaveTokens = true;
 
                     options.Events = new OAuthEvents
                     {
-                        OnCreatingTicket = async context =>
-                        {
-                            var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
-                            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
 
-                            var response = await context.Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, context.HttpContext.RequestAborted);
-                            response.EnsureSuccessStatusCode();
-                            var user = JObject.Parse(await response.Content.ReadAsStringAsync());
-                            context.RunClaimActions(user);
-
-                            List<AuthenticationToken> tokens = context.Properties.GetTokens() as List<AuthenticationToken>;
-                            tokens.Add(new AuthenticationToken()
-                            {
-                                Name = "TicketCreated",
-                                Value = DateTime.UtcNow.ToString()
-                            });
-                            context.Properties.StoreTokens(tokens);
-                        }
                     };
                 });
 
