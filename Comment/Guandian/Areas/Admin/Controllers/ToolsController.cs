@@ -95,7 +95,6 @@ namespace Guandian.Areas.Admin.Controllers
                 .Take(50)
                 .ToList();
 
-            System.IO.File.WriteAllText("newblogs.json", JsonConvert.SerializeObject(blogs));
             foreach (var blog in blogs)
             {
                 if (oldBlogs.Any(b => b.TitleEn == blog.TitleEn)) continue;
