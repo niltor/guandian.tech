@@ -23,7 +23,7 @@ namespace MSBlogsFunction
 
             var helper = new RssHelper();
             var MSBlogs = await helper.GetAllBlogs(log);
-           await SaveMSBlogs(MSBlogs, log);
+            await SaveMSBlogs(MSBlogs, log);
 
             //var techRePublicBlogs = helper.GetTechRePublicRss(log);
             //await SaveTechRePublicBlogs(techRePublicBlogs, log);
@@ -118,7 +118,9 @@ namespace MSBlogsFunction
                     log.LogInformation("没有新增内容");
                     return;
                 }
-                blogs = blogs.Where(b => uniqueBlogs.Any(u => b.Title.Equals(u))).ToList();
+                blogs = blogs.Where(b => uniqueBlogs.Any(u => b.Title.Equals(u)) && b.Title != null)
+                    .ToList();
+
                 log.LogInformation("新增条数:" + uniqueBlogs?.Count + "\r\n" + string.Join(";\r\n", blogs.Select(b => b.Title).ToArray()));
 
                 if (blogs.Count > 0)

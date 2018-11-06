@@ -7,7 +7,6 @@ using Guandian.Data.Entity;
 using Guandian.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 //using MSDev.DB;
 //using MSDev.MetaWeblog;
 
@@ -76,20 +75,22 @@ namespace Guandian.Areas.Admin.Controllers
         public async Task<ActionResult> AddRssBlogs([FromBody]List<BlogForm> blogForms)
         {
             var blogs = new List<Blog>();
-            blogs = blogForms.Select(b => new Blog
-            {
-                AuthorName = b.AuthorName,
-                Categories = "BlogRss",
-                Content = b.Content,
-                ContentEn = b.ContentEn,
-                CreatedTime = b.CreatedTime,
-                Keywords = b.Categories,
-                Summary = b.Summary,
-                Link = b.Link,
-                Title = b.Title,
-                TitleEn = b.TitleEn,
-                Thumbnail = b.Thumbnail
-            }).ToList();
+            blogs = blogForms
+                .Where(b => !string.IsNullOrEmpty(b.Title))
+                .Select(b => new Blog
+                {
+                    AuthorName = b.AuthorName,
+                    Categories = "BlogRss",
+                    Content = b.Content,
+                    ContentEn = b.ContentEn,
+                    CreatedTime = b.CreatedTime,
+                    Keywords = b.Categories,
+                    Summary = b.Summary,
+                    Link = b.Link,
+                    Title = b.Title,
+                    TitleEn = b.TitleEn,
+                    Thumbnail = b.Thumbnail
+                }).ToList();
             // 插入前再去重
             var oldBlogs = _context.Blogs.OrderByDescending(b => b.CreatedTime)
                 .Take(50)
