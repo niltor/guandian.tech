@@ -23,16 +23,16 @@ namespace Guandian.Areas.Admin.Controllers
             page = page < 1 ? 1 : page;
             ViewBag.Page = page;
             var result = _context.Blogs
-                .Where(b => !string.IsNullOrEmpty(b.Content)
-                && b.IsPublishMP == false
-                && b.Status != Data.Entity.Status.Obsolete)
+                .Where(b => !string.IsNullOrEmpty(b.Content))
                 .Select(s => new Blog
                 {
                     Title = s.Title,
                     AuthorName = s.AuthorName,
                     CreatedTime = s.CreatedTime,
                     Status = s.Status,
-                    UpdatedTime = s.UpdatedTime
+                    UpdatedTime = s.UpdatedTime,
+                    Id = s.Id,
+                    IsPublishMP = s.IsPublishMP
                 })
                 .OrderByDescending(n => n.UpdatedTime)
                 .Skip((page - 1) * pageSize)
