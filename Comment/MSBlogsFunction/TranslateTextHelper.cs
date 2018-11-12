@@ -33,7 +33,7 @@ namespace MSBlogsFunction
             int maxNumber = 4800;
             if (content.Length > maxNumber)
             {
-                //分解 content
+                // 插入分隔符
                 content = addSeperator(content, 1);
             }
             // 内部方法，添加分隔符
@@ -88,7 +88,10 @@ namespace MSBlogsFunction
                 {
                     translation += GetTranslateAsync(item).Result;
                 }
-                translation += GetTranslateByGoogle(item).Result;
+                else
+                {
+                    translation += GetTranslateByGoogle(item).Result;
+                }
             }
             return translation;
         }
@@ -141,9 +144,18 @@ namespace MSBlogsFunction
             {
                 return default;
             }
-            var client = TranslationClient.CreateFromApiKey(SubScriptKey);
-            var response = await client.TranslateHtmlAsync(content, LanguageCodes.ChineseSimplified);
-            return response.TranslatedText;
+            try
+            {
+                var client = TranslationClient.CreateFromApiKey(SubScriptKey);
+                var response = await client.TranslateHtmlAsync(content, LanguageCodes.ChineseSimplified);
+                return response.TranslatedText;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error，长度：" + content.Length + "，内容:" + content);
+                return "";
+            }
+
         }
         public enum Provider
         {

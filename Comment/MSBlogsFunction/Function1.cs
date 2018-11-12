@@ -56,11 +56,10 @@ namespace MSBlogsFunction
 
                 if (blogs.Count > 0)
                 {
-
-                    try
+                    var intelligence = new IntelligenceHelper();
+                    foreach (var item in blogs)
                     {
-                        var intelligence = new IntelligenceHelper();
-                        foreach (var item in blogs)
+                        try
                         {
                             var thumbnail = await intelligence.GetImageFromTextAsync(item.Title);
                             //var thumbnail = "";
@@ -78,28 +77,24 @@ namespace MSBlogsFunction
                                 CreatedTime = item.CreateTime,
                                 Thumbnail = thumbnail
                             };
-                            var tobeAddBlogs = new List<BlogForm>
-                            {
-                                blogForm
-                            };
+                            var tobeAddBlogs = new List<BlogForm> { blogForm };
                             response = await hc.PostAsJsonAsync(baseApi + "admin/tools/AddRssBlogs", tobeAddBlogs);
                             if (response.IsSuccessStatusCode)
                             {
                                 var result = await response.Content.ReadAsStringAsync();
+                                log.LogInformation("成功:" + item.Title);
                             }
                             else
                             {
                                 log.LogError(response.StatusCode + response.ReasonPhrase);
                             }
                         }
+                        catch (Exception e)
+                        {
+                            log.LogError(e.Message + e.StackTrace + e.InnerException.ToString());
+                        }
                     }
-                    catch (Exception e)
-                    {
-
-                    }
-
                 }
-
             }
         }
     }

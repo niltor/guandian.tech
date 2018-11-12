@@ -19,6 +19,16 @@ namespace Guandian.Controllers
         {
             var blogs = _context.Blogs
                 .OrderByDescending(n => n.UpdatedTime)
+                .Select(b => new Blog
+                {
+                    AuthorName = b.AuthorName,
+                    Summary = b.Summary,
+                    CreatedTime = b.CreatedTime,
+                    Title = b.Title,
+                    UpdatedTime = b.UpdatedTime,
+                    Id = b.Id,
+                    Link = b.Link
+                })
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
