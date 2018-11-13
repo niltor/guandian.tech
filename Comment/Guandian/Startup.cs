@@ -107,6 +107,7 @@ namespace Guandian
                     options.ClaimActions.MapJsonKey("urn:github:avatar", "avatar_url");
                     options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
                     options.Scope.Add("read:user");
+                    options.Scope.Add("public_repo");
                     options.Scope.Add("user:email");
                     options.SaveTokens = true;
 

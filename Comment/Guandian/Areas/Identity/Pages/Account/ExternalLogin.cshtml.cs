@@ -79,7 +79,7 @@ namespace Guandian.Areas.Identity.Pages.Account
             {
                 // 存储token后重登录
                 var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-                await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:name"));
+                await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
                 await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
                 await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
 
@@ -132,7 +132,7 @@ namespace Guandian.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         // 添加第三方登录信息
-                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:name"));
+                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
                         await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
                         await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
 
