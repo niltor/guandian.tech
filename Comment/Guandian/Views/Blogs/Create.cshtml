@@ -5,39 +5,37 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="Create" id="form">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Keywords" class="control-label"></label>
-                <input asp-for="Keywords" class="form-control" />
-                <span asp-validation-for="Keywords" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Summary" class="control-label"></label>
-                <input asp-for="Summary" class="form-control" />
-                <span asp-validation-for="Summary" class="text-danger"></span>
-            </div>
-            <div id="editSection"></div>
-            <div>
-                <textarea asp-for="Content" style="display:none" id="content"></textarea>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="添加" class="btn btn-default" id="addArticle"/>
-            </div>
-        </form>
+<form asp-action="Create" id="form" class="row">
+    @* 分类等 *@
+    <div class="col-md-auto px-1" style="width:300px">
+        <div class="form-group">
+            <select class="form-control">
+                <option value="value">目录</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input asp-for="Title" class="form-control" placeholder="标题" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Keywords" class="form-control" placeholder="关键词" />
+        </div>
+        <div class="form-group">
+            <input asp-for="Summary" class="form-control" placeholder="一句话描述" multiple/>
+        </div>
+   
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="col-md-8">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div id="editSection"></div>
+        <div>
+            <textarea asp-for="Content" style="display:none" id="content"></textarea>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="添加" class="btn btn-default" id="addArticle" />
+        </div>
+    </div>
+</form>
 <header>
     <link href="~/lib/codemirror/lib/codemirror.css" rel="stylesheet" />
     <link href="~/lib/highlightjs/styles/github-gist.css" rel="stylesheet" />

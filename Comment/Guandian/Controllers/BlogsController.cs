@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Guandian.Data;
 using Guandian.Data.Entity;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,6 @@ namespace Guandian.Controllers
     public class BlogsController : Controller
     {
         readonly ApplicationDbContext _context;
-
         public BlogsController(ApplicationDbContext context)
         {
             _context = context;
@@ -48,6 +48,8 @@ namespace Guandian.Controllers
 
         public IActionResult Create()
         {
+            var _token = HttpContext.GetTokenAsync("access_token").Result;
+            Console.WriteLine(_token); 
             return View();
         }
 

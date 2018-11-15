@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Guandian.Data.Entity
@@ -33,5 +34,13 @@ namespace Guandian.Data.Entity
         [MaxLength(200)]
         [Display(Name = "路径")]
         public string Path { get; set; }
+        /// <summary>
+        /// 父结点
+        /// </summary>
+        public FileNode ParentNode { get; set; }
+        /// <summary>
+        /// 子节点
+        /// </summary>
+        public ICollection<FileNode> ChildrenNodes { get; set; }
     }
 }

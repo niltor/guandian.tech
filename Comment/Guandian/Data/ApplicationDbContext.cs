@@ -20,6 +20,10 @@ namespace Guandian.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<FileNode>()
+                .HasOne(f => f.ParentNode)
+                .WithMany(p => p.ChildrenNodes);
+
             base.OnModelCreating(builder);
         }
     }
