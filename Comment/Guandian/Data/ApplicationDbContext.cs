@@ -26,5 +26,7 @@ namespace Guandian.Data
 
             base.OnModelCreating(builder);
         }
+
+        public DbSet<Guandian.Data.Entity.Practknow> Practknow { get; set; }
     }
 }

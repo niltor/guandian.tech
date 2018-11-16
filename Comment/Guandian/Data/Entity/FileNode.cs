@@ -42,5 +42,9 @@ namespace Guandian.Data.Entity
         /// 子节点
         /// </summary>
         public ICollection<FileNode> ChildrenNodes { get; set; }
+        /// <summary>
+        /// 践识
+        /// </summary>
+        public ICollection<Practknow> Practknows { get; set; }
     }
 }

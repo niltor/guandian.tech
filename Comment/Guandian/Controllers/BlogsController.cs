@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Guandian.Controllers
 {
+    //[Authorize(Policy = "GitHub")]
     public class BlogsController : Controller
     {
         readonly ApplicationDbContext _context;

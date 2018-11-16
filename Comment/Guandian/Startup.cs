@@ -93,7 +93,9 @@ namespace Guandian
             // 添加policy角色
             services.AddAuthorization(options =>
             {
+                // TODO:相应绑定注册逻辑需要添加角色
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("GitHub", policy => policy.RequireRole("GitHub"));
                 options.AddPolicy("RealName", policy => policy.RequireRole("RealName"));
                 options.AddPolicy("Guest", policy => policy.RequireRole("Guest"));
             });

@@ -4,14 +4,16 @@ using Guandian.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Guandian.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181116055308_FileNode")]
+    partial class FileNode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,15 +71,7 @@ namespace Guandian.Data.Migrations
 
                     b.Property<string>("AuthorId");
 
-                    b.Property<string>("Content")
-                        .HasMaxLength(1000);
-
                     b.Property<DateTime>("CreatedTime");
-
-                    b.Property<string>("Link")
-                        .HasMaxLength(500);
-
-                    b.Property<Guid?>("PractknowId");
 
                     b.Property<int>("Status");
 
@@ -88,8 +82,6 @@ namespace Guandian.Data.Migrations
                     b.HasIndex("ArticleId");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("PractknowId");
 
                     b.ToTable("Comments");
                 });
@@ -167,46 +159,6 @@ namespace Guandian.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("News");
-                });
-
-            modelBuilder.Entity("Guandian.Data.Entity.Practknow", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("AuthorId");
-
-                    b.Property<string>("AuthorName")
-                        .HasMaxLength(120);
-
-                    b.Property<string>("Content");
-
-                    b.Property<DateTime>("CreatedTime");
-
-                    b.Property<Guid?>("FileNodeId");
-
-                    b.Property<string>("Keywords")
-                        .HasMaxLength(200);
-
-                    b.Property<int>("Status");
-
-                    b.Property<string>("Summary")
-                        .HasMaxLength(1000);
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(200);
-
-                    b.Property<DateTime>("UpdatedTime");
-
-                    b.Property<int>("ViewNunmber");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("FileNodeId");
-
-                    b.ToTable("Practknow");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -434,10 +386,6 @@ namespace Guandian.Data.Migrations
                     b.HasOne("Guandian.Data.Entity.Author", "Author")
                         .WithMany("Comments")
                         .HasForeignKey("AuthorId");
-
-                    b.HasOne("Guandian.Data.Entity.Practknow", "Practknow")
-                        .WithMany("Comments")
-                        .HasForeignKey("PractknowId");
                 });
 
             modelBuilder.Entity("Guandian.Data.Entity.FileNode", b =>
@@ -445,17 +393,6 @@ namespace Guandian.Data.Migrations
                     b.HasOne("Guandian.Data.Entity.FileNode", "ParentNode")
                         .WithMany("ChildrenNodes")
                         .HasForeignKey("ParentNodeId");
-                });
-
-            modelBuilder.Entity("Guandian.Data.Entity.Practknow", b =>
-                {
-                    b.HasOne("Guandian.Data.Entity.Author", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
-
-                    b.HasOne("Guandian.Data.Entity.FileNode", "FileNode")
-                        .WithMany("Practknows")
-                        .HasForeignKey("FileNodeId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
