@@ -11,13 +11,19 @@ namespace Guandian.Data
         public DbSet<Entity.Comment> Comments { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<Blog> Blogs { get; set; }
-
+        /// <summary>
+        /// 践识
+        /// </summary>
+        public DbSet<Practknow> Practknows { get; set; }
+        /// <summary>
+        /// 文件节点
+        /// </summary>
+        public DbSet<FileNode> FileNodes { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
 
         }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<FileNode>()

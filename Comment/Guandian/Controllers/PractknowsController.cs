@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Guandian.Data;
 using Guandian.Data.Entity;
+using Guandian.Models.PractknowView;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Guandian.Controllers
 {
@@ -19,9 +19,29 @@ namespace Guandian.Controllers
             _context = context;
         }
 
-        // GET: Practknows
-        public async Task<IActionResult> Index()
+        public async Task<ActionResult<PractknowIndexView>> Index(Guid? nodeId = null)
         {
+            var nodeTree = new List<FileNode>();
+            var currentNodes = new List<FileNode>();
+            var practknow = new Practknow();
+            if (nodeId != null)
+            {
+                var currentNode = await _context.FileNodes
+                    .Include(f => f.ParentNode)
+                    .SingleOrDefaultAsync(f => f.Id == nodeId);
+                if (currentNode == null) return View(default);
+                // 如果是文件夹
+                if (!currentNode.IsFile)
+                {
+                    currentNodes = _context.FileNodes.Where(f => f.ParentNode == currentNode).ToList();
+                }
+                // TODO 待处理
+                practknow = await _context.Practknow.SingleOrDefaultAsync(p => p.FileNode == currentNode);
+            }
+            else
+            {
+
+            }
             return View(await _context.Practknow.ToListAsync());
         }
 
