@@ -34,15 +34,16 @@ namespace MSBlogsFunction
             if (content.Length > maxNumber)
             {
                 // 插入分隔符
-                content = addSeperator(content, 1);
+                content = addSeperator(content, 0);
             }
             // 内部方法，添加分隔符
             string addSeperator(string str, int tagLevel)
             {
-                if (tagLevel > 5) return str; //避免无限递归
+                if (tagLevel > 5) return str;
+                var tags = new string[] { "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "<p></p>" };
                 var result = "";
                 // 以标题标签分隔
-                var tag = $"</h{tagLevel}>";
+                var tag = tags[tagLevel];
                 if (str.Contains(tag))
                 {
                     str = str.Replace(tag, tag + seperator);
@@ -61,19 +62,6 @@ namespace MSBlogsFunction
                 else
                 {
                     result = addSeperator(str, tagLevel + 1);
-                }
-                // 没有标签以空行分隔
-                if (result.Length > maxNumber)
-                {
-                    tag = "<p></p>";
-                    str = str.Replace(tag, tag + seperator);
-                    var contentParts = str.Split(new string[] { tag }, StringSplitOptions.None);
-                    foreach (var item in contentParts)
-                    {
-                        var row = item + tag;
-                        result += row;
-                    }
-                    return result;
                 }
                 return result;
             }
