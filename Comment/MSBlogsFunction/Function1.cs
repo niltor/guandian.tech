@@ -91,7 +91,7 @@ namespace MSBlogsFunction
                         }
                         catch (Exception e)
                         {
-                            log.LogError(e.Message + e.StackTrace + e.InnerException.ToString());
+                            log.LogError(e.Message + e.StackTrace + e.InnerException?.Message);
                         }
                     }
                 }
