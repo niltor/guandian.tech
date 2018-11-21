@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using MSBlogsFunction.Entity;
@@ -78,6 +79,9 @@ namespace MSBlogsFunction.RssFeeds
                                 .Select(s => s.Value)
                                 .ToArray();
                             var description = x.Element(Description)?.Value;
+                            // 去除html标签
+                            //description = Regex.Replace(description, "<.*?>", String.Empty);
+
                             if (!string.IsNullOrEmpty(description))
                             {
                                 if (description.Length > 999)
