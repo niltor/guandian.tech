@@ -47,14 +47,12 @@ namespace Guandian.Controllers
             var blog = _context.Blogs.Where(n => n.Id == id).FirstOrDefault();
             return View(blog);
         }
-
         public IActionResult Create()
         {
             var _token = HttpContext.GetTokenAsync("access_token").Result;
             Console.WriteLine(_token); 
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,AuthorName,ViewNunmber,Content,Keywords,Summary,Id,CreatedTime,UpdatedTime,Status")] Article article)
@@ -68,7 +66,6 @@ namespace Guandian.Controllers
             }
             return View(article);
         }
-
         // GET: News/Edit/5
         public ActionResult Edit(int id)
         {
