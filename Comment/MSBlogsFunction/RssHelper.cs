@@ -50,7 +50,7 @@ namespace MSBlogsFunction
                         .Where(e => !e.Element("link").Value.Contains("videos"))
                         .Select(s =>
                         {
-                            // TODO:格式处理
+                            // 格式处理
                             DateTime createTime = DateTime.Now;
                             var createTimeString = s.Element("pubDate").Value;
                             if (!string.IsNullOrEmpty(createTimeString))

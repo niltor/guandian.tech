@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
@@ -30,7 +31,7 @@ namespace Guandian.Data.Entity
         [DataType(DataType.Date)]
         [PersonalData]
         public DateTime Birthday { get; set; }
-
+        public ICollection<Respository> Respositories{ get; set; }
 
     }
 }

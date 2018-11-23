@@ -19,6 +19,7 @@ namespace Guandian.Data
         /// 文件节点
         /// </summary>
         public DbSet<FileNode> FileNodes { get; set; }
+        public DbSet<Respository> Respositories { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -30,6 +31,9 @@ namespace Guandian.Data
                 .HasOne(f => f.ParentNode)
                 .WithMany(p => p.ChildrenNodes);
 
+            builder.Entity<Respository>()
+                .HasIndex(r => r.Tag)
+                .IsUnique();
             base.OnModelCreating(builder);
         }
 
