@@ -1,6 +1,4 @@
 using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using Guandian.Data;
 using Guandian.Services;
@@ -19,7 +17,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 //using MSDev.DB;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
@@ -39,7 +36,6 @@ namespace Guandian
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // 配置项
@@ -126,21 +122,15 @@ namespace Guandian
                      options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                  }); ;
 
-            services.AddMemoryCache();//使用本地缓存必须添加
-            services.AddSession();//使用Session
-                                  // 微信相关配置
+            services.AddMemoryCache();// 使用本地缓存必须添加
+            services.AddSession();// 使用Session
+            services.AddSingleton(typeof(GithubService));
 
-            /*
-             * CO2NET 是从 Senparc.Weixin 分离的底层公共基础模块，经过了长达 6 年的迭代优化，稳定可靠。
-             * 关于 CO2NET 在所有项目中的通用设置可参考 CO2NET 的 Sample：
-             * https://github.com/Senparc/Senparc.CO2NET/blob/master/Sample/Senparc.CO2NET.Sample.netcore/Startup.cs
-             */
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
                     .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting)
         {
             if (env.IsDevelopment())

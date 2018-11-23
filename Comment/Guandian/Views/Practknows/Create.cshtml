@@ -1,23 +1,16 @@
-@model Guandian.Data.Entity.Practknow
+@model Guandian.Models.Forms.AddPractknowForm
 
 @{
     ViewData["Title"] = "分享践识";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var navNodes = ViewBag.NavNodes;
 }
 @* 目录分类 *@
 <div class="col-md-auto px-1">
-    @if (navNodes != null)
-    {
-        foreach (var node in navNodes)
-        {
-
-        }
-    }
+    @ViewBag.NavHtml
 </div>
 <form asp-action="Create" id="form" class="row">
     <div class="col-md">
-        <input type="hidden" name="NodeId" value="" />
+        <input type="hidden" asp-for="NodeId" />
         <span asp-validation-for="Summary" class="text-danger"></span>
         <div class="form-group form-inline">
             <input asp-for="Title" class="col-md form-control" placeholder="标题" />

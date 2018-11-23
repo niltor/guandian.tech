@@ -4,19 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Guandian.Data;
 using Guandian.Data.Entity;
+using Guandian.Models.Forms;
 using Guandian.Models.PractknowView;
+using Guandian.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Guandian.Controllers
 {
-    public class PractknowsController : Controller
+    public class PractknowsController : BaseController
     {
-        private readonly ApplicationDbContext _context;
+        readonly GithubService _github;
 
-        public PractknowsController(ApplicationDbContext context)
+        public PractknowsController(ApplicationDbContext context, GithubService github, UserManager<User> userManager) : base(userManager, context)
         {
-            _context = context;
+            _github = github;
         }
 
         [HttpGet]
@@ -75,19 +78,64 @@ namespace Guandian.Controllers
         public IActionResult Create()
         {
             // 查询目录
-            var navNodes = _context.FileNodes.Where(f => f.IsFile == false).ToList();
-            ViewBag.NavNodes = navNodes;
+            var navNodes = _context.FileNodes.Where(f => f.IsFile == false)
+                .Where(f => f.ParentNode == null)
+                .Include(f => f.ChildrenNodes)
+                .ToList();
+            string navHtml = "";
+            foreach (var node in navNodes)
+            {
+                navHtml += BuildNavHtml(node);
+            }
+            ViewBag.NavHtml = navHtml;
             return View();
+        }
+
+        /// <summary>
+        /// 构建导航菜单
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public string BuildNavHtml(FileNode node)
+        {
+            string result = "";
+            if (node.ChildrenNodes != null && node.ChildrenNodes.Count > 0)
+            {
+                result = $"<ul id='{node.Id}'>{node.FileName}";
+                foreach (var childnode in node.ChildrenNodes)
+                {
+                    result += BuildNavHtml(childnode);
+                }
+                result += "</ul>";
+            }
+            else
+            {
+                result = $"<li id='{node.Id}'>{node.FileName}</li>";
+            }
+            return result;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,AuthorName,ViewNunmber,Content,Keywords,Summary,Id,CreatedTime,UpdatedTime,Status")] Practknow practknow)
+        public async Task<IActionResult> Create(AddPractknowForm practknow)
         {
             if (ModelState.IsValid)
             {
-                practknow.Id = Guid.NewGuid();
-                _context.Add(practknow);
+                // 添加新内容
+                var newPractknow = new Practknow
+                {
+                    Title = practknow.Title,
+                    Keywords = practknow.Keywords,
+                    Summary = practknow.Summary,
+                    Content = practknow.Content
+                };
+                _context.Add(newPractknow);
+                // TODO 同步到github，获取fileNode信息
+
+                // TODO 查询用户fork的仓库名，若无fork，则fork。
+                var currentUser = await _userManager.GetUserAsync(User);
+                var forkResult = await _github.ForkAsync();
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
