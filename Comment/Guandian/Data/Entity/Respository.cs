@@ -5,7 +5,7 @@ namespace Guandian.Data.Entity
     /// <summary>
     /// 用户仓库
     /// </summary>
-    public class Respository
+    public class Respository : BaseDb
     {
         /// <summary>
         /// 仓库名称
