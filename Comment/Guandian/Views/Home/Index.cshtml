@@ -15,14 +15,18 @@
             var Url = HttpUtility.ParseQueryString(new Uri(bingNews.Url).Query);
             <div class="row news-list bg-white mb-2 p-1">
                 <div class="col-md-auto d-md-flex d-none mt-2">
-                    <a asp-controller="news" asp-action="detail" asp-route-id="@bingNews.Id" target="_blank">
-                        <img class="bingnews img-thumbnail" src="@bingNews.ThumbnailUrl" alt="">
-                    </a>
+
+                    <img class="bingnews img-thumbnail" src="@bingNews.ThumbnailUrl" alt="">
+
                 </div>
                 <div class="content col-md-8">
                     <div class="news-title">
+                        <a href="@bingNews.Url" target="_blank">@bingNews.Title</a>
+                        &nbsp;
                         <a asp-controller="news" asp-action="detail" asp-route-id="@bingNews.Id" target="_blank">
-                            @bingNews.Title
+                            <small>
+                                <span class="badge badge-primary">阅读模式</span>
+                            </small>
                         </a>
                     </div>
                     <div class="news-sectitle">
