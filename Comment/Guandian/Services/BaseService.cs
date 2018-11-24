@@ -4,7 +4,7 @@ namespace Guandian.Services
 {
     public class BaseService
     {
-        readonly ILogger _logger;
+        protected readonly ILogger _logger;
 
         public BaseService(ILogger logger)
         {

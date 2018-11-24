@@ -17,7 +17,7 @@ namespace Guandian.Controllers
     {
         readonly GithubService _github;
 
-        public PractknowsController(ApplicationDbContext context, GithubService github, UserManager<User> userManager) : base(userManager, context)
+        public PractknowsController(ApplicationDbContext context, GithubService github, UserManager<IdentityUser> userManager) : base(userManager, context)
         {
             _github = github;
         }

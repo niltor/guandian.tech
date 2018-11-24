@@ -11,13 +11,16 @@ namespace Guandian.Services
     {
         readonly string _token;
         readonly GitHubClient _client;
-        public GithubService(IHttpContextAccessor httpContext, ILogger logger) : base(logger)
+        public GithubService(IHttpContextAccessor httpContext, ILogger<GithubService> logger) : base(logger)
         {
             _token = httpContext.HttpContext.GetTokenAsync("access_token").Result;
-            _client = new GitHubClient(new ProductHeaderValue("TechViews"))
+            if (_token != null)
             {
-                Credentials = new Credentials(_token)
-            };
+                _client = new GitHubClient(new ProductHeaderValue("TechViews"))
+                {
+                    Credentials = new Credentials(_token)
+                };
+            }
         }
 
         /// <summary>

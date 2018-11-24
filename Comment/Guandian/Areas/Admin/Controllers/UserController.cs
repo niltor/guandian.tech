@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,9 +14,9 @@ namespace Guandian.Areas.Admin.Controllers
 
     public class UserController : CommonController
     {
-        readonly UserManager<IdentityUser> _userManager;
+        readonly UserManager<User> _userManager;
         readonly ApplicationDbContext _context;
-        public UserController(UserManager<IdentityUser> userManager, ApplicationDbContext context)
+        public UserController(UserManager<User> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
@@ -53,7 +52,7 @@ namespace Guandian.Areas.Admin.Controllers
                 });
 
                 // 添加用户
-                var newUser = new IdentityUser()
+                var newUser = new User()
                 {
                     Email = email,
                     UserName = email,
