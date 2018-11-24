@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "文章";
 }
-<table class="table table-bordered table-striped">
+<table class="table">
     <thead>
         <tr>
             <th>
@@ -12,7 +12,7 @@
                 作者
             </th>
             <th>
-                创建时间
+                更新时间
             </th>
             <th>
                 状态
@@ -35,12 +35,11 @@
                     @Html.DisplayFor(modelItem => item.AuthorName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreatedTime)
+                    @Html.DisplayFor(modelItem => item.UpdatedTime)
                 </td>
                 <td>
                     @if ((item.IsPublishMP))
                     {
-
                         <span class="badge badge-success">推</span>
                     }
                     @if (item.Status == Guandian.Data.Entity.Status.Obsolete)

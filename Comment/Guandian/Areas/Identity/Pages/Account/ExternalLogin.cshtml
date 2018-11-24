@@ -1,17 +1,14 @@
-﻿@page
+@page
 @model ExternalLoginModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "确认账号";
 }
 
-<h2>@ViewData["Title"]</h2>
-<h4>Associate your @Model.LoginProvider account.</h4>
+<h4>确认您的 @Model.LoginProvider 账号</h4>
 <hr />
 
 <p class="text-info">
-    You've successfully authenticated with <strong>@Model.LoginProvider</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
+    您已成功通过<strong>@Model.LoginProvider</strong>认证，请确认您的邮箱地址，邮箱将作为本站登录账号。
 </p>
 
 <div class="row">
@@ -19,11 +16,11 @@
         <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Input.Email"></label>
+                <label asp-for="Input.Email">邮箱</label>
                 <input asp-for="Input.Email" class="form-control" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-default">Register</button>
+            <button type="submit" class="btn btn-default">确认</button>
         </form>
     </div>
 </div>

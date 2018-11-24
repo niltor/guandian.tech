@@ -31,7 +31,6 @@ namespace MSDev.MetaWeblog.XmlRPC
                 return new DateTimeValue(dt);
             }
 
-            /// TODO: what is Z for?
             var date = parent.Value.Trim('Z');// remove Z from SharePoint date
 
             var x = System.DateTime.ParseExact(date, "yyyyMMddTHH:mm:ss", null);

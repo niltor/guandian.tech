@@ -33,16 +33,17 @@ namespace MSBlogsFunction
             int maxNumber = 4800;
             if (content.Length > maxNumber)
             {
-                //分解 content
-                content = addSeperator(content, 1);
+                // 插入分隔符
+                content = addSeperator(content, 0);
             }
             // 内部方法，添加分隔符
             string addSeperator(string str, int tagLevel)
             {
-                if (tagLevel > 5) return str; //避免无限递归
+                if (tagLevel > 5) return str;
+                var tags = new string[] { "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "<p></p>" };
                 var result = "";
                 // 以标题标签分隔
-                var tag = $"</h{tagLevel}>";
+                var tag = tags[tagLevel];
                 if (str.Contains(tag))
                 {
                     str = str.Replace(tag, tag + seperator);
@@ -62,19 +63,6 @@ namespace MSBlogsFunction
                 {
                     result = addSeperator(str, tagLevel + 1);
                 }
-                // 没有标签以空行分隔
-                if (result.Length > maxNumber)
-                {
-                    tag = "<p></p>";
-                    str = str.Replace(tag, tag + seperator);
-                    var contentParts = str.Split(new string[] { tag }, StringSplitOptions.None);
-                    foreach (var item in contentParts)
-                    {
-                        var row = item + tag;
-                        result += row;
-                    }
-                    return result;
-                }
                 return result;
             }
 
@@ -88,7 +76,10 @@ namespace MSBlogsFunction
                 {
                     translation += GetTranslateAsync(item).Result;
                 }
-                translation += GetTranslateByGoogle(item).Result;
+                else
+                {
+                    translation += GetTranslateByGoogle(item).Result;
+                }
             }
             return translation;
         }
@@ -141,9 +132,18 @@ namespace MSBlogsFunction
             {
                 return default;
             }
-            var client = TranslationClient.CreateFromApiKey(SubScriptKey);
-            var response = await client.TranslateHtmlAsync(content, LanguageCodes.ChineseSimplified);
-            return response.TranslatedText;
+            try
+            {
+                var client = TranslationClient.CreateFromApiKey(SubScriptKey);
+                var response = await client.TranslateHtmlAsync(content, LanguageCodes.ChineseSimplified);
+                return response.TranslatedText;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error，长度：" + content.Length + "，内容:" + content);
+                return "";
+            }
+
         }
         public enum Provider
         {

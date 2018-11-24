@@ -27,7 +27,7 @@ namespace Guandian.Data.Migrations
                     b.Property<string>("AuthorId");
 
                     b.Property<string>("AuthorName")
-                        .HasMaxLength(60);
+                        .HasMaxLength(120);
 
                     b.Property<string>("Content");
 
@@ -42,10 +42,10 @@ namespace Guandian.Data.Migrations
                     b.Property<int>("Status");
 
                     b.Property<string>("Summary")
-                        .HasMaxLength(500);
+                        .HasMaxLength(1000);
 
                     b.Property<string>("Title")
-                        .HasMaxLength(100);
+                        .HasMaxLength(200);
 
                     b.Property<DateTime>("UpdatedTime");
 
@@ -69,7 +69,15 @@ namespace Guandian.Data.Migrations
 
                     b.Property<string>("AuthorId");
 
+                    b.Property<string>("Content")
+                        .HasMaxLength(1000);
+
                     b.Property<DateTime>("CreatedTime");
+
+                    b.Property<string>("Link")
+                        .HasMaxLength(500);
+
+                    b.Property<Guid?>("PractknowId");
 
                     b.Property<int>("Status");
 
@@ -81,7 +89,43 @@ namespace Guandian.Data.Migrations
 
                     b.HasIndex("AuthorId");
 
+                    b.HasIndex("PractknowId");
+
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Guandian.Data.Entity.FileNode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedTime");
+
+                    b.Property<string>("FileName")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("GithubLink")
+                        .HasMaxLength(500);
+
+                    b.Property<bool>("IsFile");
+
+                    b.Property<Guid?>("ParentNodeId");
+
+                    b.Property<string>("Path")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("SHA")
+                        .HasMaxLength(200);
+
+                    b.Property<int>("Status");
+
+                    b.Property<DateTime>("UpdatedTime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentNodeId");
+
+                    b.ToTable("FileNodes");
                 });
 
             modelBuilder.Entity("Guandian.Data.Entity.News", b =>
@@ -123,6 +167,76 @@ namespace Guandian.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("News");
+                });
+
+            modelBuilder.Entity("Guandian.Data.Entity.Practknow", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AuthorId");
+
+                    b.Property<string>("AuthorName")
+                        .HasMaxLength(120);
+
+                    b.Property<string>("Content");
+
+                    b.Property<DateTime>("CreatedTime");
+
+                    b.Property<Guid?>("FileNodeId");
+
+                    b.Property<string>("Keywords")
+                        .HasMaxLength(200);
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Summary")
+                        .HasMaxLength(1000);
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(200);
+
+                    b.Property<DateTime>("UpdatedTime");
+
+                    b.Property<int>("ViewNunmber");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("FileNodeId");
+
+                    b.ToTable("Practknow");
+                });
+
+            modelBuilder.Entity("Guandian.Data.Entity.Respository", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedTime");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100);
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Tag")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("UpdatedTime");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Tag")
+                        .IsUnique()
+                        .HasFilter("[Tag] IS NOT NULL");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Respositories");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -309,14 +423,14 @@ namespace Guandian.Data.Migrations
                         .HasMaxLength(200);
 
                     b.Property<string>("TitleEn")
-                        .HasMaxLength(200);
+                        .HasMaxLength(300);
 
                     b.ToTable("Blog");
 
                     b.HasDiscriminator().HasValue("Blog");
                 });
 
-            modelBuilder.Entity("Guandian.Data.Entity.Author", b =>
+            modelBuilder.Entity("Guandian.Data.Entity.User", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -325,9 +439,21 @@ namespace Guandian.Data.Migrations
                     b.Property<string>("IdentityCard")
                         .HasMaxLength(18);
 
-                    b.Property<string>("NickName");
+                    b.Property<string>("NickName")
+                        .HasMaxLength(100);
 
-                    b.Property<string>("RealName");
+                    b.Property<string>("RealName")
+                        .HasMaxLength(100);
+
+                    b.ToTable("User");
+
+                    b.HasDiscriminator().HasValue("User");
+                });
+
+            modelBuilder.Entity("Guandian.Data.Entity.Author", b =>
+                {
+                    b.HasBaseType("Guandian.Data.Entity.User");
+
 
                     b.ToTable("Author");
 
@@ -350,6 +476,35 @@ namespace Guandian.Data.Migrations
                     b.HasOne("Guandian.Data.Entity.Author", "Author")
                         .WithMany("Comments")
                         .HasForeignKey("AuthorId");
+
+                    b.HasOne("Guandian.Data.Entity.Practknow", "Practknow")
+                        .WithMany("Comments")
+                        .HasForeignKey("PractknowId");
+                });
+
+            modelBuilder.Entity("Guandian.Data.Entity.FileNode", b =>
+                {
+                    b.HasOne("Guandian.Data.Entity.FileNode", "ParentNode")
+                        .WithMany("ChildrenNodes")
+                        .HasForeignKey("ParentNodeId");
+                });
+
+            modelBuilder.Entity("Guandian.Data.Entity.Practknow", b =>
+                {
+                    b.HasOne("Guandian.Data.Entity.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
+                    b.HasOne("Guandian.Data.Entity.FileNode", "FileNode")
+                        .WithMany("Practknows")
+                        .HasForeignKey("FileNodeId");
+                });
+
+            modelBuilder.Entity("Guandian.Data.Entity.Respository", b =>
+                {
+                    b.HasOne("Guandian.Data.Entity.User", "User")
+                        .WithMany("Respositories")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -1,16 +1,19 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Guandian.Data;
 using Guandian.Data.Entity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Guandian.Controllers
 {
+    //[Authorize(Policy = "GitHub")]
     public class BlogsController : Controller
     {
         readonly ApplicationDbContext _context;
-
         public BlogsController(ApplicationDbContext context)
         {
             _context = context;
@@ -19,6 +22,16 @@ namespace Guandian.Controllers
         {
             var blogs = _context.Blogs
                 .OrderByDescending(n => n.UpdatedTime)
+                .Select(b => new Blog
+                {
+                    AuthorName = b.AuthorName,
+                    Summary = b.Summary,
+                    CreatedTime = b.CreatedTime,
+                    Title = b.Title,
+                    UpdatedTime = b.UpdatedTime,
+                    Id = b.Id,
+                    Link = b.Link
+                })
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -34,44 +47,37 @@ namespace Guandian.Controllers
             var blog = _context.Blogs.Where(n => n.Id == id).FirstOrDefault();
             return View(blog);
         }
-
-        // GET: News/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
+            var _token = HttpContext.GetTokenAsync("access_token").Result;
+            Console.WriteLine(_token); 
             return View();
         }
-
-        // POST: News/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create([Bind("Title,AuthorName,ViewNunmber,Content,Keywords,Summary,Id,CreatedTime,UpdatedTime,Status")] Article article)
         {
-            try
+            if (ModelState.IsValid)
             {
-                // TODO: Add insert logic here
-
+                article.Id = Guid.NewGuid();
+                _context.Add(article);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(article);
         }
-
         // GET: News/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: News/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
         {
             try
             {
-                // TODO: Add update logic here
 
                 return RedirectToAction(nameof(Index));
             }
@@ -81,20 +87,17 @@ namespace Guandian.Controllers
             }
         }
 
-        // GET: News/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: News/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
-                // TODO: Add delete logic here
 
                 return RedirectToAction(nameof(Index));
             }

@@ -72,18 +72,13 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
             {
                 Console.WriteLine("no Authenticated");
             }
-
-
-
             Username = userName;
             Input = new InputModel
             {
                 Email = email,
                 PhoneNumber = phoneNumber
             };
-
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
-
             return Page();
         }
 

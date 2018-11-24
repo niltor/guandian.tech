@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
@@ -13,11 +14,13 @@ namespace Guandian.Data.Entity
         /// 姓名
         /// </summary>
         [PersonalData]
+        [MaxLength(100)]
         public string RealName { get; set; }
         /// <summary>
         /// 昵称
         /// </summary>
         [PersonalData]
+        [MaxLength(100)]
         public string NickName { get; set; }
         /// <summary>
         /// 身份证号
@@ -28,5 +31,7 @@ namespace Guandian.Data.Entity
         [DataType(DataType.Date)]
         [PersonalData]
         public DateTime Birthday { get; set; }
+        public ICollection<Respository> Respositories{ get; set; }
+
     }
 }

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -72,17 +73,19 @@ namespace Guandian.Areas.Identity.Pages.Account
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
-            // Sign in the user with this external login provider if the user already has a login.
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
 
             if (result.Succeeded)
             {
-                // TODO： 处理添加逻辑  https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/social/additional-claims?view=aspnetcore-2.1
-                var user = await _userManager.FindByLoginAsync(info.LoginProvider,
-                    info.ProviderKey);
+                // 存储token后重登录
+                var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
+                await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
+                await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
 
-                //var props = new AuthenticationProperties();
-                //props.StoreTokens(info.AuthenticationTokens);
+                var props = new AuthenticationProperties();
+                props.StoreTokens(info.AuthenticationTokens);
+                await _signInManager.SignInAsync(user, props, info.LoginProvider);
 
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
 
@@ -125,11 +128,18 @@ namespace Guandian.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    // TODO： 处理添加逻辑 https://docs.microsoft.com/zh-cn/aspnet/core/security/authentication/social/additional-claims?view=aspnetcore-2.1
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        // 添加第三方登录信息
+                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
+                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
+                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
+
+                        var props = new AuthenticationProperties();
+                        props.StoreTokens(info.AuthenticationTokens);
+
+                        await _signInManager.SignInAsync(user, props, authenticationMethod: info.LoginProvider);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return LocalRedirect(returnUrl);
                     }

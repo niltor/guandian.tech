@@ -4,13 +4,9 @@ using System.Threading.Tasks;
 using Guandian.Areas.Admin.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
-using Guandian.Services;
 using Guandian.Utilities;
-using Markdig;
-using Markdig.SyntaxHighlighting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 //using MSDev.DB;
 //using MSDev.MetaWeblog;
 
@@ -79,24 +75,27 @@ namespace Guandian.Areas.Admin.Controllers
         public async Task<ActionResult> AddRssBlogs([FromBody]List<BlogForm> blogForms)
         {
             var blogs = new List<Blog>();
-            blogs = blogForms.Select(b => new Blog
-            {
-                AuthorName = b.AuthorName,
-                Categories = "BlogRss",
-                Content = b.Content,
-                ContentEn = b.ContentEn,
-                CreatedTime = b.CreatedTime,
-                Keywords = b.Categories,
-                Summary = b.Summary,
-                Link = b.Link,
-                Title = b.Title,
-                TitleEn = b.TitleEn,
-                Thumbnail = b.Thumbnail
-            }).ToList();
+            blogs = blogForms
+                .Where(b => !string.IsNullOrEmpty(b.Title))
+                .Select(b => new Blog
+                {
+                    AuthorName = b.AuthorName,
+                    Categories = "BlogRss",
+                    Content = b.Content,
+                    ContentEn = b.ContentEn,
+                    CreatedTime = b.CreatedTime,
+                    Keywords = b.Categories,
+                    Summary = b.Summary,
+                    Link = b.Link,
+                    Title = b.Title,
+                    TitleEn = b.TitleEn,
+                    Thumbnail = b.Thumbnail
+                }).ToList();
             // 插入前再去重
             var oldBlogs = _context.Blogs.OrderByDescending(b => b.CreatedTime)
                 .Take(50)
                 .ToList();
+
             foreach (var blog in blogs)
             {
                 if (oldBlogs.Any(b => b.TitleEn == blog.TitleEn)) continue;

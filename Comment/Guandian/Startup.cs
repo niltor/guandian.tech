@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Security.Claims;
 using Guandian.Data;
 using Guandian.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -19,7 +17,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 //using MSDev.DB;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
@@ -39,7 +36,6 @@ namespace Guandian
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // 配置项
@@ -93,7 +89,9 @@ namespace Guandian
             // 添加policy角色
             services.AddAuthorization(options =>
             {
+                // TODO:相应绑定注册逻辑需要添加角色
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("GitHub", policy => policy.RequireRole("GitHub"));
                 options.AddPolicy("RealName", policy => policy.RequireRole("RealName"));
                 options.AddPolicy("Guest", policy => policy.RequireRole("Guest"));
             });
@@ -105,31 +103,15 @@ namespace Guandian
                     options.ClientId = Configuration.GetSection("OAuth")["Github:ClientId"];
                     options.ClientSecret = Configuration.GetSection("OAuth")["Github:ClientSecret"];
                     options.ClaimActions.MapJsonKey("urn:github:avatar", "avatar_url");
-                    options.ClaimActions.MapJsonKey("urn:github:name", "name");
+                    options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
                     options.Scope.Add("read:user");
+                    options.Scope.Add("public_repo");
+                    options.Scope.Add("user:email");
                     options.SaveTokens = true;
 
                     options.Events = new OAuthEvents
                     {
-                        OnCreatingTicket = async context =>
-                        {
-                            var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
-                            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
 
-                            var response = await context.Backchannel.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, context.HttpContext.RequestAborted);
-                            response.EnsureSuccessStatusCode();
-                            var user = JObject.Parse(await response.Content.ReadAsStringAsync());
-                            context.RunClaimActions(user);
-
-                            List<AuthenticationToken> tokens = context.Properties.GetTokens() as List<AuthenticationToken>;
-                            tokens.Add(new AuthenticationToken()
-                            {
-                                Name = "TicketCreated",
-                                Value = DateTime.UtcNow.ToString()
-                            });
-                            context.Properties.StoreTokens(tokens);
-                        }
                     };
                 });
 
@@ -140,21 +122,15 @@ namespace Guandian
                      options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                  }); ;
 
-            services.AddMemoryCache();//使用本地缓存必须添加
-            services.AddSession();//使用Session
-                                  // 微信相关配置
+            services.AddMemoryCache();// 使用本地缓存必须添加
+            services.AddSession();// 使用Session
+            services.AddSingleton(typeof(GithubService));
 
-            /*
-             * CO2NET 是从 Senparc.Weixin 分离的底层公共基础模块，经过了长达 6 年的迭代优化，稳定可靠。
-             * 关于 CO2NET 在所有项目中的通用设置可参考 CO2NET 的 Sample：
-             * https://github.com/Senparc/Senparc.CO2NET/blob/master/Sample/Senparc.CO2NET.Sample.netcore/Startup.cs
-             */
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
                     .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting)
         {
             if (env.IsDevelopment())

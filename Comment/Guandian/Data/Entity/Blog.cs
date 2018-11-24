@@ -7,7 +7,7 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// 英文标题
         /// </summary>
-        [MaxLength(200)]
+        [MaxLength(300)]
         public string TitleEn { get; set; }
         /// <summary>
         /// 英文内容

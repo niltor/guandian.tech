@@ -1,30 +1,34 @@
 @using Microsoft.AspNetCore.Identity
-
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
 @if (SignInManager.IsSignedIn(User))
 {
-
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-            </li>
-            <li class="nav-item">
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">登出</button>
+        <ul class="navbar-nav navbar-right">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="userDropdown" href="#" aria-haspopup="true" aria-expanded="false">
+                    @UserManager.GetUserName(User)
+                </a>
+                <div class="dropdown-menu" aria-labelledby="userDropdown">
+                    <a class="dropdown-item" asp-action="Manage" asp-controller="Account" asp-area="Identity">我的账号</a>
+                    <a class="dropdown-item" asp-action="Create" asp-controller="Practknows" asp-area="">分享践识</a>
+                    <button type="submit" class="dropdown-item">退出</button>
+                </div>
             </li>
         </ul>
     </form>
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">注册</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">登录</a>
-        </li>
-    </ul>
+    <environment include="Development">
+        <ul class="navbar-nav navbar-right">
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">注册</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">登录</a>
+            </li>
+        </ul>
+    </environment>
 }

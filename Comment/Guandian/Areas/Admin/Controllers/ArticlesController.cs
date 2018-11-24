@@ -23,9 +23,17 @@ namespace Guandian.Areas.Admin.Controllers
             page = page < 1 ? 1 : page;
             ViewBag.Page = page;
             var result = _context.Blogs
-                .Where(b => !string.IsNullOrEmpty(b.Content)
-                && b.IsPublishMP == false
-                && b.Status != Data.Entity.Status.Obsolete)
+                .Where(b => !string.IsNullOrEmpty(b.Content))
+                .Select(s => new Blog
+                {
+                    Title = s.Title,
+                    AuthorName = s.AuthorName,
+                    CreatedTime = s.CreatedTime,
+                    Status = s.Status,
+                    UpdatedTime = s.UpdatedTime,
+                    Id = s.Id,
+                    IsPublishMP = s.IsPublishMP
+                })
                 .OrderByDescending(n => n.UpdatedTime)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -92,7 +100,7 @@ namespace Guandian.Areas.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Title,AuthorName,ViewNunmber,Content,Keywords,Summary,Id,CreatedTime,UpdatedTime,Status")] Article article)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Title,Content,Keywords,Summary,Id,CreatedTime,UpdatedTime,Status")] Article article)
         {
             if (id != article.Id)
             {
@@ -103,7 +111,13 @@ namespace Guandian.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(article);
+                    var currentArticle = _context.Articles.SingleOrDefault(a => a.Id == id);
+
+                    currentArticle.Title = article.Title;
+                    currentArticle.Content = article.Content;
+                    currentArticle.Summary = article.Summary;
+                    currentArticle.UpdatedTime = DateTime.Now;
+                    _context.Update(currentArticle);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

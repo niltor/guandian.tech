@@ -1,13 +1,13 @@
 @page
 @model ExternalLoginsModel
 @{
-    ViewData["Title"] = "Manage your external logins";
+    ViewData["Title"] = "授权登录";
 }
 
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 @if (Model.CurrentLogins?.Count > 0)
 {
-    <h4>Registered Logins</h4>
+    <h4>已绑定账号</h4>
     <table class="table">
         <tbody>
             @foreach (var login in Model.CurrentLogins)

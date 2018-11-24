@@ -11,16 +11,32 @@ namespace Guandian.Data
         public DbSet<Entity.Comment> Comments { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<Blog> Blogs { get; set; }
-
+        /// <summary>
+        /// 践识
+        /// </summary>
+        public DbSet<Practknow> Practknows { get; set; }
+        /// <summary>
+        /// 文件节点
+        /// </summary>
+        public DbSet<FileNode> FileNodes { get; set; }
+        public DbSet<Respository> Respositories { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
 
         }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<FileNode>()
+                .HasOne(f => f.ParentNode)
+                .WithMany(p => p.ChildrenNodes);
+
+            builder.Entity<Respository>()
+                .HasIndex(r => r.Tag)
+                .IsUnique();
             base.OnModelCreating(builder);
         }
+
+        public DbSet<Guandian.Data.Entity.Practknow> Practknow { get; set; }
     }
 }

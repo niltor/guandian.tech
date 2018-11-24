@@ -8,7 +8,7 @@ namespace PushService
     public static class Function1
     {
         [FunctionName("Function1")]
-        public static async void RunAsync([TimerTrigger("0 0 0 * * *")]TimerInfo myTimer, ILogger log)
+        public static async void RunAsync([TimerTrigger("0 20 0 * * *")]TimerInfo myTimer, ILogger log)
         {
             int retryNum = 3;
             using (var hc = new HttpClient())

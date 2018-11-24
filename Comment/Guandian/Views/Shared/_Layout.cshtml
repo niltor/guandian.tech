@@ -20,29 +20,35 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">观点</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">观点</a>
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">资讯</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Blogs" asp-action="Index">博客</a>
+                </li>
                 @*<li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Viewpoint">观点</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Subject">众评</a>
-                    </li>*@
+                    <a class="nav-link" asp-area="" asp-controller="Document" asp-action="Index">文档</a>
+                </li>*@
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Practknows" asp-action="Index">践识</a>
+                </li>
+                @*<li class="nav-item">
+            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Viewpoint">观点</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Subject">众评</a>
+        </li>*@
             </ul>
-            <span class="navbar-text">
-                <partial name="_LoginPartial" />
-            </span>
+            <partial name="_LoginPartial" />
         </div>
     </nav>
 
-    <partial name="_RightSideBarPartial" />
     <partial name="_CookieConsentPartial" />
     <div class="container-fluid">
         @RenderBody()

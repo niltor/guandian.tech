@@ -84,7 +84,7 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your password has been set.";
+            StatusMessage = "密码设置成功";
 
             return RedirectToPage();
         }

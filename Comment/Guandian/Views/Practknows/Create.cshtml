@@ -1,0 +1,65 @@
+@model Guandian.Models.Forms.AddPractknowForm
+
+@{
+    ViewData["Title"] = "分享践识";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@* 目录分类 *@
+<div class="col-md-auto px-1">
+    @ViewBag.NavHtml
+</div>
+<form asp-action="Create" id="form" class="row">
+    <div class="col-md">
+        <input type="hidden" asp-for="NodeId" />
+        <span asp-validation-for="Summary" class="text-danger"></span>
+        <div class="form-group form-inline">
+            <input asp-for="Title" class="col-md form-control" placeholder="标题" />
+            <input asp-for="Keywords" class="col-md form-control" placeholder="关键词" />
+        </div>
+        <div class="form-group">
+            <input asp-for="Summary" class="form-control" placeholder="一句话描述" multiple />
+        </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div id="editSection"></div>
+        <div class="form-group">
+            <textarea asp-for="Content" style="display:none" id="content"></textarea>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="提交" class="btn btn-outline-primary" id="addArticle" />
+            <span class="text-muted">提交后，请耐心等待审查结果</span>
+        </div>
+    </div>
+</form>
+<header>
+    <link href="~/lib/codemirror/lib/codemirror.css" rel="stylesheet" />
+    <link href="~/lib/highlightjs/styles/github-gist.css" rel="stylesheet" />
+    <link href="~/lib/tui-editor/dist/tui-editor.css" rel="stylesheet" />
+    <link href="~/lib/tui-editor/dist/tui-editor-contents.css" rel="stylesheet" />
+</header>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src='~/lib/markdown-it/dist/markdown-it.js'></script>
+    <script src="~/lib/to-mark/dist/to-mark.js"></script>
+    <script src="~/lib/tui-code-snippet/dist/tui-code-snippet.js"></script>
+    <script src="~/lib/codemirror/lib/codemirror.js"></script>
+    <script src="~/lib/highlightjs/highlight.pack.js"></script>
+    <script src="~/lib/squire-rte/build/squire-raw.js"></script>
+    <script src="~/lib/tui-editor/dist/tui-editor-Editor.min.js"></script>
+
+    <script>
+        var editor = new tui.Editor({
+            el: document.querySelector('#editSection'),
+            initialEditType: 'markdown',
+            previewStyle: 'vertical',
+            height: '600px',
+        });
+        $("#addArticle").click(function (event) {
+            event.preventDefault();
+            var content = editor.getMarkdown();
+            $("#content").val(content);
+            $("#form").submit();
+        });
+    </script>
+}
