@@ -102,7 +102,7 @@ namespace Guandian
                 {
                     options.ClientId = Configuration.GetSection("OAuth")["Github:ClientId"];
                     options.ClientSecret = Configuration.GetSection("OAuth")["Github:ClientSecret"];
-                    options.CallbackPath = Configuration.GetSection("Oauth")["Github:CallbackPath"];
+                    options.CallbackPath = "/singup-github";
                     options.ClaimActions.MapJsonKey("urn:github:avatar", "avatar_url");
                     options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
                     options.Scope.Add("read:user");
