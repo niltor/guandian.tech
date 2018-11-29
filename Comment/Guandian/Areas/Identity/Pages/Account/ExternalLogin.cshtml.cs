@@ -92,7 +92,7 @@ namespace Guandian.Areas.Identity.Pages.Account
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 _logger.LogDebug("SignInAsync:" + returnUrl);
 
-                return LocalRedirect((returnUrl);
+                return LocalRedirect((returnUrl));
             }
             if (result.IsLockedOut)
             {
