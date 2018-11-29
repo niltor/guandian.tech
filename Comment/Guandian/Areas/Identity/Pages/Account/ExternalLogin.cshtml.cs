@@ -90,9 +90,9 @@ namespace Guandian.Areas.Identity.Pages.Account
                 await _signInManager.SignInAsync(user, props, info.LoginProvider);
 
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                _logger.LogDebug("SignInAsync:" + returnUrl);
+                _logger.LogDebug("SignInAsync:" + Url.Content("~/"));
 
-                return LocalRedirect(Url.Content(returnUrl));
+                return LocalRedirect(Url.Content("~/"));
             }
             if (result.IsLockedOut)
             {
