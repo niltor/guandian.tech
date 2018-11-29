@@ -85,11 +85,14 @@ namespace Guandian.Areas.Identity.Pages.Account
 
                 var props = new AuthenticationProperties();
                 props.StoreTokens(info.AuthenticationTokens);
+
+
                 await _signInManager.SignInAsync(user, props, info.LoginProvider);
 
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
+                _logger.LogDebug("SignInAsync:" + returnUrl);
 
-                return LocalRedirect(returnUrl);
+                return LocalRedirect((returnUrl);
             }
             if (result.IsLockedOut)
             {
@@ -97,7 +100,7 @@ namespace Guandian.Areas.Identity.Pages.Account
             }
             else
             {
-                // If the user does not have an account, then ask the user to create an account.
+                _logger.LogDebug("没有账号,跳转到创建");
                 ReturnUrl = returnUrl;
                 LoginProvider = info.LoginProvider;
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))

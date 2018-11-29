@@ -108,11 +108,6 @@ namespace Guandian
                     options.Scope.Add("public_repo");
                     options.Scope.Add("user:email");
                     options.SaveTokens = true;
-
-                    options.Events = new OAuthEvents
-                    {
-
-                    };
                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -144,7 +139,7 @@ namespace Guandian
                 //app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             //app.UseCookiePolicy();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
