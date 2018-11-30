@@ -81,7 +81,7 @@ namespace Guandian.Areas.Identity.Pages.Account
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
 
 
-                return LocalRedirect(returnUrl);
+                return Redirect(returnUrl);
             }
             if (result.IsLockedOut)
             {
