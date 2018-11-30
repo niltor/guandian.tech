@@ -35,7 +35,7 @@ namespace Guandian
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
             // 配置项
             services.Configure<CookiePolicyOptions>(options =>
@@ -119,15 +119,6 @@ namespace Guandian
             services.AddMemoryCache();// 使用本地缓存必须添加
             services.AddSession();// 使用Session
             services.AddSingleton(typeof(GithubService));
-
-            if (!env.IsDevelopment())
-            {
-                services.AddHttpsRedirection(options =>
-                {
-                    options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
-                    options.HttpsPort = 443;
-                });
-            }
 
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
                     .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册
