@@ -3,7 +3,6 @@ using System.Security.Claims;
 using Guandian.Data;
 using Guandian.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -36,7 +35,7 @@ namespace Guandian
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
         {
             // 配置项
             services.Configure<CookiePolicyOptions>(options =>
@@ -121,7 +120,7 @@ namespace Guandian
             services.AddSession();// 使用Session
             services.AddSingleton(typeof(GithubService));
 
-            if (!_env.IsDevelopment())
+            if (!env.IsDevelopment())
             {
                 services.AddHttpsRedirection(options =>
                 {
