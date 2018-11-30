@@ -33,7 +33,7 @@ namespace Guandian.Controllers
                 var currentNode = await _context.FileNodes
                     .Include(f => f.ParentNode)
                     .SingleOrDefaultAsync(f => f.Id == nodeId);
-                if (currentNode == null) return View(default);
+                if (currentNode == null) return View();
                 // 如果是文件夹
                 if (!currentNode.IsFile)
                 {

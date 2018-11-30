@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -59,12 +61,11 @@ namespace Guandian.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -73,24 +74,12 @@ namespace Guandian.Areas.Identity.Pages.Account
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-
+            // Sign in the user with this external login provider if the user already has a login.
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor : true);
             if (result.Succeeded)
             {
-                // 存储token后重登录
-                var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-                await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
-                await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
-                await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
-
-                var props = new AuthenticationProperties();
-                props.StoreTokens(info.AuthenticationTokens);
-
-
-                await _signInManager.SignInAsync(user, props, info.LoginProvider);
-
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                _logger.LogDebug("SignInAsync:" + returnUrl);
+
 
                 return LocalRedirect(returnUrl);
             }
@@ -100,7 +89,7 @@ namespace Guandian.Areas.Identity.Pages.Account
             }
             else
             {
-                _logger.LogDebug("没有账号,跳转到创建");
+                // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 LoginProvider = info.LoginProvider;
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
@@ -134,15 +123,7 @@ namespace Guandian.Areas.Identity.Pages.Account
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        // 添加第三方登录信息
-                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
-                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
-                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
-
-                        var props = new AuthenticationProperties();
-                        props.StoreTokens(info.AuthenticationTokens);
-
-                        await _signInManager.SignInAsync(user, props, authenticationMethod: info.LoginProvider);
+                        await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return LocalRedirect(returnUrl);
                     }
