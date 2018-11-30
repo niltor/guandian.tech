@@ -121,6 +121,15 @@ namespace Guandian
             services.AddSession();// 使用Session
             services.AddSingleton(typeof(GithubService));
 
+            if (!_env.IsDevelopment())
+            {
+                services.AddHttpsRedirection(options =>
+                {
+                    options.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+                    options.HttpsPort = 443;
+                });
+            }
+
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
                     .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册
 
