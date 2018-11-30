@@ -138,11 +138,8 @@ namespace Guandian
                 app.UseExceptionHandler("/Home/Error");
                 //app.UseHsts();
             }
-
             app.UseStaticFiles();
             //app.UseCookiePolicy();
-            app.UseHttpsRedirection();
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
