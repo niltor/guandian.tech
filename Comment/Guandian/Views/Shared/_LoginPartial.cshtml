@@ -4,9 +4,13 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
+    var Avatar = User.FindFirst(c => c.Type == "urn:github:avatar")?.Value;
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
         <ul class="navbar-nav navbar-right">
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown d-inline-flex">
+                <a class="nav-link ">
+                    <img src="@Avatar" width="26" height="26" style="border-radius:50% !important" />
+                </a>
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="userDropdown" href="#" aria-haspopup="true" aria-expanded="false">
                     @UserManager.GetUserName(User)
                 </a>
@@ -21,12 +25,12 @@
 }
 else
 {
-        <ul class="navbar-nav navbar-right">
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">注册</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">登录</a>
-            </li>
-        </ul>
+    <ul class="navbar-nav navbar-right">
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">注册</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">登录</a>
+        </li>
+    </ul>
 }
