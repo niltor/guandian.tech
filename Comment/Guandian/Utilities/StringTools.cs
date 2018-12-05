@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 
 namespace Guandian.Utilities
@@ -146,6 +147,15 @@ namespace Guandian.Utilities
         {
             var now = DateTime.Now;
             return now.ToString("MMdd") + "temp" + now.ToString("HHmmss.fff") + "." + ext;
+        }
+        /// <summary>
+        /// 转换成json
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string ToJson(object obj)
+        {
+            return JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
     }
 }

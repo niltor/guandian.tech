@@ -9,18 +9,29 @@ namespace Guandian.Services
 
     public class GithubService : BaseService
     {
-        readonly string _token;
         readonly GitHubClient _client;
+        readonly IHttpContextAccessor _httpContext;
         public GithubService(IHttpContextAccessor httpContext, ILogger<GithubService> logger) : base(logger)
         {
-            _token = httpContext.HttpContext.GetTokenAsync("access_token").Result;
-            if (_token != null)
+            _client = new GitHubClient(new ProductHeaderValue("TechViews"));
+            _httpContext = httpContext;
+
+        }
+
+
+        protected bool SetToken()
+        {
+            string token = _httpContext.HttpContext.GetTokenAsync("access_token").Result;
+            if (string.IsNullOrEmpty(token))
             {
-                _client = new GitHubClient(new ProductHeaderValue("TechViews"))
-                {
-                    Credentials = new Credentials(_token)
-                };
+                _logger.LogError("没有获取到access_token");
+                return false;
             }
+            if (_client.Credentials == null)
+            {
+                _client.Credentials = new Credentials(token);
+            }
+            return true;
         }
 
         /// <summary>
@@ -30,8 +41,12 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task<Repository> ForkAsync(string name = "blogs")
         {
-            var result = await _client.Repository.Forks.Create("TechViewsTeam", name, new NewRepositoryFork { Organization = null });
-            return result;
+            if (SetToken())
+            {
+                var result = await _client.Repository.Forks.Create("TechViewsTeam", name, new NewRepositoryFork { Organization = null });
+                return result;
+            }
+            return default;
         }
 
         /// <summary>
@@ -40,9 +55,13 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task<RepositoryContentInfo> CreateFile(NewFileDataModel filedata)
         {
-            var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
+            if (SetToken())
+            {
+                var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
                 new CreateFileRequest(filedata.Message, filedata.Content, true));
-            return response.Content;
+                return response.Content;
+            }
+            return default;
         }
 
         /// <summary>
