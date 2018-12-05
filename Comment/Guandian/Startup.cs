@@ -110,7 +110,7 @@ namespace Guandian
                     options.SaveTokens = true;
                 });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                  .AddJsonOptions(options =>
                  {
                      options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

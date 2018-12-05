@@ -21,6 +21,7 @@
 }
 else
 {
+    <environment include="development">
         <ul class="navbar-nav navbar-right">
             <li class="nav-item">
                 <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">注册</a>
@@ -29,4 +30,5 @@ else
                 <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">登录</a>
             </li>
         </ul>
+    </environment>
 }
