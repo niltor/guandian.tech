@@ -125,7 +125,6 @@ namespace MSBlogsFunction
                 }
             }
         }
-
         /// <summary>
         /// 谷歌翻译api，太贵，暂停使用
         /// </summary>
@@ -150,7 +149,11 @@ namespace MSBlogsFunction
             }
 
         }
-
+        /// <summary>
+        /// 谷歌翻译web，有不稳定风险
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
         public async Task<string> GetTranslateByWeb(string content)
         {
             if (content == null) return default;
@@ -194,7 +197,6 @@ namespace MSBlogsFunction
             }
             return default;
         }
-
         public enum Provider
         {
             Microsoft,

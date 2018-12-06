@@ -18,7 +18,6 @@ namespace Guandian.Services
 
         }
 
-
         protected bool SetToken()
         {
             string token = _httpContext.HttpContext.GetTokenAsync("access_token").Result;
