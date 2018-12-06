@@ -15,5 +15,9 @@ namespace Guandian.Models.Forms
         public string Summary { get; set; }
         public Guid? NodeId { get; set; }
         public string Content { get; set; }
+        /// <summary>
+        /// 目录
+        /// </summary>
+        public string Path { get; set; } = "/";
     }
 }

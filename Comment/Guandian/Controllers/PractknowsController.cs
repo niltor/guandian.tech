@@ -124,26 +124,50 @@ namespace Guandian.Controllers
         {
             if (ModelState.IsValid)
             {
+                // 获取用户信息
+                var email = User.FindFirst(ClaimTypes.Email);
+                var currentUser = _context.Authors.Where(a => a.Email.Equals(email.Value)).SingleOrDefault();
+                _logger.LogDebug(StringTools.ToJson(currentUser));
+
+                // TODO:处理路径
+                // 先fork仓库
+                var forkResult = await _github.ForkAsync();
+
+                // 提交到github，获取fileNode信息
+                var createFileResult = await _github.CreateFile(new NewFileDataModel
+                {
+                    Branch = "master",
+                    Content = practknow.Content,
+                    Message = "创建文章:" + practknow.Title,
+                    Name = forkResult.Name ?? "blogs",
+                    Path = practknow.Path,
+                    Owner = forkResult.Owner.Name ?? email.Value
+                });
+
+                Console.WriteLine(StringTools.ToJson(createFileResult));
+
                 // 添加新内容
                 var newPractknow = new Practknow
                 {
                     Title = practknow.Title,
                     Keywords = practknow.Keywords,
                     Summary = practknow.Summary,
-                    Content = practknow.Content
+                    Content = practknow.Content,
+                    FileNode = new FileNode
+                    {
+                        IsFile = true,
+                        FileName = practknow.Title + ".md",
+                        GithubLink = createFileResult.GitUrl,
+                        Path = practknow.Path + "/" + practknow.Title,
+                    }
                 };
-                // TODO 同步到github，获取fileNode信息
 
-                // TODO 查询用户fork的仓库名，若无fork，则fork。
-                var email = User.FindFirst(ClaimTypes.Email);
-                var currentUser = _context.Authors.Where(a => a.Email.Equals(email)).SingleOrDefault();
-                _logger.LogDebug(StringTools.ToJson(currentUser));
 
 
                 newPractknow.Author = currentUser;
                 newPractknow.AuthorName = currentUser.UserName;
                 _context.Add(newPractknow);
-                var forkResult = await _github.ForkAsync();
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

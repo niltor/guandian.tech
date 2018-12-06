@@ -17,7 +17,6 @@ namespace Guandian.Services
             _httpContext = httpContext;
 
         }
-
         protected bool SetToken()
         {
             string token = _httpContext.HttpContext.GetTokenAsync("access_token").Result;
@@ -26,13 +25,10 @@ namespace Guandian.Services
                 _logger.LogError("没有获取到access_token");
                 return false;
             }
-            if (_client.Credentials == null)
-            {
-                _client.Credentials = new Credentials(token);
-            }
+
+            _client.Credentials = new Credentials(token);
             return true;
         }
-
         /// <summary>
         /// Fork 仓库
         /// </summary>
@@ -47,7 +43,6 @@ namespace Guandian.Services
             }
             return default;
         }
-
         /// <summary>
         /// 创建文件
         /// </summary>
@@ -62,7 +57,6 @@ namespace Guandian.Services
             }
             return default;
         }
-
         /// <summary>
         /// 创建PR请求
         /// </summary>
@@ -84,7 +78,6 @@ namespace Guandian.Services
         /// 仓库名
         /// </summary>
         public string Name { get; set; }
-
         public string Title { get; }
         /// <summary>
         /// 目标仓库:分支
