@@ -124,14 +124,17 @@ namespace Guandian.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                Console.WriteLine(StringTools.ToJson(practknow));
                 // 获取用户信息
-                var email = User.FindFirst(ClaimTypes.Email);
-                var currentUser = _context.Authors.Where(a => a.Email.Equals(email.Value)).SingleOrDefault();
+                var email = User.FindFirstValue(ClaimTypes.Email);
+                var currentUser = _context.Users.Where(a => a.Email.Equals(email)).SingleOrDefault();
                 _logger.LogDebug(StringTools.ToJson(currentUser));
 
                 // TODO:处理路径
                 // 先fork仓库
                 var forkResult = await _github.ForkAsync();
+                Console.WriteLine(StringTools.ToJson(forkResult));
 
                 // 提交到github，获取fileNode信息
                 var createFileResult = await _github.CreateFile(new NewFileDataModel
@@ -140,8 +143,8 @@ namespace Guandian.Controllers
                     Content = practknow.Content,
                     Message = "创建文章:" + practknow.Title,
                     Name = forkResult.Name ?? "blogs",
-                    Path = practknow.Path,
-                    Owner = forkResult.Owner.Name ?? email.Value
+                    Path = practknow.Path + practknow.Title + ".md",
+                    Owner = forkResult.Owner.Login ?? email ?? ""
                 });
 
                 Console.WriteLine(StringTools.ToJson(createFileResult));
@@ -162,9 +165,7 @@ namespace Guandian.Controllers
                     }
                 };
 
-
-
-                newPractknow.Author = currentUser;
+                //newPractknow.Author = currentUser;
                 newPractknow.AuthorName = currentUser.UserName;
                 _context.Add(newPractknow);
 
