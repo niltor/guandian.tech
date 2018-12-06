@@ -1,4 +1,5 @@
 using Guandian.Data.Entity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +15,7 @@ namespace Guandian.Data
         /// <summary>
         /// 践识
         /// </summary>
-        public DbSet<Practknow> Practknows { get; set; }
+        public DbSet<Practknow> Practknow { get; set; }
         /// <summary>
         /// 文件节点
         /// </summary>
@@ -27,6 +28,8 @@ namespace Guandian.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Author>().HasBaseType<User>();
+
             builder.Entity<FileNode>()
                 .HasOne(f => f.ParentNode)
                 .WithMany(p => p.ChildrenNodes);
@@ -36,7 +39,5 @@ namespace Guandian.Data
                 .IsUnique();
             base.OnModelCreating(builder);
         }
-
-        public DbSet<Guandian.Data.Entity.Practknow> Practknow { get; set; }
     }
 }

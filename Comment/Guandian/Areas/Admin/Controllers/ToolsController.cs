@@ -15,16 +15,14 @@ namespace Guandian.Areas.Admin.Controllers
     public class ToolsController : CommonController
     {
         //readonly MSDevContext _msdevContext;
-        readonly ApplicationDbContext _context;
         //public ToolsController(MSDevContext context, ApplicationDbContext applicationDbContext)
         //{
         //    _msdevContext = context;
         //    _context = applicationDbContext;
         //}
 
-        public ToolsController(ApplicationDbContext applicationDbContext)
+        public ToolsController(ApplicationDbContext context) : base(context)
         {
-            _context = applicationDbContext;
         }
         public ActionResult Index()
         {

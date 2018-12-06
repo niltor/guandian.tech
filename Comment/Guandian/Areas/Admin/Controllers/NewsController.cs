@@ -10,11 +10,9 @@ namespace Guandian.Areas.Admin.Controllers
 {
     public class NewsController : CommonController
     {
-        private readonly ApplicationDbContext _context;
 
-        public NewsController(ApplicationDbContext context)
+        public NewsController(ApplicationDbContext context) : base(context)
         {
-            _context = context;
         }
 
         /// <summary>

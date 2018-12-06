@@ -11,11 +11,8 @@ namespace Guandian.Areas.Admin.Controllers
 
     public class ArticlesController : CommonController
     {
-        private readonly ApplicationDbContext _context;
-
-        public ArticlesController(ApplicationDbContext context)
+        public ArticlesController(ApplicationDbContext context) : base(context)
         {
-            _context = context;
         }
 
         public IActionResult Index(int page = 1, int pageSize = 12)

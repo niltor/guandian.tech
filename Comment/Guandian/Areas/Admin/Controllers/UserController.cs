@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Guandian.Data;
 using Guandian.Data.Entity;
+using Guandian.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,17 +15,15 @@ namespace Guandian.Areas.Admin.Controllers
 
     public class UserController : CommonController
     {
-        readonly UserManager<User> _userManager;
-        readonly ApplicationDbContext _context;
-        public UserController(UserManager<User> userManager, ApplicationDbContext context)
+        readonly UserManager<IdentityUser> _userManager;
+        public UserController(UserManager<IdentityUser> userManager, ApplicationDbContext context) : base(context)
         {
             _userManager = userManager;
-            _context = context;
         }
         public ActionResult Index()
         {
-
             var users = _context.Users.ToList();
+            Console.WriteLine(StringTools.ToJson(users));
             return View(users);
         }
 

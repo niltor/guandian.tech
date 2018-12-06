@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28315.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guandian", "Guandian\Guandian.csproj", "{1B046EA5-26CF-49E3-BB09-B72D6DD2B570}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSDev.DB", "MSDev.DB\MSDev.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaWeblog", "MetaWeblog\MetaWeblog.csproj", "{2091AD77-BA56-4717-A7B8-C8E10670D696}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PushService", "PushService\PushService.csproj", "{F640A42F-C954-45F4-B30B-FBA7D39F3CF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PushService", "PushService\PushService.csproj", "{F640A42F-C954-45F4-B30B-FBA7D39F3CF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

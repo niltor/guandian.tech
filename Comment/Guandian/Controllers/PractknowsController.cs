@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Guandian.Models.Forms;
@@ -13,12 +8,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Guandian.Controllers
 {
     public class PractknowsController : BaseController
     {
-        readonly GithubService _github;
+        private readonly GithubService _github;
 
         public PractknowsController(ApplicationDbContext context, GithubService github, UserManager<IdentityUser> userManager, ILogger<PractknowsController> logger) : base(userManager, context, logger)
         {
@@ -132,16 +132,18 @@ namespace Guandian.Controllers
                     Summary = practknow.Summary,
                     Content = practknow.Content
                 };
-                _context.Add(newPractknow);
                 // TODO 同步到github，获取fileNode信息
 
                 // TODO 查询用户fork的仓库名，若无fork，则fork。
                 var email = User.FindFirst(ClaimTypes.Email);
-                var currentUser = _context.Authors.Where(a => a.Email.Equals(email));
+                var currentUser = _context.Authors.Where(a => a.Email.Equals(email)).SingleOrDefault();
                 _logger.LogDebug(StringTools.ToJson(currentUser));
 
-                var forkResult = await _github.ForkAsync();
 
+                newPractknow.Author = currentUser;
+                newPractknow.AuthorName = currentUser.UserName;
+                _context.Add(newPractknow);
+                var forkResult = await _github.ForkAsync();
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
