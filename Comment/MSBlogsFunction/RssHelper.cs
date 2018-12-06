@@ -43,7 +43,7 @@ namespace MSBlogsFunction
             var result = new List<RssEntity>();
 
             var msFeed = new MicrosoftFeed();
-            result.AddRange(msFeed.GetBlogs().Result);
+            result.AddRange(msFeed.GetBlogs(5).Result);
 
             var dockerFeed = new DockerFeed();
             result.AddRange(dockerFeed.GetBlogs().Result);

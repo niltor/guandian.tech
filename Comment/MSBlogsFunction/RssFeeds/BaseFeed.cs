@@ -51,8 +51,9 @@ namespace MSBlogsFunction.RssFeeds
         /// <summary>
         /// 解析返回
         /// </summary>
+        /// <param name="number">数量</param>
         /// <returns></returns>
-        public virtual async Task<List<RssEntity>> GetBlogs()
+        public virtual async Task<List<RssEntity>> GetBlogs(int number = 3)
         {
             var result = new List<RssEntity>();
 
@@ -101,6 +102,7 @@ namespace MSBlogsFunction.RssFeeds
                                 LastUpdateTime = createTime,
                             };
                         })
+                        .Take(number)
                         .ToList();
                     result.AddRange(blogs);
                 }
