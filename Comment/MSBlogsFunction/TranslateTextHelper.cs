@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace MSBlogsFunction
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        public string TranslateText(string content, Provider provider = Provider.Google)
+        public string TranslateText(string content, Provider provider = Provider.Default)
         {
             if (string.IsNullOrEmpty(content))
             {
@@ -76,9 +77,13 @@ namespace MSBlogsFunction
                 {
                     translation += GetTranslateAsync(item).Result;
                 }
-                else
+                else if (provider == Provider.Google)
                 {
                     translation += GetTranslateByGoogle(item).Result;
+                }
+                else
+                {
+                    translation += GetTranslateByWeb(item).Result;
                 }
             }
             return translation;
@@ -122,7 +127,7 @@ namespace MSBlogsFunction
         }
 
         /// <summary>
-        /// 谷歌翻译api
+        /// 谷歌翻译api，太贵，暂停使用
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
@@ -145,10 +150,56 @@ namespace MSBlogsFunction
             }
 
         }
+
+        public async Task<string> GetTranslateByWeb(string content)
+        {
+            if (content == null) return default;
+            string baseUrl = "https://translate.google.com/translate_a/single?client=gtx&sl=en&tl=zh-CN&dt=t";
+            using (var client = new HttpClient())
+            {
+                using (var request = new HttpRequestMessage())
+                {
+                    request.Method = HttpMethod.Post;
+                    request.RequestUri = new Uri(baseUrl);
+                    var requestParams = new List<KeyValuePair<string, string>>
+                        {
+                            new KeyValuePair<string, string>("q", content)
+                        };
+                    request.Content = new FormUrlEncodedContent(requestParams);
+                    string responseBody = "";
+                    try
+                    {
+                        var response = await client.SendAsync(request);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            responseBody = await response.Content.ReadAsStringAsync();
+                            JArray jsonArray = JsonConvert.DeserializeObject<JArray>(responseBody);
+                            if (jsonArray[0].HasValues)
+                            {
+                                string result = "";
+                                foreach (var item in jsonArray[0])
+                                {
+                                    result += item[0];
+                                }
+                                return result;
+                            }
+                        }
+                        return default;
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Error ! 原：" + responseBody);
+                    }
+                }
+            }
+            return default;
+        }
+
         public enum Provider
         {
             Microsoft,
-            Google
+            Google,
+            Default
         }
     }
 
