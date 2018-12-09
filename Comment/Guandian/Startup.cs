@@ -2,6 +2,7 @@ using System;
 using System.Security.Claims;
 using Guandian.Data;
 using Guandian.Services;
+using Guandian.Utilities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,6 +45,10 @@ namespace Guandian
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.Configure<GithubOption>(options =>
+            {
+                options.PAT = Configuration.GetSection("OAuth")["Github"];
+            });
             // 数据库
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -82,7 +87,9 @@ namespace Guandian
                 options.SlidingExpiration = true;
             });
 
+            // 身份验证服务
             services.AddSingleton<IdentityVerifyService>();
+            //services.AddSingleton<GithubManageService>();
             services.AddTransient<IEmailSender, EmailSender>();
 
             // 添加policy角色
@@ -119,6 +126,7 @@ namespace Guandian
             services.AddMemoryCache();// 使用本地缓存必须添加
             services.AddSession();// 使用Session
             services.AddSingleton(typeof(GithubService));
+            services.AddSingleton(typeof(GithubManageService));
 
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
                     .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册
