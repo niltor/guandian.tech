@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +30,7 @@ namespace Guandian.Services
             _client.Credentials = new Credentials(token);
             return true;
         }
+
         /// <summary>
         /// Fork 仓库
         /// </summary>

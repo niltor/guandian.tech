@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Linq;
 using Guandian.Data;
 using Guandian.Models;
+using Guandian.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Guandian.Controllers
@@ -84,5 +85,9 @@ namespace Guandian.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        //public ActionResult Test()
+        //{
+
+        //}
     }
 }
