@@ -1,6 +1,7 @@
 using System;
 using System.Security.Claims;
 using Guandian.Data;
+using Guandian.Data.Entity;
 using Guandian.Services;
 using Guandian.Utilities;
 using Microsoft.AspNetCore.Authentication;
@@ -47,7 +48,8 @@ namespace Guandian
             });
             services.Configure<GithubOption>(options =>
             {
-                options.PAT = Configuration.GetSection("OAuth")["Github"];
+                options.PAT = Configuration.GetSection("OAuth")["PAT:TechviewsManageToken"];
+                Console.WriteLine(options.PAT);
             });
             // 数据库
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -58,7 +60,7 @@ namespace Guandian
             //       Configuration.GetConnectionString("MSDev")));
             // 身份验证服务 
             // TODO:这里之后改成自定义的User，已生成UI之后改model会出错 https://github.com/aspnet/Docs/issues/7764
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             //.AddEntityFrameworkStores<MSDevContext>();
 

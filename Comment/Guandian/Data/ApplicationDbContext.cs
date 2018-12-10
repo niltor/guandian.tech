@@ -5,13 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Guandian.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string>
     {
         public DbSet<Author> Authors { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<Entity.Comment> Comments { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public new DbSet<User> Users { get; set; }
         /// <summary>
         /// 践识
         /// </summary>

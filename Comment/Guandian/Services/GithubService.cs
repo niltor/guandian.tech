@@ -43,8 +43,9 @@ namespace Guandian.Services
                 var result = await _client.Repository.Forks.Create("TechViewsTeam", name, new NewRepositoryFork { Organization = null });
                 return result;
             }
-            return default;
+            return null;
         }
+
         /// <summary>
         /// 创建文件
         /// </summary>
@@ -57,7 +58,7 @@ namespace Guandian.Services
                 new CreateFileRequest(filedata.Message, filedata.Content, true));
                 return response.Content;
             }
-            return default;
+            return null;
         }
         /// <summary>
         /// 创建PR请求

@@ -18,5 +18,10 @@ namespace Guandian.Controllers
             _context = context;
             _logger = logger;
         }
+        public BaseController(ApplicationDbContext context, ILogger logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
     }
 }

@@ -1,9 +1,11 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +15,20 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
 {
     public partial class IndexModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IEmailSender _emailSender;
 
         public IndexModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
         }
+
         [Display(Name = "登录名")]
         public string Username { get; set; }
         public bool IsEmailConfirmed { get; set; }
@@ -59,6 +62,8 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            Username = userName;
+
             if (User.Identity.IsAuthenticated)
             {
                 GithubName = User.FindFirst(c => c.Type == "urn:github:name")?.Value;
@@ -72,13 +77,14 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
             {
                 Console.WriteLine("no Authenticated");
             }
-            Username = userName;
             Input = new InputModel
             {
                 Email = email,
                 PhoneNumber = phoneNumber
             };
+
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+
             return Page();
         }
 

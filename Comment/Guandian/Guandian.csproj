@@ -5,10 +5,12 @@
     <UserSecretsId>aspnet-Comment-7FFC48C7-5037-4F12-9E69-1948B0650351</UserSecretsId>
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
     <FileVersion>0.0.0.0</FileVersion>
+    <ApplicationInsightsResourceId>/subscriptions/6200f501-7363-4d69-9481-70e13ed77799/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/Guandian</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/6200f501-7363-4d69-9481-70e13ed77799/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/Guandian</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -20,6 +22,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.8.9" />
     <PackageReference Include="Markdig" Version="0.15.4" />
     <PackageReference Include="Markdig.SyntaxHighlighting" Version="1.1.7" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Octokit" Version="0.32.0" />
@@ -57,5 +60,9 @@
     <Content Update="Views\Home\Contact.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 </Project>

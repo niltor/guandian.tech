@@ -1,41 +1,80 @@
-﻿using Google.Apis.Logging;
-using Guandian.Utilities;
+﻿using Guandian.Utilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Octokit;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Guandian.Services
 {
+    /// <summary>
+    /// Github组织管理
+    /// </summary>
     public class GithubManageService : BaseService
     {
         readonly GitHubClient _client;
+        static readonly string OrgName = "TechViewsTeam";
+        static readonly string TeamName = "BlogAuthor";
 
-        public GithubManageService(ILogger<GithubManageService> logger, IOptions<GithubOption> options) : base(logger)
+        public GithubManageService(ILogger<GithubManageService> logger, IOptionsMonitor<GithubOption> options) : base(logger)
         {
             _client = new GitHubClient(new ProductHeaderValue("TechViews"))
             {
-                Credentials = new Credentials(options.Value.PAT)
+                Credentials = new Credentials(options.CurrentValue.PAT)
             };
         }
-        
+
+        /// <summary>
+        /// 邀请用户到Team
+        /// </summary>
+        /// <param name="username"></param>
+        public async Task<MembershipState> AddUserToTeamAsync(string username)
+        {
+            var teams = await _client.Organization.Team.GetAll(OrgName);
+            var authorTeam = teams.Where(t => t.Name.Equals(TeamName)).SingleOrDefault();
+            if (authorTeam != null)
+            {
+                try
+                {
+                    var ship = await _client.Organization.Team.GetMembershipDetails(authorTeam.Id, username);
+                    return ship.State.Value;
+                }
+                catch (NotFoundException)
+                {
+                    var response = await _client.Organization.Team.AddOrEditMembership(authorTeam.Id, username, new UpdateTeamMembership(TeamRole.Member));
+
+                    if (response != null)
+                    {
+                        return response.State.Value;
+                    }
+                }
+            }
+            // 已添加或出错
+            return MembershipState.Active;
+        }
+
+
         /// <summary>
         /// Team中是否有用户
         /// </summary>
         /// <param name="username"></param>
-        public async void HasUserAsync(string username)
+        public async Task<bool> IsInTeam(string username)
         {
-            // 以组织管理者身份登录 
-            var teams = await _client.Organization.Team.GetAll("TechViews");
-            var authorTeam = teams.Where(t => t.Name.Equals("AuthorTeam")).SingleOrDefault();
+            var teams = await _client.Organization.Team.GetAll(OrgName);
+            var authorTeam = teams.Where(t => t.Name.Equals(TeamName)).SingleOrDefault();
             if (authorTeam != null)
             {
-                var response = await _client.Organization.Team.AddOrEditMembership(authorTeam.Id, username, new UpdateTeamMembership(TeamRole.Member));
-
+                try
+                {
+                    var ship = await _client.Organization.Team.GetMembershipDetails(authorTeam.Id, username);
+                    if (ship.State.Value == MembershipState.Active) return true;
+                }
+                catch (NotFoundException)
+                {
+                    return false;
+                }
             }
+            return false;
         }
     }
 
