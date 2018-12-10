@@ -9,10 +9,10 @@ namespace Guandian.Controllers
     public class BaseController : Controller
     {
         protected readonly ApplicationDbContext _context;
-        protected readonly UserManager<IdentityUser> _userManager;
+        protected readonly UserManager<User> _userManager;
         protected readonly ILogger _logger;
 
-        public BaseController(UserManager<IdentityUser> userManager, ApplicationDbContext context, ILogger logger)
+        public BaseController(UserManager<User> userManager, ApplicationDbContext context, ILogger logger)
         {
             _userManager = userManager;
             _context = context;

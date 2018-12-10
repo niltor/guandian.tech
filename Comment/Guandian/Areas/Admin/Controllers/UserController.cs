@@ -15,8 +15,8 @@ namespace Guandian.Areas.Admin.Controllers
 
     public class UserController : CommonController
     {
-        readonly UserManager<IdentityUser> _userManager;
-        public UserController(UserManager<IdentityUser> userManager, ApplicationDbContext context) : base(context)
+        readonly UserManager<User> _userManager;
+        public UserController(UserManager<User> userManager, ApplicationDbContext context) : base(context)
         {
             _userManager = userManager;
         }
