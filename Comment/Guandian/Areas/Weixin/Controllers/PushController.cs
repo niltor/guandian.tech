@@ -184,7 +184,8 @@ namespace Guandian.Areas.Weixin.Controllers
                                     thumb_media_id = mediaId,
                                     // html如果有#，会报错
                                     content = root.InnerHtml.Replace("#", ""),
-                                    title = item.Title,
+                                    // 长度处理
+                                    title = item.Title.Length > 32 ? item.Title.Substring(0, 32) : item.Title,
                                     show_cover_pic = "0",
                                     content_source_url = "https://guandian.tech/blogs/detail/" + item.Id,
                                     digest = "",
