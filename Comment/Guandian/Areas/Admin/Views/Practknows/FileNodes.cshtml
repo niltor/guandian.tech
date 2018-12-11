@@ -1,0 +1,51 @@
+﻿@model Guandian.Areas.Admin.Models.FileNodesView
+@{
+    ViewData["Title"] = "目录管理";
+    var path = Model.Path;
+    var fileNodes = Model.FileNodes;
+}
+
+<div class="row">
+    <nav aria-label="breadcrumb" class="col-md-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-route-id="">践识</a>
+            </li>
+            @foreach (var item in path)
+            {
+                <li class="breadcrumb-item">
+                    <a asp-route-id="@item.Id">@item.FileName</a>
+                </li>
+            }
+
+        </ol>
+    </nav>
+</div>
+<div class="row">
+    <div class=" col-md-3">
+        <div>
+            <form asp-action="AddFileNode">
+                <div class="form-inline">
+                    <input type="hidden" name="id" value="@TempData["id"]" />
+                    <input type="text" name="name" class="form-control-sm" placeholder="添加新目录" />
+                    <button class="btn btn-sm btn-primary">+</button>
+                </div>
+            </form>
+        </div>
+        <ul class="nav flex-column">
+            @* 当前列表 *@
+            @foreach (var item in fileNodes)
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-route-id="@item.Id">
+                        @if (!item.IsFile)
+                        {<span>[+]</span>}
+                        @item.FileName
+                    </a>
+                </li>
+            }
+
+        </ul>
+
+    </div>
+</div>

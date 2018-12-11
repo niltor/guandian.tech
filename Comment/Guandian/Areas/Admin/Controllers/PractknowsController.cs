@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Guandian.Areas.Admin.Models;
 using Guandian.Data;
+using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Guandian.Areas.Admin.Controllers
 {
@@ -23,6 +26,109 @@ namespace Guandian.Areas.Admin.Controllers
                 .Take(pageSize)
                 .ToList();
             return View(result);
+        }
+
+        /// <summary>
+        /// PR管理
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult PullRequest()
+        {
+            return View();
+        }
+        /// <summary>
+        /// FileNodes管理
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult FileNodes(Guid? id)
+        {
+            TempData["id"] = id;
+            var path = new List<FileNode>();
+            var fileNodes = new List<FileNode>();
+            // 根目录
+            if (id == null)
+            {
+                fileNodes = _context.FileNodes.Where(f => f.ParentNode == null).ToList();
+            }
+            else
+            {
+                var currentNode = _context.FileNodes
+                .Where(f => f.Id == id)
+                .SingleOrDefault();
+
+                if (currentNode != null)
+                {
+                    // 查询路径
+                    path = GetFilePath(currentNode.Id);
+                    if (!currentNode.IsFile)
+                    {
+                        // 查询当前内容
+                        fileNodes = _context.FileNodes.Where(f => f.ParentNode.Id == id).ToList();
+                    }
+                }
+            }
+            var data = new FileNodesView
+            {
+                FileNodes = fileNodes,
+                Path = path
+            };
+            return View(data);
+        }
+
+        /// <summary>
+        /// 添加FileNode
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="id">父结点id</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult AddFileNode(string name, Guid? id)
+        {
+            var parentNode = new FileNode();
+            if (id != null)
+            {
+                parentNode = _context.FileNodes.SingleOrDefault(f => f.Id == id);
+            }
+            // TODO：向github上添加内容
+            var newFileNode = new FileNode
+            {
+                FileName = name,
+                IsFile = false,
+            };
+            if (parentNode.FileName != null)
+            {
+                newFileNode.ParentNode = parentNode;
+            }
+            _context.Add(newFileNode);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = newFileNode.Id });
+        }
+
+        protected List<FileNode> GetFilePath(Guid id)
+        {
+            var result = new List<FileNode>();
+            var node = _context.FileNodes.Where(f => f.Id == id)
+                .Include(f => f.ParentNode)
+                .SingleOrDefault();
+
+            while (node != null)
+            {
+                result.Add(node);
+                node = GetParentNode(node.Id);
+            }
+
+            FileNode GetParentNode(Guid currentId)
+            {
+                var currentNode = _context.FileNodes.Where(f => f.Id == currentId)
+                    .Include(f => f.ParentNode)
+                    .SingleOrDefault();
+                return currentNode?.ParentNode ?? null;
+            }
+            result.Reverse();
+            return result;
         }
 
         public ActionResult Details(int id)
@@ -98,6 +204,15 @@ namespace Guandian.Areas.Admin.Controllers
             {
                 return View();
             }
+        }
+
+
+        public ActionResult ClearFileNodes()
+        {
+            var all = _context.FileNodes.ToList();
+            _context.FileNodes.RemoveRange(all);
+            var result = _context.SaveChanges();
+            return Content(result.ToString());
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// 是否为文件/文件夹
         /// </summary>
-        public bool IsFile { get; set; } = true;
+        public bool IsFile { get; set; } = false;
         /// <summary>
         /// 文件名
         /// </summary>

@@ -32,7 +32,17 @@
                     <a class="nav-link" asp-controller="articles" asp-action="index">文章</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="practknows" asp-action="index">践识</a>
+                    <div class="dropdown show">
+                        <a class="nav-link dropdown-toggle" asp-controller="practknows" asp-action="index" role="button" id="PractknowDropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            践识
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="PractknowDropdownMenu">
+                            <a class="dropdown-item" asp-controller="practknows" asp-action="filenodes">目录管理</a>
+                            <a class="dropdown-item" asp-controller="practknows" asp-action="pullrequest">PR管理</a>
+                            <a class="dropdown-item" asp-controller="practknows" asp-action="index">文章管理</a>
+                        </div>
+                    </div>
+
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="tools" asp-action="index">工具</a>
