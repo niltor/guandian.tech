@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Guandian.Areas.Admin.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
+using Guandian.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +14,10 @@ namespace Guandian.Areas.Admin.Controllers
 {
     public class PractknowsController : CommonController
     {
-        public PractknowsController(ApplicationDbContext context) : base(context)
+        readonly GithubManageService _github;
+        public PractknowsController(ApplicationDbContext context, GithubManageService github) : base(context)
         {
+            _github = github;
         }
         public ActionResult Index(int page = 1, int pageSize = 12)
         {
@@ -84,22 +87,37 @@ namespace Guandian.Areas.Admin.Controllers
         /// <param name="id">父结点id</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult AddFileNode(string name, Guid? id)
+        public async Task<ActionResult> AddFileNode(string name, Guid? id)
         {
             var parentNode = new FileNode();
             if (id != null)
             {
                 parentNode = _context.FileNodes.SingleOrDefault(f => f.Id == id);
             }
-            // TODO：向github上添加内容
+            // 构造github 新文件内容
+            var newFileDataModel = new NewFileDataModel
+            {
+                Content = $"目录:{name}",
+                Message = $"初始化目录：{name}",
+                Path = $"/{name}/readme.md"
+            };
+
             var newFileNode = new FileNode
             {
                 FileName = name,
                 IsFile = false,
             };
+            // 有父节点时
             if (parentNode.FileName != null)
             {
                 newFileNode.ParentNode = parentNode;
+                var paths = GetFilePath(parentNode.Id)?.Select(p => p.FileName)?.ToArray();
+                newFileDataModel.Path = string.Join("/", paths) + "/" + name + "/readme.md";
+            }
+            var createFileResult = await _github.CreateFile(newFileDataModel);
+            if (createFileResult != null)
+            {
+
             }
             _context.Add(newFileNode);
             _context.SaveChanges();

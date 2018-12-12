@@ -213,7 +213,7 @@ namespace Guandian.Areas.Weixin.Controllers
                     var userList = await UserApi.GetAsync(token, null);
                     var firstUserOpenId = userList.data.openid.FirstOrDefault();
                     // 预览
-                    var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "EstNil");
+                    //var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "EstNil");
                     // 群发消息
                     var sendNewsResult = await GroupMessageApi.SendGroupMessageByTagIdAsync(token, null, uploadNewsResult.media_id, Senparc.Weixin.MP.GroupMessageType.mpnews, true);
                     // 未成功则删除上传的素材

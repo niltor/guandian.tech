@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -18,6 +19,7 @@ namespace Guandian.Services
             _httpContext = httpContext;
 
         }
+
         protected bool SetToken()
         {
             string token = _httpContext.HttpContext.GetTokenAsync("access_token").Result;
@@ -45,7 +47,6 @@ namespace Guandian.Services
             }
             return null;
         }
-
         /// <summary>
         /// 创建文件
         /// </summary>
@@ -97,11 +98,11 @@ namespace Guandian.Services
         /// <summary>
         /// 组织、用户名
         /// </summary>
-        public string Owner { get; set; }
+        public string Owner { get; set; } = "TechViewsTeam";
         /// <summary>
         /// 仓库名
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = "blogs";
         /// <summary>
         /// 路径
         /// </summary>
@@ -117,6 +118,6 @@ namespace Guandian.Services
         /// <summary>
         /// 分支名
         /// </summary>
-        public string Branch { get; set; }
+        public string Branch { get; set; } = "master";
     }
 }

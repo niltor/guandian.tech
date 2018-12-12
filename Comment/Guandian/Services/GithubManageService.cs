@@ -25,6 +25,16 @@ namespace Guandian.Services
         }
 
         /// <summary>
+        /// 创建文件
+        /// </summary>
+        /// <returns></returns>
+        public async Task<RepositoryContentInfo> CreateFile(NewFileDataModel filedata)
+        {
+            var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
+            new CreateFileRequest(filedata.Message, filedata.Content, true));
+            return response.Content;
+        }
+        /// <summary>
         /// 邀请用户到Team
         /// </summary>
         /// <param name="username"></param>
@@ -52,8 +62,6 @@ namespace Guandian.Services
             // 已添加或出错
             return MembershipState.Active;
         }
-
-
         /// <summary>
         /// Team中是否有用户
         /// </summary>
