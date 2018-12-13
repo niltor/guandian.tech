@@ -99,7 +99,7 @@ namespace Guandian.Areas.Admin.Controllers
             {
                 Content = $"目录:{name}",
                 Message = $"初始化目录：{name}",
-                Path = $"/{name}/readme.md"
+                Path = $"/{name}/README.md"
             };
 
             var newFileNode = new FileNode
@@ -112,12 +112,15 @@ namespace Guandian.Areas.Admin.Controllers
             {
                 newFileNode.ParentNode = parentNode;
                 var paths = GetFilePath(parentNode.Id)?.Select(p => p.FileName)?.ToArray();
+                // 设置路径
+                newFileNode.Path = string.Join("/", paths) + "/" + name;
                 newFileDataModel.Path = string.Join("/", paths) + "/" + name + "/readme.md";
             }
             var createFileResult = await _github.CreateFile(newFileDataModel);
             if (createFileResult != null)
             {
-
+                newFileNode.SHA = createFileResult.Sha;
+                newFileNode.GithubLink = createFileResult.Url;
             }
             _context.Add(newFileNode);
             _context.SaveChanges();

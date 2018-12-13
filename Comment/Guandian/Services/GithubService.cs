@@ -102,7 +102,7 @@ namespace Guandian.Services
         /// <summary>
         /// 仓库名
         /// </summary>
-        public string Name { get; set; } = "blogs";
+        public string Name { get; set; } = "practknow";
         /// <summary>
         /// 路径
         /// </summary>
