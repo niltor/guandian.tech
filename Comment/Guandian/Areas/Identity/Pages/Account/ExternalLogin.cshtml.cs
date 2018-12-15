@@ -81,8 +81,15 @@ namespace Guandian.Areas.Identity.Pages.Account
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+                // TODO : 更新内容
+                //await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
+                await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
+                //await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
                 var props = new AuthenticationProperties();
                 props.StoreTokens(info.AuthenticationTokens);
+
+                await _signInManager.SignInAsync(user, props, info.LoginProvider);
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
@@ -126,8 +133,12 @@ namespace Guandian.Areas.Identity.Pages.Account
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
+                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
+                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
+                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
                         var props = new AuthenticationProperties();
                         props.StoreTokens(info.AuthenticationTokens);
+
                         await _signInManager.SignInAsync(user, props, authenticationMethod: info.LoginProvider);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return LocalRedirect(returnUrl);

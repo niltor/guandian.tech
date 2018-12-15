@@ -99,7 +99,7 @@ namespace Guandian.Areas.Admin.Controllers
             {
                 Content = $"目录:{name}",
                 Message = $"初始化目录：{name}",
-                Path = $"/{name}/README.md"
+                Path = $"{name}/README.md"
             };
 
             var newFileNode = new FileNode

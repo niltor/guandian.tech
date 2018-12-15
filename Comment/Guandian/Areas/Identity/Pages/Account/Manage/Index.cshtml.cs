@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Guandian.Data.Entity;
@@ -66,12 +67,9 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
 
             if (User.Identity.IsAuthenticated)
             {
-                GithubName = User.FindFirst(c => c.Type == "urn:github:name")?.Value;
-                GithubName = User.FindFirst(c => c.Type == "urn:github:name")?.Value;
-                Avatar = User.FindFirst(c => c.Type == "urn:github:avatar")?.Value;
+                GithubName = User.FindFirstValue(ClaimTypes.Name);
+                Avatar = User.FindFirstValue("urn:github:avatar");
                 ViewData["token"] = await HttpContext.GetTokenAsync("access_token");
-
-                Console.WriteLine(GithubName + Avatar + ViewData["token"]);
             }
             else
             {
