@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Guandian.Areas.Admin.Models;
 using Guandian.Data;
@@ -116,6 +117,7 @@ namespace Guandian.Areas.Admin.Controllers
                 newFileNode.Path = string.Join("/", paths) + "/" + name;
                 newFileDataModel.Path = string.Join("/", paths) + "/" + name + "/readme.md";
             }
+            newFileDataModel.Path = WebUtility.UrlEncode(newFileDataModel.Path);
             var createFileResult = await _github.CreateFile(newFileDataModel);
             if (createFileResult != null)
             {
