@@ -67,30 +67,53 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task<PullRequest> PullRequest(NewPullRequestModel pr)
         {
-            var result = await _client.PullRequest.Create(pr.Owner, pr.Name, new NewPullRequest(pr.Title, pr.Head, pr.Base));
-            return result;
+            if (SetToken())
+            {
+                var result = await _client.PullRequest.Create(pr.Owner, pr.Name, new NewPullRequest(pr.Title, pr.Head, pr.Base));
+                return result;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// merge PR
+        /// </summary>
+        /// <param name="owner">用户</param>
+        /// <param name="name">仓储名称</param>
+        /// <param name="number">pull request number</param>
+        /// <param name="mergeModel"></param>
+        /// <returns></returns>
+        public async Task<PullRequestMerge> MergePR(string owner, string name, int number, MergePullRequest mergeModel)
+        {
+            if (SetToken())
+            {
+                var response = await _client.PullRequest.Merge(owner, name, number, mergeModel);
+                return response;
+            }
+            return null;
         }
     }
+
 
     public class NewPullRequestModel
     {
         /// <summary>
         /// 组织、用户名
         /// </summary>
-        public string Owner { get; set; }
+        public string Owner { get; set; } = "TechViewsTeam";
         /// <summary>
         /// 仓库名
         /// </summary>
-        public string Name { get; set; }
-        public string Title { get; }
+        public string Name { get; set; } = "practknow";
+        public string Title { get; set; }
         /// <summary>
-        /// 目标仓库:分支
+        /// 分支
         /// </summary>
-        public string Base { get; }
+        public string Base { get; set; } = "master";
         /// <summary>
-        /// 自己分支
+        /// 示例：niltor:master
         /// </summary>
-        public string Head { get; }
+        public string Head { get; set; }
     }
 
     public class NewFileDataModel

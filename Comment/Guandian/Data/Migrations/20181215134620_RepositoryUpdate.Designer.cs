@@ -4,14 +4,16 @@ using Guandian.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Guandian.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181215134620_RepositoryUpdate")]
+    partial class RepositoryUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,6 +176,8 @@ namespace Guandian.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AuthorId");
+
                     b.Property<string>("AuthorName")
                         .HasMaxLength(120);
 
@@ -186,9 +190,6 @@ namespace Guandian.Data.Migrations
                     b.Property<string>("Keywords")
                         .HasMaxLength(200);
 
-                    b.Property<string>("SHA")
-                        .HasMaxLength(200);
-
                     b.Property<int>("Status");
 
                     b.Property<string>("Summary")
@@ -199,15 +200,13 @@ namespace Guandian.Data.Migrations
 
                     b.Property<DateTime>("UpdatedTime");
 
-                    b.Property<string>("UserId");
-
                     b.Property<int>("ViewNunmber");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FileNodeId");
+                    b.HasIndex("AuthorId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FileNodeId");
 
                     b.ToTable("Practknow");
                 });
@@ -485,13 +484,13 @@ namespace Guandian.Data.Migrations
 
             modelBuilder.Entity("Guandian.Data.Entity.Practknow", b =>
                 {
+                    b.HasOne("Guandian.Data.Entity.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
                     b.HasOne("Guandian.Data.Entity.FileNode", "FileNode")
                         .WithMany("Practknows")
                         .HasForeignKey("FileNodeId");
-
-                    b.HasOne("Guandian.Data.Entity.User", "User")
-                        .WithMany("Practknows")
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Guandian.Data.Entity.Repository", b =>

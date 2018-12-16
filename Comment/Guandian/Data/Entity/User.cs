@@ -31,8 +31,8 @@ namespace Guandian.Data.Entity
         [DataType(DataType.Date)]
         [PersonalData]
         public DateTime Birthday { get; set; }
-        public ICollection<Respository> Respositories { get; set; }
-
+        public ICollection<Repository> Respositories { get; set; }
+        public ICollection<Practknow> Practknows { get; set; }
         /// <summary>
         /// 是否fork践识
         /// </summary>

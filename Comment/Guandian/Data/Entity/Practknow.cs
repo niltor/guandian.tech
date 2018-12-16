@@ -14,7 +14,7 @@ namespace Guandian.Data.Entity
         [MaxLength(120)]
         [Display(Name = "作者")]
         public string AuthorName { get; set; }
-        public Author Author { get; set; }
+        public User User { get; set; }
         /// <summary>
         /// 评论
         /// </summary>
@@ -39,6 +39,11 @@ namespace Guandian.Data.Entity
         [MaxLength(1000)]
         [Display(Name = "概要")]
         public string Summary { get; set; }
+        /// <summary>
+        /// github SHA
+        /// </summary>
+        [MaxLength(200)]
+        public string SHA { get; set; }
         /// <summary>
         /// 文件结点
         /// </summary>

@@ -82,9 +82,9 @@ namespace Guandian.Areas.Identity.Pages.Account
             {
                 var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
-                // TODO : 更新内容
+                // TODO : 更新claims内容
                 //await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
-                await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
+                //await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
                 //await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
                 var props = new AuthenticationProperties();
                 props.StoreTokens(info.AuthenticationTokens);

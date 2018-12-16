@@ -4,14 +4,16 @@ using Guandian.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Guandian.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181215140801_UpdatePractknow")]
+    partial class UpdatePractknow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,9 +186,6 @@ namespace Guandian.Data.Migrations
                     b.Property<Guid?>("FileNodeId");
 
                     b.Property<string>("Keywords")
-                        .HasMaxLength(200);
-
-                    b.Property<string>("SHA")
                         .HasMaxLength(200);
 
                     b.Property<int>("Status");

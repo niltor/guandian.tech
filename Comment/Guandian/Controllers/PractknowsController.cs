@@ -78,19 +78,10 @@ namespace Guandian.Controllers
             return View(practknow);
         }
 
+
         public IActionResult Create()
         {
-            // 查询目录
-            var navNodes = _context.FileNodes.Where(f => f.IsFile == false)
-                .Where(f => f.ParentNode == null)
-                .Include(f => f.ChildrenNodes)
-                .ToList();
-            string navHtml = "";
-            foreach (var node in navNodes)
-            {
-                navHtml += BuildNavHtml(node);
-            }
-            ViewBag.NavHtml = navHtml;
+
             return View();
         }
 
@@ -122,53 +113,134 @@ namespace Guandian.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddPractknowForm practknow)
         {
+            // TODO:重复标题内容的处理
             if (ModelState.IsValid)
             {
-
-                Console.WriteLine(StringTools.ToJson(practknow));
                 // 获取用户信息
                 var email = User.FindFirstValue(ClaimTypes.Email);
                 var currentUser = _context.Users.Where(a => a.Email.Equals(email)).SingleOrDefault();
                 _logger.LogDebug(StringTools.ToJson(currentUser));
 
-                // TODO:处理路径
-                // 先fork仓库
-                var forkResult = await _github.ForkAsync();
-                Console.WriteLine(StringTools.ToJson(forkResult));
-
-                // 提交到github，获取fileNode信息
-                var createFileResult = await _github.CreateFile(new NewFileDataModel
+                // 先保存用户文章内容，待审批状态，没有结点信息
+                var currentFile = _context.Practknow.Where(p => p.User == currentUser && p.Title.Equals(practknow.Title)).SingleOrDefault();
+                // 标题重复，则以当前提交的为准
+                if (currentFile != null) _context.Remove(currentFile);
+                var newFile = new Practknow
                 {
-                    Branch = "master",
-                    Content = practknow.Content,
-                    Message = "创建文章:" + practknow.Title,
-                    Name = forkResult.Name ?? "blogs",
-                    Path = practknow.Path + practknow.Title + ".md",
-                    Owner = forkResult.Owner.Login ?? email ?? ""
-                });
-
-                Console.WriteLine(StringTools.ToJson(createFileResult));
-
-                // 添加新内容
-                var newPractknow = new Practknow
-                {
-                    Title = practknow.Title,
-                    Keywords = practknow.Keywords,
-                    Summary = practknow.Summary,
-                    Content = practknow.Content,
-                    FileNode = new FileNode
-                    {
-                        IsFile = true,
-                        FileName = practknow.Title + ".md",
-                        GithubLink = createFileResult.GitUrl,
-                        Path = practknow.Path + "/" + practknow.Title,
-                    }
+                    User = currentUser,
+                    AuthorName = currentUser.NickName ?? currentUser.UserName ?? currentUser.Email
                 };
+                _context.Entry(newFile).CurrentValues.SetValues(practknow);
 
-                //newPractknow.Author = currentUser;
-                newPractknow.AuthorName = currentUser.UserName;
-                _context.Add(newPractknow);
+                // 如果没有fork
+                if (!currentUser.IsForkPractknow)
+                {
+                    var forkResult = await _github.ForkAsync("practknow");
+                    Console.WriteLine(StringTools.ToJson(forkResult));
 
+                    if (forkResult.Fork)
+                    {
+                        // 保存fork状态
+                        currentUser.IsForkPractknow = true;
+                        _context.Users.Update(currentUser);
+
+                        // 保存仓储信息
+                        var repository = new Repository
+                        {
+                            Name = forkResult?.Name,
+                            Tag = "practknow",
+                            User = currentUser,
+                            Login = forkResult?.Owner?.Login
+                        };
+                        _context.Repositories.Add(repository);
+
+                        // 提交到个人fork的仓库
+                        var createFileResult = await _github.CreateFile(new NewFileDataModel
+                        {
+                            Branch = "master",
+                            Content = practknow.Content,
+                            Message = "创建文章:" + practknow.Title,
+                            Name = forkResult.Name ?? "practknow",
+                            Path = practknow.Path + practknow.Title + ".md",
+                            Owner = forkResult.Owner.Login ?? email ?? ""
+                        });
+                        // 更新文件内容
+                        if (createFileResult.Sha != null)
+                        {
+                            newFile.SHA = createFileResult.Sha;
+                        }
+      
+                        // 发起pull request ，等待审核 
+                        var prResult = await _github.PullRequest(new NewPullRequestModel
+                        {
+                            Head = forkResult?.Owner?.Login + ":master",
+                            Title = "新文章待审核"
+                        });
+                        Console.WriteLine(StringTools.ToJson(prResult));
+                    }
+                    else
+                    {
+                        //　TODO:fork失败处理
+                    }
+                }
+                else
+                {
+                    // 查询仓库名称
+                    var repository = _context.Repositories.Where(r => r.User == currentUser && r.Tag.Equals("practknow")).SingleOrDefault();
+
+                    if (repository != null)
+                    {
+                        // 同步,发起pull request
+                        // TODO:复杂情况，先处理完当前所有PR
+                        var asyncResult = await _github.PullRequest(new NewPullRequestModel
+                        {
+                            Owner = repository.Login,
+                            Name = repository.Name,
+                            Head = "TechViewsTeam/practknow:master",
+                            Title = "同步"
+                        });
+                        Console.WriteLine(StringTools.ToJson(asyncResult));
+                        // merge pull request
+                        if (asyncResult != null)
+                        {
+                            var mergeResult = await _github.MergePR(repository.Login, repository.Name, asyncResult.Number, new Octokit.MergePullRequest
+                            {
+                                CommitMessage = "",
+                                CommitTitle = "自动同步[Rebase]",
+                                MergeMethod = Octokit.PullRequestMergeMethod.Rebase,
+                                Sha = asyncResult?.Head?.Sha
+                            });
+
+                        }
+                        // 提交到个人fork的仓库
+                        var createFileResult = await _github.CreateFile(new NewFileDataModel
+                        {
+                            Branch = "master",
+                            Content = practknow.Content,
+                            Message = "创建文章:" + practknow.Title,
+                            Name = repository.Name ?? "practknow",
+                            Path = practknow.Path + practknow.Title + ".md",
+                            Owner = repository.Login ?? email ?? ""
+                        });
+                        // 更新文件内容
+                        if (createFileResult.Sha != null)
+                        {
+                            newFile.SHA = createFileResult.Sha;
+                        }
+                        // 发起 新内容pull request ，等待审核 
+                        var prResult = await _github.PullRequest(new NewPullRequestModel
+                        {
+                            Head = repository.Name + ":master",
+                            Title = "新文章待审核"
+                        });
+                    }
+                    else
+                    {
+                        // TODO:返回提示信息
+                    }
+
+                }
+                _context.Add(newFile);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

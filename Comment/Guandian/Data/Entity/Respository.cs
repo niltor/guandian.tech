@@ -5,7 +5,7 @@ namespace Guandian.Data.Entity
     /// <summary>
     /// 用户仓库
     /// </summary>
-    public class Respository : BaseDb
+    public class Repository : BaseDb
     {
         /// <summary>
         /// 仓库名称
@@ -18,6 +18,11 @@ namespace Guandian.Data.Entity
         [MaxLength(50)]
         public string Tag { get; set; }
         public User User { get; set; }
+        /// <summary>
+        /// github owner login
+        /// </summary>
+        [MaxLength(100)]
+        public string Login { get; set; }
 
     }
 }

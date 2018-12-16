@@ -18,6 +18,6 @@ namespace Guandian.Models.Forms
         /// <summary>
         /// 目录
         /// </summary>
-        public string Path { get; set; } = "";
+        public string Path { get; set; } = "未分类/";
     }
 }

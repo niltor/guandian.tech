@@ -6,7 +6,7 @@
 }
 @* 目录分类 *@
 <div class="col-md-auto px-1">
-    @ViewBag.NavHtml
+    @Html.Raw(ViewBag.NavHtml)
 </div>
 <form asp-action="Create" id="form" class="row">
     <div class="col-md">
