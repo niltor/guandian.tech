@@ -22,9 +22,11 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
         }
 
         public bool IsLoginGithub { get; set; } = false;
+        public string ReturnUrl { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -45,6 +47,8 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
             {
                 IsLoginGithub = false;
             }
+
+            ReturnUrl = Url.Content("~/Identity/Account/Manage/BeContributor");
             return Page();
         }
     }

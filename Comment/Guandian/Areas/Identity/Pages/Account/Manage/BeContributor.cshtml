@@ -15,3 +15,12 @@
         跳转到Github接受该邀请。
     </p>
 }
+else
+{
+    <form asp-page="/Account/ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+        <div>
+            <p>请点击下面按钮使用Github授权登录!</p>
+            <button type="submit" class="btn btn-sm btn-outline-primary" name="provider" value="GitHub" title="使用GitHub登录">GitHub</button>
+        </div>
+    </form>
+}
