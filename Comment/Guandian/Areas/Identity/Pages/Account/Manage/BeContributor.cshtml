@@ -1,0 +1,17 @@
+﻿@page
+@model BeContributorModel
+@{
+    ViewData["Title"] = "成为贡献者";
+}
+
+<h5>通过加入我们在Github上的组织，成为贡献者，即刻开始分享！</h5>
+@* 判断是否已用github登录 *@
+
+@if (Model.IsLoginGithub)
+{
+    <p>
+        我们已经邀请您成为贡献者，请
+        <a href="https://github.com/orgs/TechViewsTeam/invitation" target="_blank">点此</a>
+        跳转到Github接受该邀请。
+    </p>
+}
