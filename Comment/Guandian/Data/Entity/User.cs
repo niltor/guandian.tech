@@ -37,5 +37,9 @@ namespace Guandian.Data.Entity
         /// 是否fork践识
         /// </summary>
         public bool IsForkPractknow { get; set; } = false;
+        /// <summary>
+        /// 是否为成员
+        /// </summary>
+        public bool IsMember { get; set; } = false;
     }
 }

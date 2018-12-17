@@ -2,6 +2,9 @@
 @using Guandian.Data.Entity
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -17,7 +20,14 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="userDropdown">
                     <a class="dropdown-item" asp-page="/Account/Manage/Index" asp-area="Identity">我的账号</a>
-                    <a class="dropdown-item" asp-action="Create" asp-controller="Practknows" asp-area="">分享践识</a>
+                    @if (user.IsMember)
+                    {
+                        <a class="dropdown-item" asp-action="Create" asp-controller="Practknows" asp-area="">分享践识</a>
+                    }
+                    else
+                    {
+                        <a class="dropdown-item" asp-action="Create" asp-controller="Practknows" asp-area="">成为贡献者</a>
+                    }
                     <button type="submit" class="dropdown-item">退出</button>
                 </div>
             </li>
