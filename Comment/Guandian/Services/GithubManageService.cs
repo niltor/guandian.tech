@@ -49,6 +49,21 @@ namespace Guandian.Services
             var result = await _client.PullRequest.Create(username, repoName, newPullRequest);
             return result;
         }
+        /// <summary>
+        /// 是否有不同，需要同步
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="repoName"></param>
+        /// <returns></returns>
+        public async Task<bool> IsDiff(string username, string repoName)
+        {
+            var result = await _client.Repository.Commit.Compare(username, repoName, username + ":master", "TechViewsTeam:master");
+            if (result.Files?.Count > 0)
+            {
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>
         /// 邀请用户到Team
