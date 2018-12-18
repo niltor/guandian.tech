@@ -26,13 +26,11 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
-
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return RedirectToPage("/Account/Login");
             }
-
             var CurrentLogins = await _userManager.GetLoginsAsync(user);
             var hasGithub = CurrentLogins.Any(c => c.LoginProvider.ToLower().Equals("github"));
             var loginName = User.FindFirstValue(ClaimTypes.Name);

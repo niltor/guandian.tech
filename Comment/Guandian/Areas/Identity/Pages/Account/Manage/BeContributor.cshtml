@@ -3,10 +3,10 @@
 @{
     ViewData["Title"] = "成为贡献者";
 }
-
-<h5>通过加入我们在Github上的组织，成为贡献者，即刻开始分享！</h5>
+<h4>成为贡献者</h4>
+<hr />
 @* 判断是否已用github登录 *@
-
+<p>成为贡献者可以分享践识，通过Github授权登录，贡献者可以共同维护任意的践识文章。</p>
 @if (Model.IsLoginGithub)
 {
     <p>
@@ -19,8 +19,9 @@ else
 {
     <form asp-page="/Account/ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
         <div>
-            <p>请点击下面按钮使用Github授权登录!</p>
-            <button type="submit" class="btn btn-sm btn-outline-primary" name="provider" value="GitHub" title="使用GitHub登录">GitHub</button>
+            <button type="submit" class="btn btn-sm btn-outline-primary" name="provider" value="GitHub" title="使用GitHub登录">GitHub授权登录</button>
         </div>
     </form>
 }
+
+

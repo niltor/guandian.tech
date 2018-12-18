@@ -19,10 +19,12 @@ namespace Guandian.Controllers
     public class PractknowsController : BaseController
     {
         private readonly GithubService _github;
+        private readonly GithubManageService _githubManage;
 
-        public PractknowsController(ApplicationDbContext context, GithubService github, UserManager<User> userManager, ILogger<PractknowsController> logger) : base(userManager, context, logger)
+        public PractknowsController(ApplicationDbContext context, GithubService github, GithubManageService githubManage, UserManager<User> userManager, ILogger<PractknowsController> logger) : base(userManager, context, logger)
         {
             _github = github;
+            _githubManage = githubManage;
         }
 
         [HttpGet]
@@ -169,7 +171,7 @@ namespace Guandian.Controllers
                         {
                             newFile.SHA = createFileResult.Sha;
                         }
-      
+
                         // 发起pull request ，等待审核 
                         var prResult = await _github.PullRequest(new NewPullRequestModel
                         {
@@ -190,30 +192,24 @@ namespace Guandian.Controllers
 
                     if (repository != null)
                     {
-                        // 同步,发起pull request
-                        // TODO:复杂情况，先处理完当前所有PR
-                        var asyncResult = await _github.PullRequest(new NewPullRequestModel
-                        {
-                            Owner = repository.Login,
-                            Name = repository.Name,
-                            Head = "TechViewsTeam/practknow:master",
-                            Title = "同步"
-                        });
+                        // 由组织发起pull request，同步当前内容
+                        var asyncResult = await _githubManage.SyncToUserPR(repository.Login, repository.Name);
                         Console.WriteLine(StringTools.ToJson(asyncResult));
-                        // merge pull request
+                        // 合并 pull request
                         if (asyncResult != null)
                         {
                             var mergeResult = await _github.MergePR(repository.Login, repository.Name, asyncResult.Number, new Octokit.MergePullRequest
                             {
-                                CommitMessage = "",
-                                CommitTitle = "自动同步[Rebase]",
-                                MergeMethod = Octokit.PullRequestMergeMethod.Rebase,
+                                CommitMessage = "自动合并来自组织的Pull Request",
+                                CommitTitle = "自动同步合并[Squash]",
+                                MergeMethod = Octokit.PullRequestMergeMethod.Squash,
                                 Sha = asyncResult?.Head?.Sha
                             });
 
                         }
                         // 提交到个人fork的仓库
-                        var createFileResult = await _github.CreateFile(new NewFileDataModel
+                        // TODO：判断是否有重复名称的文件，有则取其sha，进行更新？
+                        var newFileDataModel = new NewFileDataModel
                         {
                             Branch = "master",
                             Content = practknow.Content,
@@ -221,7 +217,11 @@ namespace Guandian.Controllers
                             Name = repository.Name ?? "practknow",
                             Path = practknow.Path + practknow.Title + ".md",
                             Owner = repository.Login ?? email ?? ""
-                        });
+                        };
+                        var exist = await _github.GetFileInfo(repository.Login, repository.Name, practknow.Path + practknow.Title + ".md");
+                        if (exist != null) newFileDataModel.Sha = exist.Sha;
+
+                        var createFileResult = await _github.CreateFile(newFileDataModel);
                         // 更新文件内容
                         if (createFileResult.Sha != null)
                         {

@@ -36,6 +36,20 @@ namespace Guandian.Services
             new CreateFileRequest(filedata.Message, filedata.Content, true));
             return response.Content;
         }
+
+        /// <summary>
+        /// 向用户forked的仓库发起pull request
+        /// </summary>
+        /// <param name="username">用户名</param>
+        /// <param name="repoName">仓库名称</param>
+        /// <returns></returns>
+        public async Task<PullRequest> SyncToUserPR(string username, string repoName)
+        {
+            var newPullRequest = new NewPullRequest("组织要求同步", OrgName + ":master", "master");
+            var result = await _client.PullRequest.Create(username, repoName, newPullRequest);
+            return result;
+        }
+
         /// <summary>
         /// 邀请用户到Team
         /// </summary>

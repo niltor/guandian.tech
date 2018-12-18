@@ -55,9 +55,18 @@ namespace Guandian.Services
         {
             if (SetToken())
             {
-                var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
-                new CreateFileRequest(filedata.Message, filedata.Content, true));
-                return response.Content;
+                if (!string.IsNullOrEmpty(filedata.Sha))
+                {
+                    var response = await _client.Repository.Content.UpdateFile(filedata.Owner, filedata.Name, filedata.Path, new UpdateFileRequest(filedata.Message, filedata.Content, filedata.Sha));
+                    return response.Content;
+                }
+                else
+                {
+                    var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path, new CreateFileRequest(filedata.Message, filedata.Content, true));
+                    return response.Content;
+                }
+
+
             }
             return null;
         }
@@ -89,6 +98,23 @@ namespace Guandian.Services
             {
                 var response = await _client.PullRequest.Merge(owner, name, number, mergeModel);
                 return response;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 获取某文件信息
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="name"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async Task<RepositoryContent> GetFileInfo(string owner, string name, string path)
+        {
+            if (SetToken())
+            {
+                var result = await _client.Repository.Content.GetAllContents(owner, name, path);
+                return result.FirstOrDefault();
             }
             return null;
         }
@@ -142,5 +168,7 @@ namespace Guandian.Services
         /// 分支名
         /// </summary>
         public string Branch { get; set; } = "master";
+        public string Sha { get; set; }
+
     }
 }
