@@ -201,14 +201,14 @@ namespace Guandian.Controllers
                             var mergeResult = await _github.MergePR(repository.Login, repository.Name, asyncResult.Number, new Octokit.MergePullRequest
                             {
                                 CommitMessage = "自动合并来自组织的Pull Request",
-                                CommitTitle = "自动同步合并[Squash]",
-                                MergeMethod = Octokit.PullRequestMergeMethod.Squash,
+                                CommitTitle = "自动同步合并",
+                                MergeMethod = Octokit.PullRequestMergeMethod.Merge,
                                 Sha = asyncResult?.Head?.Sha
                             });
 
                         }
                         // 提交到个人fork的仓库
-                        // TODO：判断是否有重复名称的文件，有则取其sha，进行更新？
+                        // 判断是否有重复名称的文件，有则取其sha，进行更新？
                         var newFileDataModel = new NewFileDataModel
                         {
                             Branch = "master",
@@ -230,8 +230,8 @@ namespace Guandian.Controllers
                         // 发起 新内容pull request ，等待审核 
                         var prResult = await _github.PullRequest(new NewPullRequestModel
                         {
-                            Head = repository.Name + ":master",
-                            Title = "新文章待审核"
+                            Head = repository.Login + ":master",
+                            Title = "新践识文章:" + practknow.Title
                         });
                     }
                     else

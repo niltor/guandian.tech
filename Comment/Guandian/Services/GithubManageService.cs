@@ -45,7 +45,7 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task<PullRequest> SyncToUserPR(string username, string repoName)
         {
-            var newPullRequest = new NewPullRequest("组织要求同步", OrgName + ":master", "master");
+            var newPullRequest = new NewPullRequest("自动同步到TechViews源仓库", OrgName + ":master", "master");
             var result = await _client.PullRequest.Create(username, repoName, newPullRequest);
             return result;
         }
