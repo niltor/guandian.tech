@@ -32,6 +32,7 @@ namespace Guandian.Areas.Weixin.Controllers
         /// <returns></returns>
         public async Task<ActionResult> PushToWeixinAsync()
         {
+            int maxTitleLength = 30;
             // 获取新闻原内容
             var news = _context.News
                 .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date >= DateTime.Now.Date.AddDays(-5))
@@ -98,6 +99,7 @@ namespace Guandian.Areas.Weixin.Controllers
                             content_source_url = "https://guandian.tech",
                             digest = "",
                         };
+                        mainNews.title = mainNews.title.Length > maxTitleLength ? mainNews.title.Substring(0, maxTitleLength) : mainNews.title;
                         newsList.Add(mainNews);
                     }
                 }
@@ -185,7 +187,7 @@ namespace Guandian.Areas.Weixin.Controllers
                                     // html如果有#，会报错
                                     content = root.InnerHtml.Replace("#", ""),
                                     // 长度处理
-                                    title = item.Title.Length > 32 ? item.Title.Substring(0, 32) : item.Title,
+                                    title = item.Title.Length > maxTitleLength ? item.Title.Substring(0, maxTitleLength) : item.Title,
                                     show_cover_pic = "0",
                                     content_source_url = "https://guandian.tech/blogs/detail/" + item.Id,
                                     digest = "",

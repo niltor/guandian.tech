@@ -192,21 +192,24 @@ namespace Guandian.Controllers
 
                     if (repository != null)
                     {
-                        // 由组织发起pull request，同步当前内容
-                        var asyncResult = await _githubManage.SyncToUserPR(repository.Login, repository.Name);
-                        Console.WriteLine(StringTools.ToJson(asyncResult));
-                        // 合并 pull request
-                        if (asyncResult != null)
+                        var isDiff = await _githubManage.IsDiff(repository.Login, repository.Name);
+                        if (isDiff)
                         {
-                            var mergeResult = await _github.MergePR(repository.Login, repository.Name, asyncResult.Number, new Octokit.MergePullRequest
+                            // 由组织发起pull request，同步当前内容
+                            var asyncResult = await _githubManage.SyncToUserPR(repository.Login, repository.Name);
+                            // 合并 pull request
+                            if (asyncResult != null)
                             {
-                                CommitMessage = "自动合并来自组织的Pull Request",
-                                CommitTitle = "自动同步合并",
-                                MergeMethod = Octokit.PullRequestMergeMethod.Merge,
-                                Sha = asyncResult?.Head?.Sha
-                            });
-
+                                var mergeResult = await _github.MergePR(repository.Login, repository.Name, asyncResult.Number, new Octokit.MergePullRequest
+                                {
+                                    CommitMessage = "自动合并来自组织的Pull Request",
+                                    CommitTitle = "自动同步合并",
+                                    MergeMethod = Octokit.PullRequestMergeMethod.Merge,
+                                    Sha = asyncResult?.Head?.Sha
+                                });
+                            }
                         }
+
                         // 提交到个人fork的仓库
                         // 判断是否有重复名称的文件，有则取其sha，进行更新？
                         var newFileDataModel = new NewFileDataModel
