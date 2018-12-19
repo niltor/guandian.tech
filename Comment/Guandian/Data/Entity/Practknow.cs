@@ -45,6 +45,10 @@ namespace Guandian.Data.Entity
         [MaxLength(200)]
         public string SHA { get; set; }
         /// <summary>
+        /// pull request number
+        /// </summary>
+        public int PRNumber { get; set; }
+        /// <summary>
         /// 文件结点
         /// </summary>
         public FileNode FileNode { get; set; }

@@ -133,15 +133,18 @@ namespace Guandian.Controllers
                     AuthorName = currentUser.NickName ?? currentUser.UserName ?? currentUser.Email
                 };
                 _context.Entry(newFile).CurrentValues.SetValues(practknow);
+                string owner = "";// github登录名
+                string reposName = "";// 仓储名
+                string sha = "";// 文件sha，有则是更新，无则为新增
 
                 // 如果没有fork
                 if (!currentUser.IsForkPractknow)
                 {
                     var forkResult = await _github.ForkAsync("practknow");
-                    Console.WriteLine(StringTools.ToJson(forkResult));
-
                     if (forkResult.Fork)
                     {
+                        owner = forkResult?.Owner?.Login;
+                        reposName = forkResult?.Name ?? "practknow";
                         // 保存fork状态
                         currentUser.IsForkPractknow = true;
                         _context.Users.Update(currentUser);
@@ -149,36 +152,12 @@ namespace Guandian.Controllers
                         // 保存仓储信息
                         var repository = new Repository
                         {
-                            Name = forkResult?.Name,
+                            Name = reposName,
                             Tag = "practknow",
                             User = currentUser,
-                            Login = forkResult?.Owner?.Login
+                            Login = owner
                         };
                         _context.Repositories.Add(repository);
-
-                        // 提交到个人fork的仓库
-                        var createFileResult = await _github.CreateFile(new NewFileDataModel
-                        {
-                            Branch = "master",
-                            Content = practknow.Content,
-                            Message = "创建文章:" + practknow.Title,
-                            Name = forkResult.Name ?? "practknow",
-                            Path = practknow.Path + practknow.Title + ".md",
-                            Owner = forkResult.Owner.Login ?? email ?? ""
-                        });
-                        // 更新文件内容
-                        if (createFileResult.Sha != null)
-                        {
-                            newFile.SHA = createFileResult.Sha;
-                        }
-
-                        // 发起pull request ，等待审核 
-                        var prResult = await _github.PullRequest(new NewPullRequestModel
-                        {
-                            Head = forkResult?.Owner?.Login + ":master",
-                            Title = "新文章待审核"
-                        });
-                        Console.WriteLine(StringTools.ToJson(prResult));
                     }
                     else
                     {
@@ -189,18 +168,19 @@ namespace Guandian.Controllers
                 {
                     // 查询仓库名称
                     var repository = _context.Repositories.Where(r => r.User == currentUser && r.Tag.Equals("practknow")).SingleOrDefault();
-
+                    owner = repository.Login;
+                    reposName = repository.Name;
                     if (repository != null)
                     {
-                        var isDiff = await _githubManage.IsDiff(repository.Login, repository.Name);
+                        var isDiff = await _githubManage.IsDiff(owner, reposName);
                         if (isDiff)
                         {
                             // 由组织发起pull request，同步当前内容
-                            var asyncResult = await _githubManage.SyncToUserPR(repository.Login, repository.Name);
+                            var asyncResult = await _githubManage.SyncToUserPR(owner, reposName);
                             // 合并 pull request
                             if (asyncResult != null)
                             {
-                                var mergeResult = await _github.MergePR(repository.Login, repository.Name, asyncResult.Number, new Octokit.MergePullRequest
+                                var mergeResult = await _github.MergePR(owner, reposName, asyncResult.Number, new Octokit.MergePullRequest
                                 {
                                     CommitMessage = "自动合并来自组织的Pull Request",
                                     CommitTitle = "自动同步合并",
@@ -209,42 +189,41 @@ namespace Guandian.Controllers
                                 });
                             }
                         }
-
-                        // 提交到个人fork的仓库
                         // 判断是否有重复名称的文件，有则取其sha，进行更新？
-                        var newFileDataModel = new NewFileDataModel
-                        {
-                            Branch = "master",
-                            Content = practknow.Content,
-                            Message = "创建文章:" + practknow.Title,
-                            Name = repository.Name ?? "practknow",
-                            Path = practknow.Path + practknow.Title + ".md",
-                            Owner = repository.Login ?? email ?? ""
-                        };
-                        var exist = await _github.GetFileInfo(repository.Login, repository.Name, practknow.Path + practknow.Title + ".md");
-                        if (exist != null) newFileDataModel.Sha = exist.Sha;
-
-                        var createFileResult = await _github.CreateFile(newFileDataModel);
-                        // 更新文件内容
-                        if (createFileResult.Sha != null)
-                        {
-                            newFile.SHA = createFileResult.Sha;
-                        }
-                        // 发起 新内容pull request ，等待审核 
-                        var prResult = await _github.PullRequest(new NewPullRequestModel
-                        {
-                            Head = repository.Login + ":master",
-                            Title = "新践识文章:" + practknow.Title
-                        });
+                        var exist = await _github.GetFileInfo(owner, reposName, practknow.Path + practknow.Title + ".md");
+                        if (exist != null) sha = exist.Sha;
                     }
                     else
                     {
                         // TODO:返回提示信息
                     }
-
                 }
-                _context.Add(newFile);
-                await _context.SaveChangesAsync();
+                // 提交到个人fork的仓库
+                var createFileResult = await _github.CreateFile(new NewFileDataModel
+                {
+                    Branch = "master",
+                    Content = practknow.Content,
+                    Message = "创建文章:" + practknow.Title,
+                    Name = reposName ?? "practknow",
+                    Path = practknow.Path + practknow.Title + ".md",
+                    Owner = owner ?? email ?? "",
+                    Sha = sha
+                });
+                // 更新文件sha
+                if (createFileResult.Sha != null) newFile.SHA = createFileResult.Sha;
+                // 发起 新内容pull request ，等待审核 
+                var prResult = await _github.PullRequest(new NewPullRequestModel
+                {
+                    Head = owner + ":master",
+                    Title = "新践识文章:" + practknow.Title
+                });
+                if (prResult?.State.Value == Octokit.ItemState.Open)
+                {
+                    // 更新PR信息
+                    newFile.PRNumber = prResult.Number;
+                    _context.Add(newFile);
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(practknow);

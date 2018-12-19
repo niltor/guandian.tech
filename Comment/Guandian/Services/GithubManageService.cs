@@ -25,7 +25,6 @@ namespace Guandian.Services
                 Credentials = new Credentials(options.CurrentValue.PAT)
             };
         }
-
         /// <summary>
         /// 创建文件
         /// </summary>
@@ -36,7 +35,6 @@ namespace Guandian.Services
             new CreateFileRequest(filedata.Message, filedata.Content, true));
             return response.Content;
         }
-
         /// <summary>
         /// 向用户forked的仓库发起pull request
         /// </summary>
@@ -64,7 +62,6 @@ namespace Guandian.Services
             }
             return false;
         }
-
         /// <summary>
         /// 邀请用户到Team
         /// </summary>
@@ -115,6 +112,6 @@ namespace Guandian.Services
             }
             return false;
         }
-    }
 
+    }
 }

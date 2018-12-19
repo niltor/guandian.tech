@@ -37,9 +37,37 @@ namespace Guandian.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult PullRequest()
+        public ActionResult<List<Practknow>> PullRequest()
         {
-            return View();
+            var data = _context.Practknow
+                .Where(p => p.Status == Status.Default)
+                .OrderBy(p => p.CreatedTime)
+                .Select(s => new Practknow
+                {
+                    Id = s.Id,
+                    AuthorName = s.AuthorName,
+                    CreatedTime = s.CreatedTime,
+                    PRNumber = s.PRNumber,
+                    Status = s.Status,
+                    Title = s.Title
+                })
+                .Take(20)
+                .ToList();
+            return View(data);
+        }
+
+        [HttpGet]
+        public ActionResult<Practknow> PullRequestDetail(Guid id)
+        {
+            if (ModelState.IsValid)
+            {
+                var data = _context.Practknow.SingleOrDefault(p => p.Id == id);
+                return View(data);
+            }
+            else
+            {
+                return NotFound("");
+            }
         }
         /// <summary>
         /// FileNodes管理

@@ -21,10 +21,12 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// 默认的[新的，无效的]
         /// </summary>
+        [Display(Name ="New")]
         Default,
         /// <summary>
         /// 有效的
         /// </summary>
+        [Display(Name = "有效")]
         Valid,
         /// <summary>
         /// 已推送到微信公众号
@@ -33,6 +35,7 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// 废弃的
         /// </summary>
+        [Display(Name = "废弃")]
         Obsolete
     }
 }

@@ -1,1 +1,50 @@
-﻿pullrequest
+﻿@model List<Practknow>
+@{
+    ViewData["Title"] = "践识审核";
+}
+<div class="row">
+    <div class="col-auto">
+        <table class="table table-sm table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th>标题</th>
+                    <th>作者</th>
+                    <th>提交时间</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var practknow in Model)
+                {
+                    <tr>
+                        <td>
+                            @practknow.Title
+                            <a class="text-info" href="https://github.com/TechViewsTeam/Practknow/pull/@practknow.PRNumber">
+                                [#@practknow.PRNumber]
+                            </a>
+                        </td>
+                        <td>@practknow.AuthorName</td>
+                        <td>@practknow.CreatedTime.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@Html.DisplayFor(item => practknow.Status)</td>
+                        <td>
+                            @if (practknow.Status == Status.Default)
+                            {
+                                <a asp-action="PullRequestDetail" asp-route-id="@practknow.Id" target="_blank">
+                                    Review
+                                </a>
+                            }
+                            else if (practknow.Status == Status.Valid)
+                            {
+                                <button class="btn btn-sm btn-outline-primary">
+                                    归档
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

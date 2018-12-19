@@ -35,6 +35,9 @@
     <Folder Include="Areas\Auth\Models\" />
     <Folder Include="Areas\Auth\Views\" />
     <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Areas\Webhooks\Data\" />
+    <Folder Include="Areas\Webhooks\Models\" />
+    <Folder Include="Areas\Webhooks\Views\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
