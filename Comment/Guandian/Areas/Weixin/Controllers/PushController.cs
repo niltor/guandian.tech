@@ -32,7 +32,7 @@ namespace Guandian.Areas.Weixin.Controllers
         /// <returns></returns>
         public async Task<ActionResult> PushToWeixinAsync()
         {
-            int maxTitleLength = 30;
+            int maxTitleLength = 60;
             // 获取新闻原内容
             var news = _context.News
                 .Where(n => n.IsPublishToMP == false && n.CreatedTime.Date >= DateTime.Now.Date.AddDays(-5))
@@ -171,7 +171,6 @@ namespace Guandian.Areas.Weixin.Controllers
                                     var thumbImg = await MediaApi.UploadForeverMediaAsync(token, tempFileName);
                                     mediaId = thumbImg.media_id;
                                 }
-                                DumpConsole("设置封面，mediaId:" + mediaId + ";url:" + item.Thumbnail);
                                 // 处理内容，微信消息最大长度为2W字符，小于1M
                                 Console.WriteLine("长度:" + root.InnerHtml.Length);
                                 if (root.InnerHtml.Length >= 20000)
@@ -192,6 +191,7 @@ namespace Guandian.Areas.Weixin.Controllers
                                     content_source_url = "https://guandian.tech/blogs/detail/" + item.Id,
                                     digest = "",
                                 };
+                                DumpConsole("博客标题:" + currentNews.title + "; 长度:" + currentNews.title.Length);
                                 item.IsPublishMP = true;
                                 newsList.Add(currentNews);
                             }
@@ -215,7 +215,7 @@ namespace Guandian.Areas.Weixin.Controllers
                     var userList = await UserApi.GetAsync(token, null);
                     var firstUserOpenId = userList.data.openid.FirstOrDefault();
                     // 预览
-                    //var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "EstNil");
+                    var sendPreviewResult = await GroupMessageApi.SendGroupMessagePreviewAsync(token, Senparc.Weixin.MP.GroupMessageType.mpnews, uploadNewsResult.media_id, null, "EstNil");
                     // 群发消息
                     var sendNewsResult = await GroupMessageApi.SendGroupMessageByTagIdAsync(token, null, uploadNewsResult.media_id, Senparc.Weixin.MP.GroupMessageType.mpnews, true);
                     // 未成功则删除上传的素材
