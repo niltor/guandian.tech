@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Guandian.Data;
 using Guandian.Utilities;
@@ -108,8 +109,9 @@ namespace Guandian.Areas.Weixin.Controllers
                 // 博客内容
                 if (blogs != null && blogs.Count > 0)
                 {
-                    using (var wc = new WebClient())
+                    using (var hc = new HttpClient())
                     {
+                        hc.Timeout = TimeSpan.FromSeconds(5);
                         var htmlDoc = new HtmlDocument();
                         try
                         {
@@ -144,7 +146,7 @@ namespace Guandian.Areas.Weixin.Controllers
                                             DumpConsole(item.Title + " 图片处理");
                                             var image = imageNodes[i].Attributes["src"].Value;
                                             var tempFileName = StringTools.GetTempFileName("jpg");
-                                            wc.DownloadFile(image, tempFileName);
+                                            await DownloadFile(hc, image, tempFileName);
                                             // 判断大小. TODO:处理图片大小
                                             var file = new FileInfo(tempFileName);
                                             if (file.Length > 1 * 1024 * 1024) continue;
@@ -158,19 +160,23 @@ namespace Guandian.Areas.Weixin.Controllers
                                         }
                                     }
                                 }
-                                // 没有缩略图
-                                if (string.IsNullOrEmpty(item.Thumbnail))
+                                // 缩略图
+                                var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
+                                var defaultMediaId = mediaResult.item?.FirstOrDefault()?.media_id;
+
+                                // 下载缩略图，下载失败则使用默认图
+                                var tempFileName1 = StringTools.GetTempFileName("jpg");
+                                await DownloadFile(hc, item.Thumbnail, tempFileName1);
+                                if (System.IO.File.Exists(tempFileName1))
                                 {
-                                    var mediaResult = await MediaApi.GetOthersMediaListAsync(token, Senparc.Weixin.MP.UploadMediaFileType.image, 0, 2);
-                                    mediaId = mediaResult.item?.FirstOrDefault()?.media_id;
+                                    var thumbImg = await MediaApi.UploadForeverMediaAsync(token, tempFileName1);
+                                    mediaId = thumbImg.media_id;
                                 }
                                 else
                                 {
-                                    var tempFileName = StringTools.GetTempFileName("jpg");
-                                    wc.DownloadFile(item.Thumbnail, tempFileName);
-                                    var thumbImg = await MediaApi.UploadForeverMediaAsync(token, tempFileName);
-                                    mediaId = thumbImg.media_id;
+                                    mediaId = defaultMediaId;
                                 }
+
                                 // 处理内容，微信消息最大长度为2W字符，小于1M
                                 Console.WriteLine("长度:" + root.InnerHtml.Length);
                                 if (root.InnerHtml.Length >= 20000)
@@ -196,9 +202,9 @@ namespace Guandian.Areas.Weixin.Controllers
                                 newsList.Add(currentNews);
                             }
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
-                            throw;
+                            DumpConsole(e.Message);
                         }
                     }
                 }
@@ -235,10 +241,38 @@ namespace Guandian.Areas.Weixin.Controllers
             catch (Exception e)
             {
                 DumpConsole(e.Message + e.InnerException);
-                throw;
             }
             return Ok();
         }
 
+
+        /// <summary>
+        /// 下载文件
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public async Task DownloadFile(HttpClient hc, string url, string filename)
+        {
+            if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(filename)) return;
+            try
+            {
+                using (var result = await hc.GetAsync(url))
+                {
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var stream = await result.Content.ReadAsStreamAsync();
+                        using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write))
+                        {
+                            await stream.CopyToAsync(fileStream);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                DumpConsole(e.Message);
+            }
+
+        }
     }
 }

@@ -142,7 +142,6 @@ namespace Guandian.Utilities
             return str.Substring(startP, endP);
         }
 
-
         public static string GetTempFileName(string ext = "")
         {
             var now = DateTime.Now;
