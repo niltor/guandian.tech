@@ -41,6 +41,10 @@ namespace MSBlogsFunction.RssFeeds
         public XName Title { get; set; } = "title";
         public XName Description { get; set; } = "description";
         public XName Link { get; set; } = "link";
+        /// <summary>
+        /// 是否包含内容
+        /// </summary>
+        public bool HasContent { get; set; } = true;
 
         static readonly HttpClient _httpClient = new HttpClient();
 
@@ -90,10 +94,11 @@ namespace MSBlogsFunction.RssFeeds
                                     description = description.Substring(0, 999);
                                 }
                             }
+                            string content = x.Element(Content)?.Value?.Replace("<pre", "<pre class=\"notranslate\"");
                             return new RssEntity
                             {
                                 Title = x.Element(Title)?.Value,
-                                Content = x.Element(Content)?.Value?.Replace("<pre", "<pre class=\"notranslate\""),
+                                Content = content,
                                 Description = description ?? "",
                                 CreateTime = createTime,
                                 Author = x.Element(Creator)?.Value,
@@ -107,10 +112,41 @@ namespace MSBlogsFunction.RssFeeds
                     result.AddRange(blogs);
                 }
             }
-            return result.Distinct().ToList();
+            // 处理没有内容的博客
+            result.Where(r => string.IsNullOrEmpty(r.Content)).ToList()
+                .ForEach(item =>
+                {
+                    item.Content = GetContent(item.Link);
+                });
+
+            return result.Where(r => !string.IsNullOrEmpty(r.Content))
+                .Distinct()
+                .ToList();
         }
+
+        /// <summary>
+        /// 获取内容
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        protected virtual string GetContent(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return string.Empty;
+            return _httpClient.GetStringAsync(url).Result;
+        }
+
+        /// <summary>
+        /// 是否包含
+        /// </summary>
+        /// <param name="strArray"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         protected bool IsContainKey(string[] strArray, string key)
         {
+            if (strArray.Length < 1)
+            {
+                return true;
+            }
             foreach (string item in strArray)
             {
                 if (key.Contains(item))
