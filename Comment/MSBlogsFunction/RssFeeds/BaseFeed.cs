@@ -41,12 +41,14 @@ namespace MSBlogsFunction.RssFeeds
         public XName Title { get; set; } = "title";
         public XName Description { get; set; } = "description";
         public XName Link { get; set; } = "link";
+
         /// <summary>
         /// 是否包含内容
         /// </summary>
         public bool HasContent { get; set; } = true;
+        protected XDocument xmlDoc;
 
-        static readonly HttpClient _httpClient = new HttpClient();
+        protected HttpClient _httpClient = new HttpClient();
 
         public BaseFeed()
         {
@@ -60,57 +62,65 @@ namespace MSBlogsFunction.RssFeeds
         public virtual async Task<List<RssEntity>> GetBlogs(int number = 3)
         {
             var result = new List<RssEntity>();
-
-            foreach (var url in Urls)
+            try
             {
-                string xmlString = await _httpClient.GetStringAsync(url);
-                if (!string.IsNullOrEmpty(xmlString))
+                foreach (var url in Urls)
                 {
-                    var xmlDoc = XDocument.Parse(xmlString);
-                    IEnumerable<XElement> xmlList = xmlDoc.Root.Element(RootName)?.Elements(ItemName);
+                    string xmlString = await _httpClient.GetStringAsync(url);
+                    if (!string.IsNullOrEmpty(xmlString))
+                    {
+                        xmlDoc = XDocument.Parse(xmlString);
+                        IEnumerable<XElement> xmlList = xmlDoc.Root.Element(RootName)?.Elements(ItemName);
 
-                    var blogs = xmlList.Where(i => IsContainKey(Authorfilter, i.Element(Creator)?.Value)
-                            && IsContainKey(HtmlTagFilter, i.Element(Content)?.Value))
-                        .Select(x =>
-                        {
-                            DateTime createTime = DateTime.Now;
-                            string createTimeString = x.Element(PubDate)?.Value;
-                            if (!string.IsNullOrEmpty(createTimeString))
+                        var blogs = xmlList.Where(i => IsContainKey(Authorfilter, i.Element(Creator)?.Value)
+                                && IsContainKey(HtmlTagFilter, i.Element(Content)?.Value))
+                            .Select(x =>
                             {
-                                DateTime.TryParse(createTimeString, out createTime);
-                            }
-                            var categories = x.Elements()
-                                .Where(e => e.Name.Equals(Category))?
-                                .Select(s => s.Value)
-                                .ToArray();
-                            var description = x.Element(Description)?.Value;
-                            // 去除html标签
-                            //description = Regex.Replace(description, "<.*?>", String.Empty);
-
-                            if (!string.IsNullOrEmpty(description))
-                            {
-                                if (description.Length > 999)
+                                DateTime createTime = DateTime.Now;
+                                string createTimeString = x.Element(PubDate)?.Value;
+                                if (!string.IsNullOrEmpty(createTimeString))
                                 {
-                                    description = description.Substring(0, 999);
+                                    DateTime.TryParse(createTimeString, out createTime);
                                 }
-                            }
-                            string content = x.Element(Content)?.Value?.Replace("<pre", "<pre class=\"notranslate\"");
-                            return new RssEntity
-                            {
-                                Title = x.Element(Title)?.Value,
-                                Content = content,
-                                Description = description ?? "",
-                                CreateTime = createTime,
-                                Author = x.Element(Creator)?.Value,
-                                Link = x.Element(Link)?.Value,
-                                Categories = string.Join(";", categories),
-                                LastUpdateTime = createTime,
-                            };
-                        })
-                        .Take(number)
-                        .ToList();
-                    result.AddRange(blogs);
+
+                                var description = x.Element(Description)?.Value;
+                                // 去除html标签
+                                //description = Regex.Replace(description, "<.*?>", String.Empty);
+
+                                if (!string.IsNullOrEmpty(description))
+                                {
+                                    if (description.Length > 999)
+                                    {
+                                        description = description.Substring(0, 999);
+                                    }
+                                }
+                                string content = x.Element(Content)?.Value;
+                                if (!string.IsNullOrEmpty(content))
+                                {
+                                    content = content.Replace("<pre", "<pre class=\"notranslate\"");
+                                }
+                                return new RssEntity
+                                {
+                                    Title = x.Element(Title)?.Value,
+                                    Content = content,
+                                    Description = description ?? "",
+                                    CreateTime = createTime,
+                                    Author = x.Element(Creator)?.Value,
+                                    Link = x.Element(Link)?.Value,
+                                    Categories = GetCategories(x),
+                                    LastUpdateTime = createTime,
+                                };
+                            })
+                            .Take(number)
+                            .ToList();
+                        result.AddRange(blogs);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message + e.InnerException); ;
+                throw;
             }
             // 处理没有内容的博客
             result.Where(r => string.IsNullOrEmpty(r.Content)).ToList()
@@ -129,12 +139,19 @@ namespace MSBlogsFunction.RssFeeds
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        protected virtual string GetContent(string url)
+        protected virtual string GetContent(string url) => "";
+        /// <summary>
+        /// 获取标签目录
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string GetCategories(XElement element)
         {
-            if (string.IsNullOrEmpty(url)) return string.Empty;
-            return _httpClient.GetStringAsync(url).Result;
+            var categories = element.Elements()
+                .Where(e => e.Name.Equals(Category))?
+                .Select(s => s.Value)
+                .ToArray();
+            return string.Join(";", categories);
         }
-
         /// <summary>
         /// 是否包含
         /// </summary>
@@ -143,7 +160,7 @@ namespace MSBlogsFunction.RssFeeds
         /// <returns></returns>
         protected bool IsContainKey(string[] strArray, string key)
         {
-            if (strArray.Length < 1)
+            if (strArray == null || strArray.Length < 1 || string.IsNullOrEmpty(key))
             {
                 return true;
             }

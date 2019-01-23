@@ -220,7 +220,6 @@ namespace Functions
                 _log.Error("==GetNewsContentAsync:" + e.Message + e.InnerException);
                 return "";
             }
-
         }
     }
 }
