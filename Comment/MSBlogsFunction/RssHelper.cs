@@ -42,15 +42,15 @@ namespace MSBlogsFunction
         {
             var result = new List<RssEntity>();
 
-            //var msFeed = new MicrosoftFeed();
-            //result.AddRange(msFeed.GetBlogs(5).Result);
+            var msFeed = new MicrosoftFeed();
+            result.AddRange(msFeed.GetBlogs(5).Result);
 
-            //var dockerFeed = new DockerFeed();
-            //result.AddRange(dockerFeed.GetBlogs().Result);
+            var dockerFeed = new DockerFeed();
+            result.AddRange(dockerFeed.GetBlogs().Result);
 
 
-            var infoWorldFeed = new InfoWorldFeed();
-            result.AddRange(infoWorldFeed.GetBlogs().Result);
+            //var infoWorldFeed = new InfoWorldFeed();
+            //result.AddRange(infoWorldFeed.GetBlogs().Result);
 
             var blogs = new List<RssEntity>();
             foreach (var blog in result)
