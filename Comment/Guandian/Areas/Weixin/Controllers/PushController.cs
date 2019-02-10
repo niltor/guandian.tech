@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Guandian.Data;
 using Guandian.Utilities;
 using HtmlAgilityPack;
@@ -14,6 +7,13 @@ using Senparc.Weixin.Entities;
 using Senparc.Weixin.MP.AdvancedAPIs;
 using Senparc.Weixin.MP.AdvancedAPIs.GroupMessage;
 using Senparc.Weixin.MP.Containers;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Guandian.Areas.Weixin.Controllers
 {
@@ -50,13 +50,11 @@ namespace Guandian.Areas.Weixin.Controllers
                 .OrderByDescending(b => b.UpdatedTime)
                 .Take(number)
                 .ToList();
-
-            var newsList = new List<NewsModel>();
-            var token = AccessTokenContainer.TryGetAccessToken(AppId, AppSecret);
-
-            DumpConsole("开始处理新闻");
             try
             {
+                var newsList = new List<NewsModel>();
+                var token = AccessTokenContainer.TryGetAccessToken(AppId, AppSecret);
+                DumpConsole("开始处理新闻");
                 // 新闻内容
                 if (news != null && news.Count > 0)
                 {
@@ -270,7 +268,7 @@ namespace Guandian.Areas.Weixin.Controllers
             }
             catch (Exception e)
             {
-                DumpConsole(e.Message);
+                DumpConsole("下载文件失败" + url + e.Message);
             }
 
         }
