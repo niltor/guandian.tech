@@ -59,7 +59,6 @@ namespace Guandian
             //   options.UseSqlServer(
             //       Configuration.GetConnectionString("MSDev")));
             // 身份验证服务 
-            // TODO:这里之后改成自定义的User，已生成UI之后改model会出错 https://github.com/aspnet/Docs/issues/7764
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             //.AddEntityFrameworkStores<MSDevContext>();
