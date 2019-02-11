@@ -31,8 +31,6 @@ namespace Guandian.Controllers
 
             return View(new NewsListViewModel { NewsList = news });
         }
-
-
         /// <summary>
         /// 微信推送用内容
         /// </summary>
@@ -48,18 +46,14 @@ namespace Guandian.Controllers
                 .ToList();
             return View(new NewsListViewModel { NewsList = news });
         }
-
-
         public IActionResult Viewpoint()
         {
             return View();
         }
-
         public IActionResult Subject()
         {
             return View();
         }
-
         public IActionResult Privacy()
         {
             return View();
