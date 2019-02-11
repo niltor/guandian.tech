@@ -39,7 +39,7 @@ namespace MSBlogsFunction.RssFeeds
                 cookieContainer.Add(new Cookie("nsdr", @"""em=geethin%2540outlook.com|tkn=1|fnm=niltor|industry=Aerospace%252FDefense%2520Contractor|jobFunction=Applications|jobPosition=Manager""", "/", "infoworld.com"));
                 cookieContainer.Add(new Cookie("idg_uuid", "745fb237-4296-42e1-95ed-e06ebfa7c6ac", "/", "infoworld.com"));
 
-                var content = client.GetStringAsync(url).Result;
+                var content = client.GetStringAsync(url).Result; 
                 if (!string.IsNullOrEmpty(content))
                 {
                     var doc = new HtmlDocument();
