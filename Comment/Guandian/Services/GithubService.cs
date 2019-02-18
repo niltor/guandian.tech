@@ -97,6 +97,7 @@ namespace Guandian.Services
             if (SetToken())
             {
                 var response = await _client.PullRequest.Merge(owner, name, number, mergeModel);
+                _logger.LogDebug("同步合并=>" + owner + ":" + name);
                 return response;
             }
             return null;
