@@ -3,13 +3,6 @@
     ViewData["Title"] = "博客";
 }
 @model List<Blog>
-<style>
-    .news-description img {
-        max-width: 100%;
-        width: 100%;
-        height: auto;
-    }
-</style>
 <div class="row">
     <div class="col-md-8 offset-md-2 p-0">
         @foreach (var blog in Model)
@@ -28,7 +21,7 @@
                         @blog.UpdatedTime.ToString("MM-dd H:mm") @blog.AuthorName
                     </div>
                     <div class="news-description col-md-10">
-                        @Html.Raw(blog.Summary)
+                        @blog.Summary
                     </div>
                 </div>
             </div>

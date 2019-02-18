@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Guandian.Data;
 using Guandian.Data.Entity;
@@ -25,7 +26,7 @@ namespace Guandian.Controllers
                 .Select(b => new Blog
                 {
                     AuthorName = b.AuthorName,
-                    Summary = b.Summary,
+                    Summary = Regex.Replace(b.Summary, @"<(.|\n)*?>", string.Empty),
                     CreatedTime = b.CreatedTime,
                     Title = b.Title,
                     UpdatedTime = b.UpdatedTime,

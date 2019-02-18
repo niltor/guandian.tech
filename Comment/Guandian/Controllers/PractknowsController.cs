@@ -27,6 +27,11 @@ namespace Guandian.Controllers
             _githubManage = githubManage;
         }
 
+        /// <summary>
+        /// 践识主页
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<PractknowIndexView>> Index(Guid? nodeId = null)
         {
@@ -38,11 +43,13 @@ namespace Guandian.Controllers
                 var currentNode = await _context.FileNodes
                     .Include(f => f.ParentNode)
                     .SingleOrDefaultAsync(f => f.Id == nodeId);
+                nodeTree = _context.FileNodes.Where(f => f.ParentNode.Id == nodeId).ToList();
+
                 if (currentNode == null) return View();
                 // 如果是文件夹
                 if (!currentNode.IsFile)
                 {
-                    currentNodes = await _context.FileNodes.Where(f => f.ParentNode == currentNode).ToListAsync();
+                    currentNodes = GetFilePath(currentNode.Id);
                 }
                 else
                 {
@@ -51,7 +58,8 @@ namespace Guandian.Controllers
             }
             else
             {
-                currentNodes = await _context.FileNodes.Where(f => f.Practknows == null).ToListAsync();
+                // 默认内容
+                nodeTree = _context.FileNodes.Where(f => f.ParentNode == null).ToList();
             }
 
             return View(new PractknowIndexView
@@ -61,8 +69,35 @@ namespace Guandian.Controllers
                 Practknow = practknow
             });
         }
+        /// <summary>
+        /// 获取当前结点路径 TODO:待抽象复用
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        protected List<FileNode> GetFilePath(Guid id)
+        {
+            var result = new List<FileNode>();
+            var node = _context.FileNodes.Where(f => f.Id == id)
+                .Include(f => f.ParentNode)
+                .SingleOrDefault();
 
-        // GET: Practknows/Details/5
+            while (node != null)
+            {
+                result.Add(node);
+                node = GetParentNode(node.Id);
+            }
+
+            FileNode GetParentNode(Guid currentId)
+            {
+                var currentNode = _context.FileNodes.Where(f => f.Id == currentId)
+                    .Include(f => f.ParentNode)
+                    .SingleOrDefault();
+                return currentNode?.ParentNode ?? null;
+            }
+            result.Reverse();
+            return result;
+        }
+
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -79,7 +114,6 @@ namespace Guandian.Controllers
 
             return View(practknow);
         }
-
 
         public IActionResult Create()
         {

@@ -158,6 +158,11 @@ namespace Guandian.Areas.Admin.Controllers
             return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = newFileNode.Id });
         }
 
+        /// <summary>
+        /// 获取当前结点路径 TODO:待抽象复用
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         protected List<FileNode> GetFilePath(Guid id)
         {
             var result = new List<FileNode>();
