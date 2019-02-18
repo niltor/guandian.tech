@@ -52,5 +52,28 @@ namespace Guandian.Data.Entity
         /// 文件结点
         /// </summary>
         public FileNode FileNode { get; set; }
+        /// <summary>
+        /// 审核状态
+        /// </summary>
+        public MergeStatus MergeStatus { get; set; } = MergeStatus.NeedMerge;
+    }
+    /// <summary>
+    /// 状态
+    /// </summary>
+    public enum MergeStatus
+    {
+        /// <summary>
+        /// 待审核 
+        /// </summary>
+        NeedMerge,
+        /// <summary>
+        /// 通过审核
+        /// </summary>
+        Merged,
+        /// <summary>
+        /// 未通过审核
+        /// </summary>
+        Closed
+
     }
 }

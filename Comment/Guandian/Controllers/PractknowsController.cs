@@ -256,19 +256,19 @@ namespace Guandian.Controllers
                 {
                     Head = owner + ":master",
                 });
-                // 发起 新内容pull request ，等待审核 
-                var prResult = await _github.PullRequest(new NewPullRequestModel
+                if (!hasPR)
                 {
-                    Head = owner + ":master",
-                    Title = "新践识文章:" + practknow.Title
-                });
-                if (prResult?.State.Value == Octokit.ItemState.Open)
-                {
-                    // 更新PR信息
+                    // 发起 新内容pull request ，等待审核 
+                    var prResult = await _github.PullRequest(new NewPullRequestModel
+                    {
+                        Head = owner + ":master",
+                        Title = "新践识文章:" + practknow.Title
+                    });
                     newFile.PRNumber = prResult.Number;
-                    _context.Add(newFile);
-                    await _context.SaveChangesAsync();
                 }
+                // 更新PR信息
+                _context.Add(newFile);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(practknow);
