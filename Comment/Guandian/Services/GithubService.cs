@@ -118,6 +118,25 @@ namespace Guandian.Services
             }
             return null;
         }
+
+        /// <summary>
+        /// 是否有待处理的PR
+        /// </summary>
+        /// <param name="pr"></param>
+        /// <returns></returns>
+        public async Task<bool> HasPR(NewPullRequestModel pr)
+        {
+            if (SetToken())
+            {
+                var response = await _client.PullRequest.GetAllForRepository(pr.Owner, pr.Name, new PullRequestRequest
+                {
+                    Base = pr.Base,
+                    Head = pr.Head
+                });
+                if (response.Count > 0) return true;
+            }
+            return false;
+        }
     }
 
 

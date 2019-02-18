@@ -133,6 +133,7 @@ namespace Guandian.Areas.Identity.Pages.Account
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
+                        // TODO: 需要添加角色
                         await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
                         await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
                         await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
