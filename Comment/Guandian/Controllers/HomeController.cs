@@ -22,8 +22,8 @@ namespace Guandian.Controllers
         /// <returns></returns>
         public IActionResult Index(int page = 1, int pageSize = 20)
         {
-
             var news = _context.News
+                .Where(n => n.Status != Data.Entity.Status.Obsolete)
                 .OrderByDescending(n => n.UpdatedTime)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -79,6 +79,6 @@ namespace Guandian.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    
+
     }
 }

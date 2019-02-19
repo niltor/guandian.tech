@@ -10,7 +10,9 @@ namespace Guandian.Data.Entity
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
+        [Display(Name = "创建时间")]
         public DateTime CreatedTime { get; set; } = DateTime.Now;
+        [Display(Name = "更新时间")]
         public DateTime UpdatedTime { get; set; } = DateTime.Now;
 
         public Status Status { get; set; } = Status.Default;
@@ -21,7 +23,7 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// 默认的[新的，无效的]
         /// </summary>
-        [Display(Name ="New")]
+        [Display(Name = "New")]
         Default,
         /// <summary>
         /// 有效的
@@ -31,6 +33,7 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// 已推送到微信公众号
         /// </summary>
+        [Display(Name = "推")]
         IsPublishedMP,
         /// <summary>
         /// 废弃的
