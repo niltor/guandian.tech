@@ -2,10 +2,100 @@
 @model PractknowIndexView
 @{
     ViewData["Title"] = "践识";
+    var practknow = Model.Practknow;
+    var nodes = Model.NodeTree;
+    var navs = Model.CurrentNodes;
 }
+<style>
+    body, html {
+        font-family: Segoe UI,SegoeUI,Segoe WP,Helvetica Neue,Helvetica,Tahoma,Arial,sans-serif;
+        font-weight: 400;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+    }
 
-@* 搜索框 *@
+    .content-header {
+        padding: 8px 0;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+</style>
 
-@* 分类目录选择 *@
+@* 顶部内容 *@
+<div class="row content-header">
+    <div class="col text-left">
+        @* 面包屑导航，显示大分类 *@
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-transparent m-0 p-0">
+                <li class="breadcrumb-item">
+                    <a asp-route-nodeId="">践识</a>
+                </li>
+                @foreach (var nav in navs)
+                {
+                    if (Context.Request.Query["nodeId"] == nav.Id.ToString())
+                    {
+                        <li class="breadcrumb-item active" aria-current="page">
+                            @nav.FileName
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="breadcrumb-item">
+                            <a asp-route-nodeId="@nav.Id">@nav.FileName</a>
+                        </li>
+                    }
+                }
+            </ol>
+        </nav>
+    </div>
+    <div class="col action-bar">
+        @* 操作 *@
+        <ul class="nav float-right text-right">
+            <li class="nav-item">
+                <a href="">
+                    <span></span>
+                    <span class="text-dark">
+                        编辑
+                    </span>
+                </a>
+            </li>
+            @*
+                <li class="nav-item">
+                    <a href="">
+                        <span></span>
+                        <span class="text-dark">分享</span>
+                    </a>
+                </li>*@
+        </ul>
+    </div>
+</div>
 
-@* 标题列表 *@
+<div class="row py-2">
+    @* 左边栏 *@
+    <div class="col" style="        width: 310px">
+        @* 搜索框 filter *@
+        <input type="search" value="" placeholder="标题筛选" autocomplete="on" class="form-control form-control-sm" />
+        @* 分类目录选择 *@
+        <div class="categories">
+            <ul class="list-unstyled">
+                @foreach (var node in nodes)
+                {
+                    <li>
+                        <a asp-route-nodeId="@node.Id">
+                            <span class="text-dark">
+                                @node.FileName
+                            </span>
+                        </a>
+
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    @* 文章内容 *@
+    <div class="col-md-10">
+        @practknow.Content
+    </div>
+
+</div>
+

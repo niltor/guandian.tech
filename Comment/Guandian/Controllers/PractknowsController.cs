@@ -4,6 +4,7 @@ using Guandian.Models.Forms;
 using Guandian.Models.PractknowView;
 using Guandian.Services;
 using Guandian.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace Guandian.Controllers
 {
+    //[Authorize("Github")]
     public class PractknowsController : BaseController
     {
         private readonly GithubService _github;
@@ -27,6 +29,11 @@ namespace Guandian.Controllers
             _githubManage = githubManage;
         }
 
+        /// <summary>
+        /// 践识主页
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<PractknowIndexView>> Index(Guid? nodeId = null)
         {
@@ -38,11 +45,13 @@ namespace Guandian.Controllers
                 var currentNode = await _context.FileNodes
                     .Include(f => f.ParentNode)
                     .SingleOrDefaultAsync(f => f.Id == nodeId);
+                nodeTree = _context.FileNodes.Where(f => f.ParentNode.Id == nodeId).ToList();
+
                 if (currentNode == null) return View();
                 // 如果是文件夹
                 if (!currentNode.IsFile)
                 {
-                    currentNodes = await _context.FileNodes.Where(f => f.ParentNode == currentNode).ToListAsync();
+                    currentNodes = GetFilePath(currentNode.Id);
                 }
                 else
                 {
@@ -51,7 +60,8 @@ namespace Guandian.Controllers
             }
             else
             {
-                currentNodes = await _context.FileNodes.Where(f => f.Practknows == null).ToListAsync();
+                // 默认内容
+                nodeTree = _context.FileNodes.Where(f => f.ParentNode == null).ToList();
             }
 
             return View(new PractknowIndexView
@@ -61,8 +71,35 @@ namespace Guandian.Controllers
                 Practknow = practknow
             });
         }
+        /// <summary>
+        /// 获取当前结点路径 TODO:待抽象复用
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        protected List<FileNode> GetFilePath(Guid id)
+        {
+            var result = new List<FileNode>();
+            var node = _context.FileNodes.Where(f => f.Id == id)
+                .Include(f => f.ParentNode)
+                .SingleOrDefault();
 
-        // GET: Practknows/Details/5
+            while (node != null)
+            {
+                result.Add(node);
+                node = GetParentNode(node.Id);
+            }
+
+            FileNode GetParentNode(Guid currentId)
+            {
+                var currentNode = _context.FileNodes.Where(f => f.Id == currentId)
+                    .Include(f => f.ParentNode)
+                    .SingleOrDefault();
+                return currentNode?.ParentNode ?? null;
+            }
+            result.Reverse();
+            return result;
+        }
+
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -80,10 +117,8 @@ namespace Guandian.Controllers
             return View(practknow);
         }
 
-
         public IActionResult Create()
         {
-
             return View();
         }
 
@@ -111,6 +146,11 @@ namespace Guandian.Controllers
             return result;
         }
 
+        /// <summary>
+        /// 创建践识
+        /// </summary>
+        /// <param name="practknow"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddPractknowForm practknow)
@@ -119,11 +159,9 @@ namespace Guandian.Controllers
             if (ModelState.IsValid)
             {
                 // 获取用户信息
-                var email = User.FindFirstValue(ClaimTypes.Email);
-                var currentUser = _context.Users.Where(a => a.Email.Equals(email)).SingleOrDefault();
-                _logger.LogDebug(StringTools.ToJson(currentUser));
-
-                // 先保存用户文章内容，待审批状态，没有结点信息
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUser = _context.Users.Where(a => a.Id == userId).SingleOrDefault();
+                // 查询是否已发布同标题文章
                 var currentFile = _context.Practknow.Where(p => p.User == currentUser && p.Title.Equals(practknow.Title)).SingleOrDefault();
                 // 标题重复，则以当前提交的为准
                 if (currentFile != null) _context.Remove(currentFile);
@@ -206,29 +244,33 @@ namespace Guandian.Controllers
                     Message = "创建文章:" + practknow.Title,
                     Name = reposName ?? "practknow",
                     Path = practknow.Path + practknow.Title + ".md",
-                    Owner = owner ?? email ?? "",
+                    Owner = owner ?? userId ?? "",
                     Sha = sha
                 });
                 // 更新文件sha
                 if (createFileResult.Sha != null) newFile.SHA = createFileResult.Sha;
-                // 发起 新内容pull request ，等待审核 
-                var prResult = await _github.PullRequest(new NewPullRequestModel
+                // TODO:先查询是否已经存在pull request
+                var hasPR = await _github.HasPR(new NewPullRequestModel
                 {
                     Head = owner + ":master",
-                    Title = "新践识文章:" + practknow.Title
                 });
-                if (prResult?.State.Value == Octokit.ItemState.Open)
+                if (!hasPR)
                 {
-                    // 更新PR信息
+                    // 发起 新内容pull request ，等待审核 
+                    var prResult = await _github.PullRequest(new NewPullRequestModel
+                    {
+                        Head = owner + ":master",
+                        Title = "新践识文章:" + practknow.Title
+                    });
                     newFile.PRNumber = prResult.Number;
-                    _context.Add(newFile);
-                    await _context.SaveChangesAsync();
                 }
+                // 更新PR信息
+                _context.Add(newFile);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(practknow);
         }
-
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -243,7 +285,6 @@ namespace Guandian.Controllers
             }
             return View(practknow);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Title,AuthorName,ViewNunmber,Content,Keywords,Summary,Id,CreatedTime,UpdatedTime,Status")] Practknow practknow)

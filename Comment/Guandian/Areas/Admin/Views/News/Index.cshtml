@@ -8,10 +8,6 @@
         <tr>
             <th>
                 标题
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tags)
             </th>
             <th>
                 来源
@@ -25,7 +21,7 @@
             <th>
                 状态
             </th>
-            <th></th>
+            <th>操作</th>
         </tr>
     </thead>
     <tbody>
@@ -33,10 +29,9 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tags)
+                    <a asp-action="Details" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Provider)
@@ -48,12 +43,17 @@
                     @Html.DisplayFor(modelItem => item.UpdatedTime)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Status)
+                    <span class="badge-secondary">
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </span>
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">编辑</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">详情</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">删除</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="text-success">编</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger">删</a> | 
+                    @if (item.Status != Status.Obsolete)
+                    {
+                       <a asp-action="Obsolete" asp-route-id="@item.Id" class="text-warning">废</a>
+                    }
                 </td>
             </tr>
         }

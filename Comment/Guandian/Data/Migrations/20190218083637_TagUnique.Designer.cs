@@ -4,14 +4,16 @@ using Guandian.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Guandian.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190218083637_TagUnique")]
+    partial class TagUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,8 +187,6 @@ namespace Guandian.Data.Migrations
 
                     b.Property<string>("Keywords")
                         .HasMaxLength(200);
-
-                    b.Property<int>("MergeStatus");
 
                     b.Property<int>("PRNumber");
 

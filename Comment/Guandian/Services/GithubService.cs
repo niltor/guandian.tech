@@ -97,6 +97,7 @@ namespace Guandian.Services
             if (SetToken())
             {
                 var response = await _client.PullRequest.Merge(owner, name, number, mergeModel);
+                _logger.LogDebug("同步合并=>" + owner + ":" + name);
                 return response;
             }
             return null;
@@ -113,10 +114,37 @@ namespace Guandian.Services
         {
             if (SetToken())
             {
-                var result = await _client.Repository.Content.GetAllContents(owner, name, path);
-                return result.FirstOrDefault();
+                try
+                {
+                    var result = await _client.Repository.Content.GetAllContents(owner, name, path);
+                    return result.FirstOrDefault();
+                }
+                catch (NotFoundException e)
+                {
+                    _logger.LogInformation("没有该文件:" + e.Message);
+                    return null;
+                }
             }
             return null;
+        }
+
+        /// <summary>
+        /// 是否有待处理的PR
+        /// </summary>
+        /// <param name="pr"></param>
+        /// <returns></returns>
+        public async Task<bool> HasPR(NewPullRequestModel pr)
+        {
+            if (SetToken())
+            {
+                var response = await _client.PullRequest.GetAllForRepository(pr.Owner, pr.Name, new PullRequestRequest
+                {
+                    Base = pr.Base,
+                    Head = pr.Head
+                });
+                if (response.Count > 0) return true;
+            }
+            return false;
         }
     }
 

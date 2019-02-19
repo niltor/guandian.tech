@@ -36,8 +36,7 @@ namespace Guandian.Data
                 .WithMany(p => p.ChildrenNodes);
 
             builder.Entity<Repository>()
-                .HasIndex(r => r.Tag)
-                .IsUnique();
+                .HasIndex(r => r.Tag);
             base.OnModelCreating(builder);
         }
     }

@@ -33,7 +33,6 @@ namespace Guandian.Areas.Admin.Controllers
             return View(result);
         }
 
-        // GET: Admin/News/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -51,15 +50,11 @@ namespace Guandian.Areas.Admin.Controllers
             return View(news);
         }
 
-        // GET: Admin/News/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/News/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,AuthorName,Content,Description,Url,ThumbnailUrl,Tags,Provider,Id,CreatedTime,UpdatedTime,Status")] News news)
@@ -74,7 +69,6 @@ namespace Guandian.Areas.Admin.Controllers
             return View(news);
         }
 
-        // GET: Admin/News/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -90,9 +84,6 @@ namespace Guandian.Areas.Admin.Controllers
             return View(news);
         }
 
-        // POST: Admin/News/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Title,AuthorName,Content,Description,Url,ThumbnailUrl,Tags,Provider,Id,CreatedTime,UpdatedTime,Status")] News news)
@@ -125,7 +116,6 @@ namespace Guandian.Areas.Admin.Controllers
             return View(news);
         }
 
-        // GET: Admin/News/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -142,14 +132,29 @@ namespace Guandian.Areas.Admin.Controllers
 
             return View(news);
         }
-
-        // POST: Admin/News/Delete/5
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var news = await _context.News.FindAsync(id);
             _context.News.Remove(news);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        /// <summary>
+        /// 废弃
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> Obsolete(Guid id)
+        {
+            var news = await _context.News.FindAsync(id);
+            news.Status = Status.Obsolete;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
