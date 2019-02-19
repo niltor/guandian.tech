@@ -161,9 +161,7 @@ namespace Guandian.Controllers
                 // 获取用户信息
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var currentUser = _context.Users.Where(a => a.Id == userId).SingleOrDefault();
-                _logger.LogDebug(StringTools.ToJson(currentUser));
-
-                // 先保存用户文章内容，待审批状态，没有结点信息
+                // 查询是否已发布同标题文章
                 var currentFile = _context.Practknow.Where(p => p.User == currentUser && p.Title.Equals(practknow.Title)).SingleOrDefault();
                 // 标题重复，则以当前提交的为准
                 if (currentFile != null) _context.Remove(currentFile);

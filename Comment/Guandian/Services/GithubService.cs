@@ -114,8 +114,16 @@ namespace Guandian.Services
         {
             if (SetToken())
             {
-                var result = await _client.Repository.Content.GetAllContents(owner, name, path);
-                return result.FirstOrDefault();
+                try
+                {
+                    var result = await _client.Repository.Content.GetAllContents(owner, name, path);
+                    return result.FirstOrDefault();
+                }
+                catch (NotFoundException e)
+                {
+                    _logger.LogInformation("没有该文件:" + e.Message);
+                    return null;
+                }
             }
             return null;
         }
