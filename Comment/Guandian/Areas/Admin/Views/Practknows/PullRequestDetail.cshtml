@@ -3,3 +3,41 @@
     ViewData["Title"] = "审核" + Model.Title;
 }
 
+<style>
+    .merge-pracknow-content {
+        height: 800px;
+        overflow: auto;
+    }
+</style>
+<div class="row p-2">
+    @* 内容展示 *@
+    <div class="col-md-7">
+        <h5>@Model.Title</h5>
+        <div class="merge-pracknow-content">
+            @Model.Content
+        </div>
+    </div>
+    @* 审核操作 *@
+    <div class="col-md-5" style="border-left:1px solid #ddd">
+        <h5>合并审批</h5>
+        <hr />
+        <form>
+            <input type="hidden" value="" />
+            <textarea name="comment" rows="4" class="form-control my-1"></textarea>
+            @* 选择目录:搜索选择 *@
+            <input type="text" value="" class="form-control my-1" placeholder="搜索目录" />
+            <div class="btn-group my-1 btn-group-sm" role="group" aria-label="merge">
+                <button type="button" class="btn btn-danger">不通过</button>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        通过
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <button type="submit" class="dropdown-item btn-sm">合并</button>
+                        <button type="submit" class="dropdown-item btn-sm">覆盖合并</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

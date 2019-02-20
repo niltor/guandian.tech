@@ -4,7 +4,7 @@
 }
 <div class="row">
     <div class="col-auto">
-        <table class="table table-sm table-striped table-responsive">
+        <table class="table table-sm table-striped table-responsive table-bordered">
             <thead>
                 <tr>
                     <th>标题</th>
@@ -28,23 +28,13 @@
                         <td>@practknow.CreatedTime.ToString("yyyy-MM-dd HH:mm")</td>
                         <td>@Html.DisplayFor(item => practknow.Status)</td>
                         <td>
-                            @if (practknow.Status == Status.Default)
-                            {
-                                <a asp-action="PullRequestDetail" asp-route-id="@practknow.Id" target="_blank">
-                                    Review
-                                </a>
-                            }
-                            else if (practknow.Status == Status.Valid)
-                            {
-                                <button class="btn btn-sm btn-outline-primary">
-                                    归档
-                                </button>
-                            }
+                            <a asp-action="PullRequestDetail" asp-route-id="@practknow.Id" target="_blank">
+                                审核
+                            </a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-
     </div>
 </div>

@@ -37,8 +37,11 @@ namespace Guandian.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<List<Practknow>> PullRequest()
+        public ActionResult<List<Practknow>> PullRequest(int pageIndex = 1, int pageSize = 20)
         {
+            if (pageIndex < 1) pageIndex = 1;
+            ViewBag.Page = pageIndex;
+
             var data = _context.Practknow
                 .Where(p => p.Status == Status.Default)
                 .OrderBy(p => p.CreatedTime)
@@ -51,8 +54,10 @@ namespace Guandian.Areas.Admin.Controllers
                     Status = s.Status,
                     Title = s.Title
                 })
-                .Take(20)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
+
             return View(data);
         }
 
@@ -61,12 +66,12 @@ namespace Guandian.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var data = _context.Practknow.SingleOrDefault(p => p.Id == id);
-                return View(data);
+                var pracknow = _context.Practknow.SingleOrDefault(p => p.Id == id);
+                return View(pracknow);
             }
             else
             {
-                return NotFound("");
+                return NotFound("不存在该践识");
             }
         }
         /// <summary>
