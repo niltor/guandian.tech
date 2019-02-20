@@ -74,6 +74,18 @@ namespace Guandian.Areas.Admin.Controllers
                 return NotFound("不存在该践识");
             }
         }
+
+        /// <summary>
+        /// 审核内容
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult MergePR()
+        {
+            return View();
+        }
+
         /// <summary>
         /// FileNodes管理
         /// </summary>
@@ -113,7 +125,6 @@ namespace Guandian.Areas.Admin.Controllers
             };
             return View(data);
         }
-
         /// <summary>
         /// 添加FileNode
         /// </summary>
@@ -196,77 +207,6 @@ namespace Guandian.Areas.Admin.Controllers
         {
             return View();
         }
-
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> Delete(Guid id)
-        {
-            var current = _context.Practknow.Find(id);
-            if (current != null)
-            {
-                _context.Remove(current);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
 
         public ActionResult ClearFileNodes()
         {
