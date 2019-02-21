@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Octokit;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ namespace Guandian.Services
     {
         readonly GitHubClient _client;
         static readonly string OrgName = "TechViewsTeam";
-        static readonly string TeamName = "BlogAuthor";
+        static readonly string TeamName = "Practknow";
 
         public GithubManageService(ILogger<GithubManageService> logger, IOptionsMonitor<GithubOption> options) : base(logger)
         {
@@ -111,6 +113,22 @@ namespace Guandian.Services
                 }
             }
             return false;
+        }
+        /// <summary>
+        /// 获取PR列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<PullRequest>> GetPullRequests()
+        {
+            try
+            {
+                var PRs = await _client.PullRequest.GetAllForRepository(OrgName, TeamName);
+                return PRs;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
     }

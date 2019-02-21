@@ -39,6 +39,8 @@ namespace Guandian.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult<List<Practknow>> PullRequest(int pageIndex = 1, int pageSize = 20)
         {
+            // TODO:获取Pull Request列表
+
             if (pageIndex < 1) pageIndex = 1;
             ViewBag.Page = pageIndex;
 
