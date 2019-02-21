@@ -10,6 +10,7 @@ using Guandian.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Octokit;
 
 namespace Guandian.Areas.Admin.Controllers
 {
@@ -37,28 +38,12 @@ namespace Guandian.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<List<Practknow>> PullRequest(int pageIndex = 1, int pageSize = 20)
+        public async Task<ActionResult<List<PullRequest>>> PullRequest(int pageIndex = 1, int pageSize = 12)
         {
             // TODO:获取Pull Request列表
-
+            var data = await _github.GetPullRequests(pageIndex, pageSize);
             if (pageIndex < 1) pageIndex = 1;
             ViewBag.Page = pageIndex;
-
-            var data = _context.Practknow
-                .Where(p => p.Status == Status.Default)
-                .OrderBy(p => p.CreatedTime)
-                .Select(s => new Practknow
-                {
-                    Id = s.Id,
-                    AuthorName = s.AuthorName,
-                    CreatedTime = s.CreatedTime,
-                    PRNumber = s.PRNumber,
-                    Status = s.Status,
-                    Title = s.Title
-                })
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
 
             return View(data);
         }

@@ -114,16 +114,25 @@ namespace Guandian.Services
             }
             return false;
         }
+
         /// <summary>
         /// 获取PR列表
         /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<PullRequest>> GetPullRequests()
+        public async Task<IEnumerable<PullRequest>> GetPullRequests(int pageIndex, int pageSize)
         {
             try
             {
-                var PRs = await _client.PullRequest.GetAllForRepository(OrgName, TeamName);
-                return PRs;
+                var PRs = await _client.PullRequest.GetAllForRepository(OrgName, TeamName,
+                    new ApiOptions
+                    {
+                        PageCount = 1,
+                        PageSize = pageSize,
+                        StartPage = pageIndex
+                    });
+                return PRs.ToList();
             }
             catch (Exception)
             {

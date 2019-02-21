@@ -1,4 +1,5 @@
-﻿@model List<Practknow>
+﻿@using Octokit
+@model List<PullRequest>
 @{
     ViewData["Title"] = "践识审核";
 }
@@ -10,25 +11,23 @@
                     <th>标题</th>
                     <th>作者</th>
                     <th>提交时间</th>
-                    <th>状态</th>
                     <th>操作</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var practknow in Model)
+                @foreach (var pr in Model)
                 {
                     <tr>
                         <td>
-                            @practknow.Title
-                            <a class="text-info" href="https://github.com/TechViewsTeam/Practknow/pull/@practknow.PRNumber">
-                                [#@practknow.PRNumber]
+                            @pr.Title
+                            <a class="text-info" href="https://github.com/TechViewsTeam/Practknow/pull/@pr.Number">
+                                [#@pr.Number]
                             </a>
                         </td>
-                        <td>@practknow.AuthorName</td>
-                        <td>@practknow.CreatedTime.ToString("yyyy-MM-dd HH:mm")</td>
-                        <td>@Html.DisplayFor(item => practknow.Status)</td>
+                        <td>@pr.User.Login</td>
+                        <td>@pr.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                         <td>
-                            <a asp-action="PullRequestDetail" asp-route-id="@practknow.Id" target="_blank">
+                            <a href="@pr.HtmlUrl" target="_blank">
                                 审核
                             </a>
                         </td>
