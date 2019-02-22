@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using Guandian.Data;
+using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Octokit;
+using Z.EntityFramework.Plus;
 
 namespace Guandian.Areas.Webhooks.Controllers
 {
     public class GithubController : BaseController
     {
+        public GithubController(ApplicationDbContext context) : base(context)
+        {
+        }
+
         [HttpGet("test")]
         public string Test()
         {
@@ -28,6 +32,9 @@ namespace Guandian.Areas.Webhooks.Controllers
                     break;
                 case "synchronize":
                     // TODO: 处理pr 合并
+                    var sha = pr.PullRequest.MergeCommitSha;
+                    var count = _context.Practknow.Where(p => p.MergeStatus == MergeStatus.NeedMerge)
+                        .Update(p => new Practknow { MergeStatus = MergeStatus.Merged });
 
                     break;
                 default:

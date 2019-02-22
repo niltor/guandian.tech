@@ -7,10 +7,12 @@ using Guandian.Areas.Admin.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Guandian.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Octokit;
+using Z.EntityFramework.Plus;
 
 namespace Guandian.Areas.Admin.Controllers
 {
@@ -201,6 +203,13 @@ namespace Guandian.Areas.Admin.Controllers
             _context.FileNodes.RemoveRange(all);
             var result = _context.SaveChanges();
             return Content(result.ToString());
+        }
+
+        [AllowAnonymous]
+        public ActionResult Test()
+        {
+
+            return Content("");
         }
     }
 }
