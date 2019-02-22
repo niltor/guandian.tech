@@ -227,7 +227,7 @@ namespace Guandian.Controllers
                                 });
                             }
                         }
-                        // 判断是否有重复名称的文件，有则取其sha，进行更新？
+                        // 判断是否有重复名称的文件，有则取其sha，进行更新
                         var exist = await _github.GetFileInfo(owner, reposName, practknow.Path + practknow.Title + ".md");
                         if (exist != null) sha = exist.Sha;
                     }
@@ -249,11 +249,8 @@ namespace Guandian.Controllers
                 });
                 // 更新文件sha
                 if (createFileResult.Sha != null) newFile.SHA = createFileResult.Sha;
-                // TODO:先查询是否已经存在pull request
-                var hasPR = await _github.HasPR(new NewPullRequestModel
-                {
-                    Head = owner + ":master",
-                });
+                // 先查询是否已经存在pull request
+                var hasPR = _github.HasPR(new NewPullRequestModel { Head = owner + ":master" }, out var pullRequest);
                 if (!hasPR)
                 {
                     // 发起 新内容pull request ，等待审核 
@@ -263,6 +260,11 @@ namespace Guandian.Controllers
                         Title = "新践识文章:" + practknow.Title
                     });
                     newFile.PRNumber = prResult.Number;
+                    newFile.PRSHA = prResult.MergeCommitSha;
+                }
+                else
+                {
+                    newFile.PRSHA = pullRequest.MergeCommitSha;
                 }
                 // 更新PR信息
                 _context.Add(newFile);

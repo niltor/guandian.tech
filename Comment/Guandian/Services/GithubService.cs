@@ -133,17 +133,22 @@ namespace Guandian.Services
         /// </summary>
         /// <param name="pr"></param>
         /// <returns></returns>
-        public async Task<bool> HasPR(NewPullRequestModel pr)
+        public bool HasPR(NewPullRequestModel pr, out PullRequest pullRequet)
         {
             if (SetToken())
             {
-                var response = await _client.PullRequest.GetAllForRepository(pr.Owner, pr.Name, new PullRequestRequest
+                var response = _client.PullRequest.GetAllForRepository(pr.Owner, pr.Name, new PullRequestRequest
                 {
                     Base = pr.Base,
                     Head = pr.Head
-                });
-                if (response.Count > 0) return true;
+                }).Result;
+                if (response.Count > 0)
+                {
+                    pullRequet = response.FirstOrDefault();
+                    return true;
+                }
             }
+            pullRequet = null;
             return false;
         }
     }
