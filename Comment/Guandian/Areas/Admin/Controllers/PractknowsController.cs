@@ -53,7 +53,7 @@ namespace Guandian.Areas.Admin.Controllers
         /// <param name="ids"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> ArchiveAsync(Guid nodeId, List<Guid> ids)
+        public async Task<ActionResult> Archive(Guid nodeId, List<Guid> ids)
         {
             // TODO:更改目录
             var fileNode = _context.FileNodes.SingleOrDefault(f => f.Id == nodeId);
