@@ -53,9 +53,56 @@ namespace Guandian.Areas.Admin.Controllers
         /// <param name="ids"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Archive(Guid nodeId, List<Guid> ids)
+        public async Task<ActionResult> ArchiveAsync(Guid nodeId, List<Guid> ids)
         {
-            return Json(ids);
+            // TODO:更改目录
+            var fileNode = _context.FileNodes.SingleOrDefault(f => f.Id == nodeId);
+            if (fileNode == null)
+            {
+                return NotFound();
+            }
+            // 查询对应的节点信息
+            var currentPractknows = _context.Practknow.Where(p => ids.Contains(p.Id))
+                .Include(p => p.FileNode)
+                .ToList();
+            var currentFileNodeIds = currentPractknows.Select(s => s.FileNode.Id).Distinct().ToList();
+
+            try
+            {
+                // 同步到github
+                currentPractknows.ForEach(async p =>
+                {
+                    var currentFileNode = p.FileNode;
+                    // 删除内容
+                    await _github.DeleteFile(currentFileNode.Path, "合并删除", currentFileNode.SHA);
+                    // 添加内容
+                    await _github.CreateFile(new NewFileDataModel
+                    {
+                        Path = currentFileNode.Path,
+                        Name = currentFileNode.FileName,
+                        Content = p.Content,
+                        Message = "合并归档新建"
+                    });
+                });
+
+                // 更新父节点信息。TODO:回调保持一致，避免同步失败后的不一致
+                var updatePractknow = _context.FileNodes
+                    .Where(f => currentFileNodeIds.Contains(f.Id))
+                    .Update(f => new FileNode
+                    {
+                        ParentNode = fileNode
+                    });
+
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message + e.Source);
+                return Ok(Json("失败"));
+
+            }
+            return Ok(Json("成功"));
         }
         /// <summary>
         /// PR管理

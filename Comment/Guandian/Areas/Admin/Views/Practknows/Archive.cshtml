@@ -118,9 +118,10 @@
             $.ajax({
                 url: '',
                 data: { ids: ids, nodeId: nodeId },
-                type:'POST',
+                type: 'POST',
                 success: function (res) {
                     console.log(res);
+                    alert(res);
                 }
             });
         }

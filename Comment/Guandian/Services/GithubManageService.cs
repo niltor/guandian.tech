@@ -38,6 +38,16 @@ namespace Guandian.Services
             return response.Content;
         }
         /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="sha"></param>
+        /// <returns></returns>
+        public async Task DeleteFile(string path, string message, string sha)
+        {
+            await _client.Repository.Content.DeleteFile(OrgName, TeamName, path, new DeleteFileRequest(message, sha));
+        }
+        /// <summary>
         /// 向用户forked的仓库发起pull request
         /// </summary>
         /// <param name="username">用户名</param>
