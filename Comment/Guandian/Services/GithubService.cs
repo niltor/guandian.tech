@@ -55,18 +55,24 @@ namespace Guandian.Services
         {
             if (SetToken())
             {
-                if (!string.IsNullOrEmpty(filedata.Sha))
+                try
                 {
-                    var response = await _client.Repository.Content.UpdateFile(filedata.Owner, filedata.Name, filedata.Path, new UpdateFileRequest(filedata.Message, filedata.Content, filedata.Sha));
-                    return response.Content;
+                    if (!string.IsNullOrEmpty(filedata.Sha))
+                    {
+                        var response = await _client.Repository.Content.UpdateFile(filedata.Owner, filedata.Name, filedata.Path, new UpdateFileRequest(filedata.Message, filedata.Content, filedata.Sha));
+                        return response.Content;
+                    }
+                    else
+                    {
+                        var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path, new CreateFileRequest(filedata.Message, filedata.Content, true));
+                        return response.Content;
+                    }
                 }
-                else
+                catch (System.Exception e)
                 {
-                    var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path, new CreateFileRequest(filedata.Message, filedata.Content, true));
-                    return response.Content;
+                    _logger.LogError("创建github文件时出错:" + e.Message + e.Source);
+                    return null;
                 }
-
-
             }
             return null;
         }

@@ -155,7 +155,6 @@ namespace Guandian.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddPractknowForm practknow)
         {
-            // TODO:重复标题内容的处理
             if (ModelState.IsValid)
             {
                 // 获取用户信息
@@ -185,7 +184,6 @@ namespace Guandian.Controllers
                         reposName = forkResult?.Name ?? "practknow";
                         // 保存fork状态
                         currentUser.IsForkPractknow = true;
-                        _context.Users.Update(currentUser);
 
                         // 保存仓储信息
                         var repository = new Repository
@@ -202,7 +200,7 @@ namespace Guandian.Controllers
                         //　TODO:fork失败处理
                     }
                 }
-                else
+                else // 同步仓储
                 {
                     // 查询仓库名称
                     var repository = _context.Repositories.Where(r => r.User == currentUser && r.Tag.Equals("practknow")).SingleOrDefault();
@@ -247,8 +245,24 @@ namespace Guandian.Controllers
                     Owner = owner ?? userId ?? "",
                     Sha = sha
                 });
-                // 更新文件sha
-                if (createFileResult.Sha != null) newFile.SHA = createFileResult.Sha;
+                // 提交成功后，添加FileNode更新sha
+                if (createFileResult != null)
+                {
+                    // 添加FileNode到未分类下,TODO
+                    var parentNode = _context.FileNodes.SingleOrDefault(f => f.FileName == "未分类");
+                    var fileNode = new FileNode
+                    {
+                        IsFile = true,
+                        FileName = practknow.Title,
+                        GithubLink = createFileResult.Url,
+                        SHA = createFileResult.Sha,
+                        Path = "未分类/" + practknow.Title,
+                        ParentNode = parentNode
+                    };
+                    _context.Add(fileNode);
+                    // 更新文件sha
+                    if (createFileResult.Sha != null) newFile.SHA = createFileResult.Sha;
+                }
                 // 先查询是否已经存在pull request
                 var hasPR = _github.HasPR(new NewPullRequestModel { Head = owner + ":master" }, out var pullRequest);
                 if (!hasPR)

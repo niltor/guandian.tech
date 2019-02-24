@@ -150,6 +150,10 @@ namespace Guandian.Areas.Admin.Controllers
                 newFileNode.Path = string.Join("/", paths) + "/" + name;
                 newFileDataModel.Path = string.Join("/", paths) + "/" + name + "/readme.md";
             }
+            else
+            {
+                newFileNode.Path = name;
+            }
             newFileDataModel.Path = WebUtility.UrlEncode(newFileDataModel.Path);
             var createFileResult = await _github.CreateFile(newFileDataModel);
             if (createFileResult != null)

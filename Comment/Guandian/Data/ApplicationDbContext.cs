@@ -31,9 +31,14 @@ namespace Guandian.Data
         {
             builder.Entity<Author>().HasBaseType<User>();
 
-            builder.Entity<FileNode>()
-                .HasOne(f => f.ParentNode)
-                .WithMany(p => p.ChildrenNodes);
+            builder.Entity<FileNode>(e =>
+            {
+                e.HasOne(f => f.ParentNode)
+                    .WithMany(p => p.ChildrenNodes);
+                e.HasIndex(f => f.FileName);
+            });
+
+
 
             builder.Entity<Repository>()
                 .HasIndex(r => r.Tag);
