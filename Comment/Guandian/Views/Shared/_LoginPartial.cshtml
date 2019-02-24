@@ -4,6 +4,7 @@
 @inject UserManager<User> UserManager
 @{
     var user = await UserManager.GetUserAsync(User);
+    var isAdmin = User.IsInRole("Admin");
 }
 
 @if (SignInManager.IsSignedIn(User))
@@ -32,6 +33,10 @@
                     *@
                     <button type="submit" class="dropdown-item">退出</button>
                 </div>
+                @if (isAdmin)
+                {
+                    <a class="nav-link" asp-controller="News" asp-area="Admin">管理</a>
+                }
             </li>
         </ul>
     </form>
