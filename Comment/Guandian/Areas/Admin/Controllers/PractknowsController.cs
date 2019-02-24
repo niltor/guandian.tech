@@ -25,6 +25,17 @@ namespace Guandian.Areas.Admin.Controllers
         }
         public ActionResult Archive(int page = 1, int pageSize = 12)
         {
+            // 查询分类
+            var nodes = _context.FileNodes
+                .Where(f => f.IsFile == false && !string.IsNullOrEmpty(f.Path))
+                .OrderBy(f => f.Path)
+                .Select(s => new FileNode
+                {
+                    Id = s.Id,
+                    Path = s.Path
+                })
+                .ToList();
+            ViewBag.Nodes = nodes;
             page = page < 1 ? 1 : page;
             ViewBag.Page = page;
             var result = _context.Practknow
@@ -35,7 +46,17 @@ namespace Guandian.Areas.Admin.Controllers
                 .ToList();
             return View(result);
         }
-
+        /// <summary>
+        /// 归档
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Archive(Guid nodeId, List<Guid> ids)
+        {
+            return Json(ids);
+        }
         /// <summary>
         /// PR管理
         /// </summary>

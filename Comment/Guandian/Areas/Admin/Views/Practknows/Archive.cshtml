@@ -1,11 +1,27 @@
 ﻿@model IEnumerable<Guandian.Data.Entity.Practknow>
 @{
     ViewData["Title"] = "践识归档";
+    var nodes = ViewBag.Nodes;
 }
 
-<table class="table">
+<div class="row my-2">
+    <form action="/" method="post" class="col-md-12 form form-inline">
+        <select class="form-control" name="id">
+            @foreach (var node in nodes as List<FileNode>)
+            {
+                <option value="@node.Id">@node.Path</option>
+            }
+        </select>
+        <button type="submit" class="form-control btn btn-outline-primary" id="archive">归档</button>
+    </form>
+</div>
+
+<table class="table table-striped table-bordered">
     <thead>
         <tr>
+            <th>
+                <input type="checkbox" id="choseAll" />
+            </th>
             <th>
                 标题
             </th>
@@ -28,6 +44,9 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>
+                    <input type="checkbox" name="id" value="@item.Id" />
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
@@ -64,3 +83,47 @@
         </p>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        // 全选事件
+        $("#choseAll").click(function (event) {
+            if ($(this).is(":checked")) {
+                $("input[name='id']").prop("checked", true);
+            } else {
+                $("input[name='id']").prop("checked", false);
+            }
+        });
+        // 归档按钮
+        $("#archive").click(function (event) {
+            event.preventDefault();
+            // 获取当前选中的id
+            let ids = [];
+            $("input[name='id']").each(function (index, elem) {
+                if (elem.checked) {
+                    ids.push($(this).val());
+                }
+            });
+            if (ids.length < 1) {
+                alert("请先选择践识");
+            };
+            var nodeId = $("select[name='id']").val();
+            archiveRequest(ids, nodeId);
+        });
+        // 归档请求
+        function archiveRequest(ids, nodeId) {
+            var data = new FormData();
+            data.append('ids', ids);
+            data.append('nodeId', nodeId);
+            $.ajax({
+                url: '',
+                data: { ids: ids, nodeId: nodeId },
+                type:'POST',
+                success: function (res) {
+                    console.log(res);
+                }
+            });
+        }
+
+    </script>
+}
