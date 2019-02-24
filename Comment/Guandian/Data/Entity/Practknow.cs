@@ -72,6 +72,10 @@ namespace Guandian.Data.Entity
         /// </summary>
         NeedMerge,
         /// <summary>
+        /// 待归档
+        /// </summary>
+        NeedArchive,
+        /// <summary>
         /// 通过审核
         /// </summary>
         Merged,

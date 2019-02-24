@@ -23,12 +23,13 @@ namespace Guandian.Areas.Admin.Controllers
         {
             _github = github;
         }
-        public ActionResult Index(int page = 1, int pageSize = 12)
+        public ActionResult Archive(int page = 1, int pageSize = 12)
         {
             page = page < 1 ? 1 : page;
             ViewBag.Page = page;
             var result = _context.Practknow
                 .OrderByDescending(n => n.CreatedTime)
+                .Where(p => p.MergeStatus == MergeStatus.NeedArchive)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -212,7 +213,8 @@ namespace Guandian.Areas.Admin.Controllers
         [AllowAnonymous]
         public ActionResult Test()
         {
-
+            //var count = _context.Practknow.Where(p => p.MergeStatus == MergeStatus.NeedMerge)
+            //          .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive });
             return Content("");
         }
     }

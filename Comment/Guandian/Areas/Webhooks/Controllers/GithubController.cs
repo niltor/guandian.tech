@@ -34,8 +34,7 @@ namespace Guandian.Areas.Webhooks.Controllers
                     // TODO: 处理pr 合并
                     var sha = pr.PullRequest.MergeCommitSha;
                     var count = _context.Practknow.Where(p => p.MergeStatus == MergeStatus.NeedMerge)
-                        .Update(p => new Practknow { MergeStatus = MergeStatus.Merged });
-
+                        .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive });
                     break;
                 default:
                     break;

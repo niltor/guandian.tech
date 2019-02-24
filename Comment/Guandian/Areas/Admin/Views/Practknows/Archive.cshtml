@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Guandian.Data.Entity.Practknow>
 @{
-    ViewData["Title"] = "践识";
+    ViewData["Title"] = "践识归档";
 }
 
 <table class="table">
@@ -41,12 +41,12 @@
                     @Html.DisplayFor(modelItem => item.UpdatedTime)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Status)
+                    @Html.DisplayFor(modelItem => item.MergeStatus)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">编辑</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">详情</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">删除</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">编</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">详</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger">删</a>
                 </td>
             </tr>
         }

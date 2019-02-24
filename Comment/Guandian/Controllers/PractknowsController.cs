@@ -260,6 +260,7 @@ namespace Guandian.Controllers
                         ParentNode = parentNode
                     };
                     _context.Add(fileNode);
+                    newFile.FileNode = fileNode;
                     // 更新文件sha
                     if (createFileResult.Sha != null) newFile.SHA = createFileResult.Sha;
                 }
