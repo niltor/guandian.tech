@@ -1,50 +1,39 @@
-﻿@model List<Practknow>
+﻿@using Octokit
+@model List<PullRequest>
 @{
     ViewData["Title"] = "践识审核";
 }
 <div class="row">
     <div class="col-auto">
-        <table class="table table-sm table-striped table-responsive">
+        <table class="table table-sm table-striped table-responsive table-bordered">
             <thead>
                 <tr>
                     <th>标题</th>
                     <th>作者</th>
                     <th>提交时间</th>
-                    <th>状态</th>
                     <th>操作</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var practknow in Model)
+                @foreach (var pr in Model)
                 {
                     <tr>
                         <td>
-                            @practknow.Title
-                            <a class="text-info" href="https://github.com/TechViewsTeam/Practknow/pull/@practknow.PRNumber">
-                                [#@practknow.PRNumber]
+                            @pr.Title
+                            <a class="text-info" href="https://github.com/TechViewsTeam/Practknow/pull/@pr.Number">
+                                [#@pr.Number]
                             </a>
                         </td>
-                        <td>@practknow.AuthorName</td>
-                        <td>@practknow.CreatedTime.ToString("yyyy-MM-dd HH:mm")</td>
-                        <td>@Html.DisplayFor(item => practknow.Status)</td>
+                        <td>@pr.User.Login</td>
+                        <td>@pr.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                         <td>
-                            @if (practknow.Status == Status.Default)
-                            {
-                                <a asp-action="PullRequestDetail" asp-route-id="@practknow.Id" target="_blank">
-                                    Review
-                                </a>
-                            }
-                            else if (practknow.Status == Status.Valid)
-                            {
-                                <button class="btn btn-sm btn-outline-primary">
-                                    归档
-                                </button>
-                            }
+                            <a href="@pr.HtmlUrl" target="_blank">
+                                前去审核
+                            </a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-
     </div>
 </div>

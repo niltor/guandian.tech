@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Octokit;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ namespace Guandian.Services
     {
         readonly GitHubClient _client;
         static readonly string OrgName = "TechViewsTeam";
-        static readonly string TeamName = "BlogAuthor";
+        static readonly string TeamName = "Practknow";
 
         public GithubManageService(ILogger<GithubManageService> logger, IOptionsMonitor<GithubOption> options) : base(logger)
         {
@@ -31,9 +33,25 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task<RepositoryContentInfo> CreateFile(NewFileDataModel filedata)
         {
+            // 先判断是否已经存在
+            var files = await _client.Repository.Content.GetAllContents(filedata.Owner, filedata.Name, filedata.Path);
+            if (files.Count > 0)
+            {
+                return files.FirstOrDefault();
+            }
             var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
             new CreateFileRequest(filedata.Message, filedata.Content, true));
             return response.Content;
+        }
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="sha"></param>
+        /// <returns></returns>
+        public async Task DeleteFile(string path, string message, string sha)
+        {
+            await _client.Repository.Content.DeleteFile(OrgName, TeamName, path, new DeleteFileRequest(message, sha));
         }
         /// <summary>
         /// 向用户forked的仓库发起pull request
@@ -111,6 +129,31 @@ namespace Guandian.Services
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 获取PR列表
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PullRequest>> GetPullRequests(int pageIndex, int pageSize)
+        {
+            try
+            {
+                var PRs = await _client.PullRequest.GetAllForRepository(OrgName, TeamName,
+                    new ApiOptions
+                    {
+                        PageCount = 1,
+                        PageSize = pageSize,
+                        StartPage = pageIndex
+                    });
+                return PRs.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
     }
