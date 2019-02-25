@@ -25,16 +25,16 @@ namespace Guandian.Areas.Webhooks.Controllers
             switch (pr.Action)
             {
                 case "closed":
-                    // TODO：用户端消息提醒
+                    // TODO：合并pr
+                    var sha = pr.PullRequest.MergeCommitSha;
+                    var count = _context.Practknow.Where(p => p.MergeStatus == MergeStatus.NeedMerge)
+                        .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive });
                     break;
                 case "opened":
                     // TODO:消息提醒
                     break;
                 case "synchronize":
-                    // TODO: 处理pr 合并
-                    var sha = pr.PullRequest.MergeCommitSha;
-                    var count = _context.Practknow.Where(p => p.MergeStatus == MergeStatus.NeedMerge)
-                        .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive });
+                    // do nothing
                     break;
                 default:
                     break;
