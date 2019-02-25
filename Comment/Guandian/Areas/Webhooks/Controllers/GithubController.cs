@@ -12,7 +12,6 @@ namespace Guandian.Areas.Webhooks.Controllers
         public GithubController(ApplicationDbContext context) : base(context)
         {
         }
-        http://47.94.207.202:8085/
         [HttpGet("test")]
         public string Test()
         {
@@ -39,7 +38,7 @@ namespace Guandian.Areas.Webhooks.Controllers
                     }
                     break;
                 case "opened":
-                    // TODO: 管理员邮件提醒
+                    // TODO: 管理员邮件消息提醒
                     break;
                 case "synchronize":
                     // do nothing
