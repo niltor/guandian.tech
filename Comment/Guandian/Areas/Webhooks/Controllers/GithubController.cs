@@ -12,7 +12,7 @@ namespace Guandian.Areas.Webhooks.Controllers
         public GithubController(ApplicationDbContext context) : base(context)
         {
         }
-
+        http://47.94.207.202:8085/
         [HttpGet("test")]
         public string Test()
         {
@@ -25,13 +25,21 @@ namespace Guandian.Areas.Webhooks.Controllers
             switch (pr.Action)
             {
                 case "closed":
-                    // TODO：合并pr
-                    var sha = pr.PullRequest.MergeCommitSha;
-                    var count = _context.Practknow.Where(p => p.MergeStatus == MergeStatus.NeedMerge)
-                        .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive });
+                    // 通过合并 
+                    if (pr.PullRequest.Merged && pr.PullRequest.MergedBy != null)
+                    {
+                        var sha = pr.PullRequest.MergeCommitSha;
+                        var count = _context.Practknow.Where(p => p.MergeStatus == MergeStatus.NeedMerge)
+                            .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive });
+                    }
+                    // 关闭未通过合并 
+                    else if (!pr.PullRequest.Merged && pr.PullRequest.MergedBy == null)
+                    {
+                        // TODO:消息提醒
+                    }
                     break;
                 case "opened":
-                    // TODO:消息提醒
+                    // TODO: 管理员邮件提醒
                     break;
                 case "synchronize":
                     // do nothing
