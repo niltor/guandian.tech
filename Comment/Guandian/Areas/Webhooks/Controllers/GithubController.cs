@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Guandian.Areas.Webhooks.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,8 +20,9 @@ namespace Guandian.Areas.Webhooks.Controllers
         }
 
         [HttpPost("pullrequest")]
-        public ActionResult PullRequestHook(PullRequestEventPayload pr)
+        public ActionResult PullRequestHook([FromBody]PullRequestEventModel pr)
         {
+            // Notice: octokit.net 提供的EventPayload无法正常使用
             switch (pr.Action)
             {
                 case "closed":
@@ -28,7 +30,9 @@ namespace Guandian.Areas.Webhooks.Controllers
                     if (pr.PullRequest.Merged && pr.PullRequest.MergedBy != null)
                     {
                         var sha = pr.PullRequest.MergeCommitSha;
-                        var count = _context.Practknow.Where(p => p.MergeStatus == MergeStatus.NeedMerge)
+                        var count = _context.Practknow
+                            .Where(p => p.PRNumber == pr.PullRequest.Number)
+                            .Where(p => p.MergeStatus == MergeStatus.NeedMerge)
                             .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive });
                     }
                     // 关闭未通过合并 
