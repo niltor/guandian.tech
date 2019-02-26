@@ -33,7 +33,7 @@ namespace Guandian.Areas.Webhooks.Controllers
                         var count = _context.Practknow
                             .Where(p => p.PRNumber == pr.PullRequest.Number)
                             .Where(p => p.MergeStatus == MergeStatus.NeedMerge)
-                            .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive });
+                            .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive, PRSHA = sha });
                     }
                     // 关闭未通过合并 
                     else if (!pr.PullRequest.Merged && pr.PullRequest.MergedBy == null)
