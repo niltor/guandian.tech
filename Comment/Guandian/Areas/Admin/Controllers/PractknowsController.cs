@@ -193,6 +193,7 @@ namespace Guandian.Areas.Admin.Controllers
         public async Task<ActionResult> AddFileNode(string name, Guid? id)
         {
             if (string.IsNullOrEmpty(name)) return BadRequest();
+            name = name.Trim();
             // 判断是否存在
             var exist = _context.FileNodes.SingleOrDefault(f => f.FileName.Equals(name));
             if (exist == null)
