@@ -33,15 +33,19 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task<RepositoryContentInfo> CreateFile(NewFileDataModel filedata)
         {
-            // 先判断是否已经存在
-            var files = await _client.Repository.Content.GetAllContents(filedata.Owner, filedata.Name, filedata.Path);
-            if (files.Count > 0)
+            try
             {
+                var files = await _client.Repository.Content.GetAllContents(filedata.Owner, filedata.Name, filedata.Path);
                 return files.FirstOrDefault();
             }
-            var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
-            new CreateFileRequest(filedata.Message, filedata.Content, true));
-            return response.Content;
+            catch (NotFoundException)
+            {
+                // 不存在处理
+                var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
+                new CreateFileRequest(filedata.Message, filedata.Content, true));
+                return response.Content;
+            }
+
         }
         /// <summary>
         /// 删除文件
