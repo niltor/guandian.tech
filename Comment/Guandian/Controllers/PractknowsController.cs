@@ -22,10 +22,6 @@ namespace Guandian.Controllers
     {
         private readonly GithubService _github;
         private readonly GithubManageService _githubManage;
-        /// <summary>
-        /// 默认添加后待审核目录
-        /// </summary>
-        private readonly string defaultDic = "待审核";
 
         public PractknowsController(ApplicationDbContext context, GithubService github, GithubManageService githubManage, UserManager<User> userManager, ILogger<PractknowsController> logger) : base(userManager, context, logger)
         {
@@ -264,14 +260,14 @@ namespace Guandian.Controllers
                 if (createFileResult != null)
                 {
                     // 添加FileNode到未分类下,TODO
-                    var parentNode = _context.FileNodes.SingleOrDefault(f => f.FileName == defaultDic);
+                    var parentNode = _context.FileNodes.SingleOrDefault(f => f.FileName == AddPractknowForm.defaultDic);
                     var fileNode = new FileNode
                     {
                         IsFile = true,
-                        FileName = practknow.Title,
+                        FileName = practknow.Title + ".md",
                         GithubLink = createFileResult.Url,
                         SHA = createFileResult.Sha,
-                        Path = defaultDic + "/" + practknow.Title,
+                        Path = AddPractknowForm.defaultDic + "/" + practknow.Title + ".md",
                         ParentNode = parentNode
                     };
                     _context.Add(fileNode);

@@ -55,7 +55,15 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task DeleteFile(string path, string message, string sha)
         {
-            await _client.Repository.Content.DeleteFile(OrgName, TeamName, path, new DeleteFileRequest(message, sha));
+            try
+            {
+                await _client.Repository.Content.DeleteFile(OrgName, TeamName, path, new DeleteFileRequest(message, sha));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                // do nothing 
+            }
         }
         /// <summary>
         /// 向用户forked的仓库发起pull request
