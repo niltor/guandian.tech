@@ -192,48 +192,57 @@ namespace Guandian.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> AddFileNode(string name, Guid? id)
         {
-            var parentNode = new FileNode();
-            if (id != null)
+            if (string.IsNullOrEmpty(name)) return BadRequest();
+            // 判断是否存在
+            var exist = _context.FileNodes.SingleOrDefault(f => f.FileName.Equals(name));
+            if (exist == null)
             {
-                parentNode = _context.FileNodes.SingleOrDefault(f => f.Id == id);
-            }
-            // 构造github 新文件内容
-            var newFileDataModel = new NewFileDataModel
-            {
-                Content = $"目录:{name}",
-                Message = $"初始化目录：{name}",
-                Path = $"{name}/README.md"
-            };
+                var parentNode = new FileNode();
+                if (id != null)
+                {
+                    parentNode = _context.FileNodes.SingleOrDefault(f => f.Id == id);
+                }
+                // 构造github 新文件内容
+                var newFileDataModel = new NewFileDataModel
+                {
+                    Content = $"目录:{name}",
+                    Message = $"初始化目录：{name}",
+                    Path = $"{name}/README.md"
+                };
 
-            var newFileNode = new FileNode
-            {
-                FileName = name,
-                IsFile = false,
-            };
-            // 有父节点时
-            if (parentNode.FileName != null)
-            {
-                newFileNode.ParentNode = parentNode;
-                var paths = GetFilePath(parentNode.Id)?.Select(p => p.FileName)?.ToArray();
-                // 设置路径
-                newFileNode.Path = string.Join("/", paths) + "/" + name;
-                newFileDataModel.Path = string.Join("/", paths) + "/" + name + "/readme.md";
+                var newFileNode = new FileNode
+                {
+                    FileName = name,
+                    IsFile = false,
+                };
+                // 有父节点时
+                if (parentNode.FileName != null)
+                {
+                    newFileNode.ParentNode = parentNode;
+                    var paths = GetFilePath(parentNode.Id)?.Select(p => p.FileName)?.ToArray();
+                    // 设置路径
+                    newFileNode.Path = string.Join("/", paths) + "/" + name;
+                    newFileDataModel.Path = string.Join("/", paths) + "/" + name + "/readme.md";
+                }
+                else
+                {
+                    newFileNode.Path = name;
+                }
+                newFileDataModel.Path = WebUtility.UrlEncode(newFileDataModel.Path);
+                var createFileResult = await _github.CreateFile(newFileDataModel);
+                if (createFileResult != null)
+                {
+                    newFileNode.SHA = createFileResult.Sha;
+                    newFileNode.GithubLink = createFileResult.Url;
+                }
+                _context.Add(newFileNode);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = newFileNode.Id });
             }
             else
             {
-                newFileNode.Path = name;
+                return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = exist.Id });
             }
-            newFileDataModel.Path = WebUtility.UrlEncode(newFileDataModel.Path);
-            var createFileResult = await _github.CreateFile(newFileDataModel);
-            if (createFileResult != null)
-            {
-                newFileNode.SHA = createFileResult.Sha;
-                newFileNode.GithubLink = createFileResult.Url;
-            }
-            _context.Add(newFileNode);
-            _context.SaveChanges();
-
-            return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = newFileNode.Id });
         }
 
         /// <summary>
