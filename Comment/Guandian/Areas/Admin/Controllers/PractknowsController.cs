@@ -89,10 +89,8 @@ namespace Guandian.Areas.Admin.Controllers
                 // 更新父节点信息。TODO:回调保持一致，避免同步失败后的不一致
                 var updatePractknow = _context.FileNodes
                     .Where(f => currentFileNodeIds.Contains(f.Id))
-                    .Update(f => new FileNode
-                    {
-                        ParentNode = fileNode
-                    });
+                    .ToList();
+                updatePractknow.ForEach(f => f.ParentNode = fileNode);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

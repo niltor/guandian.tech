@@ -17,8 +17,8 @@ namespace Guandian.Services
     public class GithubManageService : BaseService
     {
         readonly GitHubClient _client;
-        static readonly string OrgName = "TechViewsTeam";
-        static readonly string TeamName = "Practknow";
+        static readonly string OrgName = GithubConfig.OrgName;
+        static readonly string ReposName = GithubConfig.ReposName;
 
         public GithubManageService(ILogger<GithubManageService> logger, IOptionsMonitor<GithubOption> options) : base(logger)
         {
@@ -70,7 +70,7 @@ namespace Guandian.Services
         {
             try
             {
-                await _client.Repository.Content.DeleteFile(OrgName, TeamName, path, new DeleteFileRequest(message, sha));
+                await _client.Repository.Content.DeleteFile(OrgName, ReposName, path, new DeleteFileRequest(message, sha));
             }
             catch (Exception e)
             {
@@ -112,7 +112,7 @@ namespace Guandian.Services
         public async Task<MembershipState> AddUserToTeamAsync(string username)
         {
             var teams = await _client.Organization.Team.GetAll(OrgName);
-            var authorTeam = teams.Where(t => t.Name.Equals(TeamName)).SingleOrDefault();
+            var authorTeam = teams.Where(t => t.Name.Equals(ReposName)).SingleOrDefault();
             if (authorTeam != null)
             {
                 try
@@ -140,7 +140,7 @@ namespace Guandian.Services
         public async Task<bool> IsInTeam(string username)
         {
             var teams = await _client.Organization.Team.GetAll(OrgName);
-            var authorTeam = teams.Where(t => t.Name.Equals(TeamName)).SingleOrDefault();
+            var authorTeam = teams.Where(t => t.Name.Equals(ReposName)).SingleOrDefault();
             if (authorTeam != null)
             {
                 try
@@ -166,7 +166,7 @@ namespace Guandian.Services
         {
             try
             {
-                var PRs = await _client.PullRequest.GetAllForRepository(OrgName, TeamName,
+                var PRs = await _client.PullRequest.GetAllForRepository(OrgName, ReposName,
                     new ApiOptions
                     {
                         PageCount = 1,
