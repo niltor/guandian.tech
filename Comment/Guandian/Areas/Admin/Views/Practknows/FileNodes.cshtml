@@ -22,30 +22,133 @@
     </nav>
 </div>
 <div class="row">
-    <div class=" col-md-3">
-        <div>
-            <form asp-action="AddFileNode">
-                <div class="form-inline">
-                    <input type="hidden" name="id" value="@TempData["id"]" />
-                    <input type="text" name="name" class="form-control-sm" placeholder="添加新目录" />
-                    <button class="btn btn-sm btn-primary">+</button>
-                </div>
-            </form>
-        </div>
+    <div class="col col-auto" style="min-width:200px">
         <ul class="nav flex-column">
             @* 当前列表 *@
             @foreach (var item in fileNodes)
             {
                 <li class="nav-item">
-                    <a class="nav-link" asp-route-id="@item.Id">
-                        @if (!item.IsFile)
-                        {<span>[+]</span>}
-                        @item.FileName
-                    </a>
+                    @if (!item.IsFile)
+                    {
+                        <div class="nav-link">
+                            <a asp-route-id="@item.Id">
+                                <span>[+]</span>
+                                @item.FileName
+                            </a>
+                            <span class="badge badge-warning editFileNode"
+                                  data-id="@item.Id"
+                                  data-title="@item.FileName"
+                                  data-content="@item.ReadmeContent">
+                                修改
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        // TODO: 跳转到详情页
+                        <div class="nav-link">
+                            <a asp-route-id="@item.Id">
+                                @item.FileName
+                            </a>
+                        </div>
+                    }
                 </li>
             }
-
         </ul>
 
     </div>
+    <div class="col">
+        @* 添加表单 *@
+        <form asp-action="AddFileNode" id="addFileNodeForm" style="display:none">
+            <h5>添加目录</h5>
+            <input type="hidden" name="id" value="@TempData["id"]" />
+            <div class="form-group">
+                <input type="text" name="name" class="form-control" placeholder="目录名称" />
+            </div>
+            <div class="form-group">
+                <div id="addSection"></div>
+                <textarea name="content" style="display:none" id="content"></textarea>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-sm btn-primary" id="addFileNode">添加</button>
+            </div>
+        </form>
+        @* 更新表单 *@
+        <form asp-action="UpdateFileNode" id="editFileNodeForm" style="display:none">
+            <input type="hidden" name="id" value="@TempData["id"]" />
+            <div class="form-group">
+                <input type="text" name="name" class="form-control" placeholder="目录名称" />
+            </div>
+            <div class="form-group">
+                <div id="editSection"></div>
+                <textarea name="content" style="display:none" id="editContent"></textarea>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-sm btn-primary" id="updateFileNode">更新</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<header>
+    <link href="~/lib/codemirror/lib/codemirror.css" rel="stylesheet" />
+    <link href="~/lib/highlightjs/styles/github-gist.css" rel="stylesheet" />
+    <link href="~/lib/tui-editor/dist/tui-editor.css" rel="stylesheet" />
+    <link href="~/lib/tui-editor/dist/tui-editor-contents.css" rel="stylesheet" />
+</header>
+
+@section Scripts{
+    <script src='~/lib/markdown-it/dist/markdown-it.js'></script>
+    <script src="~/lib/to-mark/dist/to-mark.js"></script>
+    <script src="~/lib/tui-code-snippet/dist/tui-code-snippet.js"></script>
+    <script src="~/lib/codemirror/lib/codemirror.js"></script>
+    <script src="~/lib/highlightjs/highlight.pack.js"></script>
+    <script src="~/lib/squire-rte/build/squire-raw.js"></script>
+    <script src="~/lib/tui-editor/dist/tui-editor-Editor.min.js"></script>
+
+    <script>
+        var addEditor = new tui.Editor({
+            el: document.querySelector('#addSection'),
+            initialEditType: 'markdown',
+            initialValue: '填写Readme信息',
+            previewStyle: 'vertical',
+            height: '600px',
+        });
+         $("#addFileNodeForm").click(function (event) {
+            event.preventDefault();
+            var content = editEditor.getMarkdown();
+            $("#content").val(content);
+            $("#addFileNodeForm").submit();
+        });
+
+
+        var editEditor = new tui.Editor({
+            el: document.querySelector('#editSection'),
+            initialEditType: 'markdown',
+            initialValue: '',
+            previewStyle: 'vertical',
+            height: '600px',
+        });
+        $("#updateFileNode").click(function (event) {
+            event.preventDefault();
+            var content = editEditor.getMarkdown();
+            $("#editContent").val(content);
+            $("#editFileNodeForm").submit();
+        });
+
+        // 修改事件
+        $(".editFileNode").click(function (event) {
+            let form = $("#editFileNodeForm");
+            // 填充值
+            let id = $(this).data('id');
+            let title = $(this).data('title');
+            let content = $(this).data('content');
+            form.find("input[name='id']").val(id);
+            form.find("input[name='name']").val(title);
+            form.find("textarea[name='content']").val(content);
+            editEditor.initialValue = content;
+            form.css("display", "");
+
+        });
+    </script>
+}

@@ -158,17 +158,23 @@ namespace Guandian.Areas.Admin.Controllers
             else
             {
                 var currentNode = _context.FileNodes
-                .Where(f => f.Id == id)
-                .SingleOrDefault();
+                    .Include(f => f.ParentNode)
+                    .Where(f => f.Id == id)
+                    .SingleOrDefault();
 
                 if (currentNode != null)
                 {
                     // 查询路径
-                    path = GetFilePath(currentNode.Id);
                     if (!currentNode.IsFile)
                     {
                         // 查询当前内容
+                        path = GetFilePath(currentNode.Id);
                         fileNodes = _context.FileNodes.Where(f => f.ParentNode.Id == id).ToList();
+                    }
+                    else
+                    {
+                        path = GetFilePath(currentNode.ParentNode.Id);
+                        fileNodes = _context.FileNodes.Where(f => f.ParentNode.Id == currentNode.ParentNode.Id).ToList();
                     }
                 }
             }

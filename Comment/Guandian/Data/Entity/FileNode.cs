@@ -35,6 +35,11 @@ namespace Guandian.Data.Entity
         [Display(Name = "路径")]
         public string Path { get; set; }
         /// <summary>
+        /// 默认readme内容
+        /// </summary>
+        [MaxLength(2000)]
+        public string ReadmeContent { get; set; }
+        /// <summary>
         /// 父结点
         /// </summary>
         public FileNode ParentNode { get; set; }
