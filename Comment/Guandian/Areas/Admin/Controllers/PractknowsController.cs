@@ -70,7 +70,7 @@ namespace Guandian.Areas.Admin.Controllers
             try
             {
                 // 同步到github
-                currentPractknows.ForEach(async p =>
+                foreach (var p in currentPractknows)
                 {
                     var currentFileNode = p.FileNode;
                     // 删除内容
@@ -84,13 +84,12 @@ namespace Guandian.Areas.Admin.Controllers
                     });
                     // 更新审核状态
                     p.MergeStatus = MergeStatus.Merged;
-                });
-
+                }
                 // 更新父节点信息。TODO:回调保持一致，避免同步失败后的不一致
-                var updatePractknow = _context.FileNodes
+                var updateFileNodes = _context.FileNodes
                     .Where(f => currentFileNodeIds.Contains(f.Id))
                     .ToList();
-                updatePractknow.ForEach(f => f.ParentNode = fileNode);
+                updateFileNodes.ForEach(f => f.ParentNode = fileNode);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

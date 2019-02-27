@@ -54,6 +54,7 @@ namespace Guandian.Services
                 catch (Exception e)
                 {
                     _logger.LogError(e.Message);
+                    throw;
                     return default;
                 }
 
@@ -75,6 +76,7 @@ namespace Guandian.Services
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                throw;
                 // do nothing 
             }
         }
