@@ -158,17 +158,23 @@ namespace Guandian.Areas.Admin.Controllers
             else
             {
                 var currentNode = _context.FileNodes
-                .Where(f => f.Id == id)
-                .SingleOrDefault();
+                    .Include(f => f.ParentNode)
+                    .Where(f => f.Id == id)
+                    .SingleOrDefault();
 
                 if (currentNode != null)
                 {
                     // 查询路径
-                    path = GetFilePath(currentNode.Id);
                     if (!currentNode.IsFile)
                     {
                         // 查询当前内容
+                        path = GetFilePath(currentNode.Id);
                         fileNodes = _context.FileNodes.Where(f => f.ParentNode.Id == id).ToList();
+                    }
+                    else
+                    {
+                        path = GetFilePath(currentNode.ParentNode.Id);
+                        fileNodes = _context.FileNodes.Where(f => f.ParentNode.Id == currentNode.ParentNode.Id).ToList();
                     }
                 }
             }
@@ -186,7 +192,7 @@ namespace Guandian.Areas.Admin.Controllers
         /// <param name="id">父结点id</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> AddFileNode(string name, Guid? id)
+        public async Task<ActionResult> AddFileNode(string name, string content, Guid? id)
         {
             if (string.IsNullOrEmpty(name)) return BadRequest();
             name = name.Trim();
@@ -202,8 +208,8 @@ namespace Guandian.Areas.Admin.Controllers
                 // 构造github 新文件内容
                 var newFileDataModel = new NewFileDataModel
                 {
-                    Content = $"目录:{name}",
-                    Message = $"初始化目录：{name}",
+                    Content = string.IsNullOrEmpty(content) ? $"目录:{name}" : content,
+                    Message = $"新建目录：{name}",
                     Path = $"{name}/README.md"
                 };
 
@@ -211,6 +217,7 @@ namespace Guandian.Areas.Admin.Controllers
                 {
                     FileName = name,
                     IsFile = false,
+                    ReadmeContent = content
                 };
                 // 有父节点时
                 if (parentNode.FileName != null)
@@ -240,6 +247,41 @@ namespace Guandian.Areas.Admin.Controllers
             {
                 return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = exist.Id });
             }
+        }
+        /// <summary>
+        /// 修改更新 readme
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> UpdateFileNode(string content, Guid id)
+        {
+            if (id == null) return BadRequest();
+            // 判断是否存在
+            var currentFileNode = _context.FileNodes.SingleOrDefault(f => f.Id == id);
+            if (currentFileNode == null) return NotFound();
+
+            // 更新github 文件内容
+            var updateFileDataModel = new NewFileDataModel
+            {
+                Content = string.IsNullOrEmpty(content) ? $"目录:{currentFileNode.FileName}" : content,
+                Message = $"README更新",
+                Path = currentFileNode.Path + "/README.md",
+                Sha = currentFileNode.SHA
+            };
+            // 更新内容
+            currentFileNode.ReadmeContent = content;
+
+            updateFileDataModel.Path = WebUtility.UrlEncode(updateFileDataModel.Path);
+            var createFileResult = await _github.CreateFile(updateFileDataModel);
+            if (createFileResult != null)
+            {
+                currentFileNode.SHA = createFileResult.Sha;
+                currentFileNode.GithubLink = createFileResult.Url;
+            }
+            _context.SaveChanges();
+            return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = currentFileNode.Id });
         }
 
         /// <summary>

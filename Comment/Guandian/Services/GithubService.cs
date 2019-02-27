@@ -59,12 +59,20 @@ namespace Guandian.Services
                 {
                     if (!string.IsNullOrEmpty(filedata.Sha))
                     {
-                        var response = await _client.Repository.Content.UpdateFile(filedata.Owner, filedata.Name, filedata.Path, new UpdateFileRequest(filedata.Message, filedata.Content, filedata.Sha));
+                        var response = await _client.Repository.Content.UpdateFile(
+                            filedata.Owner,
+                            filedata.Name,
+                            filedata.Path,
+                            new UpdateFileRequest(filedata.Message, filedata.Content, filedata.Sha));
                         return response.Content;
                     }
                     else
                     {
-                        var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path, new CreateFileRequest(filedata.Message, filedata.Content, true));
+                        var response = await _client.Repository.Content.CreateFile(
+                            filedata.Owner,
+                            filedata.Name,
+                            filedata.Path,
+                            new CreateFileRequest(filedata.Message, filedata.Content, true));
                         return response.Content;
                     }
                 }

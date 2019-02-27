@@ -35,29 +35,29 @@ namespace Guandian.Services
         {
             try
             {
-                var files = await _client.Repository.Content.GetAllContents(filedata.Owner, filedata.Name, filedata.Path);
-                return files.FirstOrDefault();
-            }
-            catch (NotFoundException)
-            {
-                // 不存在处理
-                try
+                if (!string.IsNullOrEmpty(filedata.Sha))
+                {
+                    var response = await _client.Repository.Content.UpdateFile(
+                        filedata.Owner,
+                        filedata.Name,
+                        filedata.Path,
+                        new UpdateFileRequest(filedata.Message, filedata.Content, filedata.Sha));
+                    return response.Content;
+                }
+                else
                 {
                     var response = await _client.Repository.Content.CreateFile(
                         filedata.Owner,
                         filedata.Name,
                         filedata.Path,
                         new CreateFileRequest(filedata.Message, filedata.Content, true));
-
                     return response.Content;
                 }
-                catch (Exception e)
-                {
-                    _logger.LogError(e.Message);
-                    throw;
-                    return default;
-                }
-
+            }
+            catch (System.Exception e)
+            {
+                _logger.LogError("创建github文件时出错:" + e.Message + e.Source);
+                return null;
             }
 
         }

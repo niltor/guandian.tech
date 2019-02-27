@@ -16,9 +16,6 @@
                 @Html.DisplayNameFor(model => model.CreatedTime)
             </th>
             <th>
-                更新时间
-            </th>
-            <th>
                 状态
             </th>
             <th>操作</th>
@@ -32,15 +29,18 @@
                     <a asp-action="Details" asp-route-id="@item.Id">
                         @Html.DisplayFor(modelItem => item.Title)
                     </a>
+                    @if (string.IsNullOrEmpty(item.Content))
+                    {
+                        <span class="badge-danger badge">
+                            失
+                        </span>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Provider)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreatedTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UpdatedTime)
+                    @item.CreatedTime.ToString("yyyy-MM-dd HH:mm")
                 </td>
                 <td>
                     <span class="badge-secondary">

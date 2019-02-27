@@ -213,6 +213,7 @@ namespace Functions
                 var hw = new HtmlWeb();
                 var doc = await hw.LoadFromWebAsync(url);
                 var content = doc.DocumentNode.SelectSingleNode($"//div[@{filter.Path}]").InnerHtml;
+                // TODO: 移除无用内容
                 return content ?? "";
             }
             catch (Exception e)

@@ -45,16 +45,22 @@ namespace Guandian.Controllers
                 var currentNode = await _context.FileNodes
                     .Include(f => f.ParentNode)
                     .SingleOrDefaultAsync(f => f.Id == nodeId);
-                nodeTree = _context.FileNodes.Where(f => f.ParentNode.Id == nodeId).ToList();
 
                 if (currentNode == null) return View();
                 // 如果是文件夹
                 if (!currentNode.IsFile)
                 {
                     currentNodes = GetFilePath(currentNode.Id);
+                    nodeTree = _context.FileNodes
+                        .Where(f => f.ParentNode.Id == nodeId)
+                        .ToList();
                 }
                 else
                 {
+                    currentNodes = GetFilePath(currentNode.ParentNode.Id);
+                    nodeTree = _context.FileNodes
+                        .Where(f => f.ParentNode.Id == currentNode.ParentNode.Id)
+                        .ToList();
                     practknow = await _context.Practknow.SingleOrDefaultAsync(p => p.FileNode == currentNode);
                 }
             }
