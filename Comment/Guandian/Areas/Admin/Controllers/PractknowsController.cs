@@ -82,6 +82,8 @@ namespace Guandian.Areas.Admin.Controllers
                         Content = p.Content,
                         Message = "合并归档新建"
                     });
+                    // 更新审核状态
+                    p.MergeStatus = MergeStatus.Merged;
                 });
 
                 // 更新父节点信息。TODO:回调保持一致，避免同步失败后的不一致
@@ -91,17 +93,15 @@ namespace Guandian.Areas.Admin.Controllers
                     {
                         ParentNode = fileNode
                     });
-
                 await _context.SaveChangesAsync();
-
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message + e.Source);
-                return Ok(Json("失败"));
+                return Json("失败");
 
             }
-            return Ok(Json("成功"));
+            return Json("成功");
         }
         /// <summary>
         /// PR管理
