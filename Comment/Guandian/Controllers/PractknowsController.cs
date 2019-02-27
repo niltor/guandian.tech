@@ -161,9 +161,20 @@ namespace Guandian.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var currentUser = _context.Users.Where(a => a.Id == userId).SingleOrDefault();
                 // 查询是否已发布同标题文章
-                var currentFile = _context.Practknow.Where(p => p.User == currentUser && p.Title.Equals(practknow.Title)).SingleOrDefault();
-                // 标题重复，则以当前提交的为准
-                if (currentFile != null) _context.Remove(currentFile);
+                var currentFile = _context.Practknow
+                    .Where(p => p.User == currentUser && p.Title.Equals(practknow.Title))
+                    .Include(p => p.FileNode)
+                    .SingleOrDefault();
+
+                // 标题重复，删除当前
+                if (currentFile != null)
+                {
+                    _context.Remove(currentFile);
+                    if (currentFile.FileNode != null)
+                    {
+                        _context.Remove(currentFile.FileNode);
+                    }
+                }
                 var newFile = new Practknow
                 {
                     User = currentUser,
@@ -249,14 +260,14 @@ namespace Guandian.Controllers
                 if (createFileResult != null)
                 {
                     // 添加FileNode到未分类下,TODO
-                    var parentNode = _context.FileNodes.SingleOrDefault(f => f.FileName == "未分类");
+                    var parentNode = _context.FileNodes.SingleOrDefault(f => f.FileName == GithubConfig.DefaultDicName);
                     var fileNode = new FileNode
                     {
                         IsFile = true,
-                        FileName = practknow.Title,
+                        FileName = practknow.Title + ".md",
                         GithubLink = createFileResult.Url,
                         SHA = createFileResult.Sha,
-                        Path = "未分类/" + practknow.Title,
+                        Path = GithubConfig.DefaultDicName + "/" + practknow.Title + ".md",
                         ParentNode = parentNode
                     };
                     _context.Add(fileNode);

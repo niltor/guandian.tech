@@ -17,8 +17,8 @@ namespace Guandian.Services
     public class GithubManageService : BaseService
     {
         readonly GitHubClient _client;
-        static readonly string OrgName = "TechViewsTeam";
-        static readonly string TeamName = "Practknow";
+        static readonly string OrgName = GithubConfig.OrgName;
+        static readonly string ReposName = GithubConfig.ReposName;
 
         public GithubManageService(ILogger<GithubManageService> logger, IOptionsMonitor<GithubOption> options) : base(logger)
         {
@@ -33,15 +33,33 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task<RepositoryContentInfo> CreateFile(NewFileDataModel filedata)
         {
-            // 先判断是否已经存在
-            var files = await _client.Repository.Content.GetAllContents(filedata.Owner, filedata.Name, filedata.Path);
-            if (files.Count > 0)
+            try
             {
+                var files = await _client.Repository.Content.GetAllContents(filedata.Owner, filedata.Name, filedata.Path);
                 return files.FirstOrDefault();
             }
-            var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
-            new CreateFileRequest(filedata.Message, filedata.Content, true));
-            return response.Content;
+            catch (NotFoundException)
+            {
+                // 不存在处理
+                try
+                {
+                    var response = await _client.Repository.Content.CreateFile(
+                        filedata.Owner,
+                        filedata.Name,
+                        filedata.Path,
+                        new CreateFileRequest(filedata.Message, filedata.Content, true));
+
+                    return response.Content;
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.Message);
+                    throw;
+                    return default;
+                }
+
+            }
+
         }
         /// <summary>
         /// 删除文件
@@ -51,7 +69,16 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task DeleteFile(string path, string message, string sha)
         {
-            await _client.Repository.Content.DeleteFile(OrgName, TeamName, path, new DeleteFileRequest(message, sha));
+            try
+            {
+                await _client.Repository.Content.DeleteFile(OrgName, ReposName, path, new DeleteFileRequest(message, sha));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw;
+                // do nothing 
+            }
         }
         /// <summary>
         /// 向用户forked的仓库发起pull request
@@ -87,7 +114,7 @@ namespace Guandian.Services
         public async Task<MembershipState> AddUserToTeamAsync(string username)
         {
             var teams = await _client.Organization.Team.GetAll(OrgName);
-            var authorTeam = teams.Where(t => t.Name.Equals(TeamName)).SingleOrDefault();
+            var authorTeam = teams.Where(t => t.Name.Equals(ReposName)).SingleOrDefault();
             if (authorTeam != null)
             {
                 try
@@ -115,7 +142,7 @@ namespace Guandian.Services
         public async Task<bool> IsInTeam(string username)
         {
             var teams = await _client.Organization.Team.GetAll(OrgName);
-            var authorTeam = teams.Where(t => t.Name.Equals(TeamName)).SingleOrDefault();
+            var authorTeam = teams.Where(t => t.Name.Equals(ReposName)).SingleOrDefault();
             if (authorTeam != null)
             {
                 try
@@ -141,7 +168,7 @@ namespace Guandian.Services
         {
             try
             {
-                var PRs = await _client.PullRequest.GetAllForRepository(OrgName, TeamName,
+                var PRs = await _client.PullRequest.GetAllForRepository(OrgName, ReposName,
                     new ApiOptions
                     {
                         PageCount = 1,
