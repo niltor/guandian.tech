@@ -248,6 +248,41 @@ namespace Guandian.Areas.Admin.Controllers
                 return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = exist.Id });
             }
         }
+        /// <summary>
+        /// 修改更新 readme
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> UpdateFileNode(string content, Guid id)
+        {
+            if (id == null) return BadRequest();
+            // 判断是否存在
+            var currentFileNode = _context.FileNodes.SingleOrDefault(f => f.Id == id);
+            if (currentFileNode == null) return NotFound();
+
+            // 更新github 文件内容
+            var updateFileDataModel = new NewFileDataModel
+            {
+                Content = string.IsNullOrEmpty(content) ? $"目录:{currentFileNode.FileName}" : content,
+                Message = $"README更新",
+                Path = currentFileNode.Path + "/README.md",
+                Sha = currentFileNode.SHA
+            };
+            // 更新内容
+            currentFileNode.ReadmeContent = content;
+
+            updateFileDataModel.Path = WebUtility.UrlEncode(updateFileDataModel.Path);
+            var createFileResult = await _github.CreateFile(updateFileDataModel);
+            if (createFileResult != null)
+            {
+                currentFileNode.SHA = createFileResult.Sha;
+                currentFileNode.GithubLink = createFileResult.Url;
+            }
+            _context.SaveChanges();
+            return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = currentFileNode.Id });
+        }
 
         /// <summary>
         /// 获取当前结点路径 TODO:待抽象复用
