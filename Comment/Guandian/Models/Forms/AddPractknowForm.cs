@@ -1,3 +1,4 @@
+using Guandian.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,6 @@ namespace Guandian.Models.Forms
     /// </summary>
     public class AddPractknowForm
     {
-        /// <summary>
-        /// 默认添加后待审核目录
-        /// </summary>
-        public readonly static string defaultDic = "待审核";
         public string Title { get; set; }
         public string Keywords { get; set; }
         public string Summary { get; set; }
@@ -23,6 +20,6 @@ namespace Guandian.Models.Forms
         /// <summary>
         /// 目录
         /// </summary>
-        public string Path { get; set; } = defaultDic + "/";
+        public string Path { get; set; } = GithubConfig.DefaultDicName + "/";
     }
 }

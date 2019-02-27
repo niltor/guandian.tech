@@ -165,16 +165,16 @@ namespace Guandian.Services
         /// <summary>
         /// 组织、用户名
         /// </summary>
-        public string Owner { get; set; } = "TechViewsTeam";
+        public string Owner { get; set; } = GithubConfig.OrgName;
         /// <summary>
         /// 仓库名
         /// </summary>
-        public string Name { get; set; } = "practknow";
+        public string Name { get; set; } = GithubConfig.ReposName;
         public string Title { get; set; }
         /// <summary>
         /// 分支
         /// </summary>
-        public string Base { get; set; } = "master";
+        public string Base { get; set; } = GithubConfig.DefaultBranch;
         /// <summary>
         /// 示例：niltor:master
         /// </summary>
@@ -186,11 +186,11 @@ namespace Guandian.Services
         /// <summary>
         /// 组织、用户名
         /// </summary>
-        public string Owner { get; set; } = "TechViewsTeam";
+        public string Owner { get; set; } = GithubConfig.OrgName;
         /// <summary>
         /// 仓库名
         /// </summary>
-        public string Name { get; set; } = "practknow";
+        public string Name { get; set; } = GithubConfig.ReposName;
         /// <summary>
         /// 路径
         /// </summary>
@@ -206,7 +206,7 @@ namespace Guandian.Services
         /// <summary>
         /// 分支名
         /// </summary>
-        public string Branch { get; set; } = "master";
+        public string Branch { get; set; } = GithubConfig.DefaultBranch;
         public string Sha { get; set; }
 
     }

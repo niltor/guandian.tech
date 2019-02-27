@@ -79,7 +79,6 @@ namespace Guandian.Areas.Admin.Controllers
                     await _github.CreateFile(new NewFileDataModel
                     {
                         Path = fileNode.Path + "/" + currentFileNode.FileName,
-                        Name = currentFileNode.FileName,
                         Content = p.Content,
                         Message = "合并归档新建"
                     });

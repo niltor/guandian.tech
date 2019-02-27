@@ -260,14 +260,14 @@ namespace Guandian.Controllers
                 if (createFileResult != null)
                 {
                     // 添加FileNode到未分类下,TODO
-                    var parentNode = _context.FileNodes.SingleOrDefault(f => f.FileName == AddPractknowForm.defaultDic);
+                    var parentNode = _context.FileNodes.SingleOrDefault(f => f.FileName == GithubConfig.DefaultDicName);
                     var fileNode = new FileNode
                     {
                         IsFile = true,
                         FileName = practknow.Title + ".md",
                         GithubLink = createFileResult.Url,
                         SHA = createFileResult.Sha,
-                        Path = AddPractknowForm.defaultDic + "/" + practknow.Title + ".md",
+                        Path = GithubConfig.DefaultDicName + "/" + practknow.Title + ".md",
                         ParentNode = parentNode
                     };
                     _context.Add(fileNode);

@@ -41,9 +41,22 @@ namespace Guandian.Services
             catch (NotFoundException)
             {
                 // 不存在处理
-                var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
-                new CreateFileRequest(filedata.Message, filedata.Content, true));
-                return response.Content;
+                try
+                {
+                    var response = await _client.Repository.Content.CreateFile(
+                        filedata.Owner,
+                        filedata.Name,
+                        filedata.Path,
+                        new CreateFileRequest(filedata.Message, filedata.Content, true));
+
+                    return response.Content;
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e.Message);
+                    return default;
+                }
+
             }
 
         }
