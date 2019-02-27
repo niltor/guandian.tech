@@ -7,7 +7,7 @@
 
 <div class="row">
     <nav aria-label="breadcrumb" class="col-md-12">
-        <ol class="breadcrumb">
+        <ol class="breadcrumb m-0">
             <li class="breadcrumb-item">
                 <a asp-route-id="">践识</a>
             </li>
@@ -22,7 +22,7 @@
     </nav>
 </div>
 <div class="row">
-    <div class="col col-auto" style="min-width:200px">
+    <div class="col col-auto" style="min-width:200px;border-right:1px solid #ddd">
         <ul class="nav flex-column">
             @* 当前列表 *@
             @foreach (var item in fileNodes)
@@ -35,6 +35,7 @@
                                 <span>[+]</span>
                                 @item.FileName
                             </a>
+                            &nbsp;&nbsp;
                             <span class="badge badge-warning editFileNode"
                                   data-id="@item.Id"
                                   data-title="@item.FileName"
@@ -58,12 +59,14 @@
 
     </div>
     <div class="col">
+        <div class="actions my-2">
+            <button class="btn btn-sm btn-outline-primary" id="newFileNode">+ 新建目录</button>
+        </div>
         @* 添加表单 *@
-        <form asp-action="AddFileNode" id="addFileNodeForm" style="display:none">
-            <h5>添加目录</h5>
+        <form asp-action="AddFileNode" class="my-2" id="addFileNodeForm" style="display:none">
             <input type="hidden" name="id" value="@TempData["id"]" />
             <div class="form-group">
-                <input type="text" name="name" class="form-control" placeholder="目录名称" />
+                <input type="text" name="name" class="form-control" placeholder="新建目录名称" />
             </div>
             <div class="form-group">
                 <div id="addSection"></div>
@@ -75,7 +78,7 @@
         </form>
         @* 更新表单 *@
         <form asp-action="UpdateFileNode" id="editFileNodeForm" style="display:none">
-            <input type="hidden" name="id" value="@TempData["id"]" />
+            <input type="hidden" name="id" value="" />
             <div class="form-group">
                 <input type="text" name="name" class="form-control" placeholder="目录名称" />
             </div>
@@ -107,6 +110,7 @@
     <script src="~/lib/tui-editor/dist/tui-editor-Editor.min.js"></script>
 
     <script>
+        // 添加文本框及提交事件
         var addEditor = new tui.Editor({
             el: document.querySelector('#addSection'),
             initialEditType: 'markdown',
@@ -114,14 +118,14 @@
             previewStyle: 'vertical',
             height: '600px',
         });
-         $("#addFileNodeForm").click(function (event) {
+        $("#addFileNode").click(function (event) {
             event.preventDefault();
             var content = editEditor.getMarkdown();
             $("#content").val(content);
             $("#addFileNodeForm").submit();
         });
 
-
+        // 修改文本框及提交事件
         var editEditor = new tui.Editor({
             el: document.querySelector('#editSection'),
             initialEditType: 'markdown',
@@ -136,8 +140,10 @@
             $("#editFileNodeForm").submit();
         });
 
-        // 修改事件
+        // 修改交互
         $(".editFileNode").click(function (event) {
+            $(".actions").show();
+            $("#addFileNodeForm").hide();
             let form = $("#editFileNodeForm");
             // 填充值
             let id = $(this).data('id');
@@ -148,7 +154,13 @@
             form.find("textarea[name='content']").val(content);
             editEditor.initialValue = content;
             form.css("display", "");
-
+        });
+        // 新建目录交互
+        $("#newFileNode").click(function (event) {
+            $(".actions").hide();
+            $("#editFileNodeForm").hide();
+            let form = $("#addFileNodeForm");
+            form.css("display", "");
         });
     </script>
 }

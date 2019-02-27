@@ -192,7 +192,7 @@ namespace Guandian.Areas.Admin.Controllers
         /// <param name="id">父结点id</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> AddFileNode(string name, Guid? id)
+        public async Task<ActionResult> AddFileNode(string name, string content, Guid? id)
         {
             if (string.IsNullOrEmpty(name)) return BadRequest();
             name = name.Trim();
@@ -208,8 +208,8 @@ namespace Guandian.Areas.Admin.Controllers
                 // 构造github 新文件内容
                 var newFileDataModel = new NewFileDataModel
                 {
-                    Content = $"目录:{name}",
-                    Message = $"初始化目录：{name}",
+                    Content = string.IsNullOrEmpty(content) ? $"目录:{name}" : content,
+                    Message = $"新建目录：{name}",
                     Path = $"{name}/README.md"
                 };
 
@@ -217,6 +217,7 @@ namespace Guandian.Areas.Admin.Controllers
                 {
                     FileName = name,
                     IsFile = false,
+                    ReadmeContent = content
                 };
                 // 有父节点时
                 if (parentNode.FileName != null)
