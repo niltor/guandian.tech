@@ -69,7 +69,8 @@ namespace Guandian.Controllers
                 // 默认内容
                 nodeTree = _context.FileNodes.Where(f => f.ParentNode == null).ToList();
             }
-
+            // 移除默认分类
+            nodeTree = nodeTree.Where(n => !n.FileName.Equals(GithubConfig.DefaultDicName)).ToList();
             return View(new PractknowIndexView
             {
                 CurrentNodes = currentNodes,

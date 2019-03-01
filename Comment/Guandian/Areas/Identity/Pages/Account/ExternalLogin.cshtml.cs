@@ -142,7 +142,7 @@ namespace Guandian.Areas.Identity.Pages.Account
                     });
                 }
                 await _userManager.AddToRoleAsync(user, info.LoginProvider);
-                
+
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
