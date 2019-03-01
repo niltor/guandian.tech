@@ -1,4 +1,6 @@
+@using Microsoft.AspNetCore.Identity
 @using Guandian.Models.PractknowView;
+@inject SignInManager<User> SignInManager
 @model PractknowIndexView
 @{
     ViewData["Title"] = "践识";
@@ -52,12 +54,23 @@
         @* 操作 *@
         <ul class="nav float-right text-right">
             <li class="nav-item">
-                <a href="">
-                    <span></span>
-                    <span class="text-dark">
-                        编辑
-                    </span>
-                </a>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a href="">
+                        <span class="text-primary">
+                            编辑
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a href="">
+                        <span class="text-muted">
+                            编辑
+                        </span>
+                    </a>
+                }
+
             </li>
             @*
                 <li class="nav-item">
@@ -104,16 +117,21 @@
                         @practknow.Title
                     </h5>
                     @* 贡献者信息 *@
-                    <div class="text-muted">
-                        作者: @practknow.AuthorName
-                        &nbsp;&nbsp;
-                    </div>
+                    @if (!string.IsNullOrEmpty(practknow.AuthorName))
+                    {
+                        <div class="text-muted">
+                            贡献者: @practknow.AuthorName
+                            &nbsp;&nbsp;
+                        </div>
+                    }
+
                 </div>
                 @* 内容 *@
                 <div id="content"></div>
             </div>
             @* TODO:文章内导航 *@
-            <div class="col-auto" style="min-width: 220px;border-left: 1px solid #ddd">
+            <div class="col-auto" style="        min-width: 220px;
+        border-left: 1px solid #ddd">
             </div>
         </div>
     </div>
