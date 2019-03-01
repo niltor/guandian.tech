@@ -51,7 +51,7 @@ namespace Guandian.Controllers
         public IActionResult Create()
         {
             var _token = HttpContext.GetTokenAsync("access_token").Result;
-            Console.WriteLine(_token); 
+            Console.WriteLine(_token);
             return View();
         }
         [HttpPost]
@@ -66,46 +66,6 @@ namespace Guandian.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(article);
-        }
-        // GET: News/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

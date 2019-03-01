@@ -19,16 +19,19 @@ namespace Guandian.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
             SignInManager<User> signInManager,
             UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager,
             ILogger<ExternalLoginModel> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -126,8 +129,20 @@ namespace Guandian.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                // 创建用户及角色
                 var user = new User { UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user);
+                if (!await _roleManager.RoleExistsAsync(info.LoginProvider))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = info.LoginProvider,
+                        NormalizedName = info.LoginProvider
+                    });
+                }
+                await _userManager.AddToRoleAsync(user, info.LoginProvider);
+                
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);

@@ -1,5 +1,3 @@
-using System;
-using System.Security.Claims;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Guandian.Services;
@@ -16,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-//using MSDev.DB;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Senparc.CO2NET;
@@ -25,6 +22,8 @@ using Senparc.Weixin;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
+using System;
+using System.Security.Claims;
 
 namespace Guandian
 {
@@ -100,7 +99,7 @@ namespace Guandian
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
                 options.AddPolicy("GitHub", policy => policy.RequireRole("GitHub"));
                 options.AddPolicy("RealName", policy => policy.RequireRole("RealName"));
-                options.AddPolicy("Guest", policy => policy.RequireRole("Guest"));
+                options.AddPolicy("Register", policy => policy.RequireRole("Register"));
             });
 
 
