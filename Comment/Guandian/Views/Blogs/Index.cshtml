@@ -3,31 +3,34 @@
     ViewData["Title"] = "博客";
 }
 @model List<Blog>
-<div class="row">
-    <div class="col-md-8 offset-md-2 p-0">
-        @foreach (var blog in Model)
-        {
+    <div class="row">
+        <div class="col-md-8 offset-md-2 p-0">
+            @foreach (var blog in Model)
+            {
             var Url = HttpUtility.ParseQueryString(new Uri(blog.Link).Query);
             <div class="news-list bg-white mb-2 p-1 media">
-                <img src="@blog.Thumbnail" alt="" class="align-self-center mr-2 d-md-flex d-none" width="180"/>
+                <img src="@blog.Thumbnail" alt="" class="align-self-center mr-2 d-md-flex d-none" width="180" />
                 <div class="media-body">
-                    <div class="news-title col-md-10">
-                        <a asp-controller="blogs" asp-action="detail" asp-route-id="@blog.Id" target="_blank">
-                            <strong>
-                                @blog.Title
-                            </strong>
-                        </a>
+                    <div class="col-md-9 col-sm-12">
+                        <div class="news-title">
+                            <a asp-controller="blogs" asp-action="detail" asp-route-id="@blog.Id" target="_blank">
+                                <strong>
+                                    @blog.Title
+                                </strong>
+                            </a>
+                        </div>
+                        <div class="news-sectitle">
+                            @blog.UpdatedTime.ToString("MM-dd H:mm") @blog.AuthorName
+                        </div>
+                        <div class="news-description">
+                            @blog.Summary
+                        </div>
                     </div>
-                    <div class="news-sectitle col-md-10">
-                        @blog.UpdatedTime.ToString("MM-dd H:mm") @blog.AuthorName
-                    </div>
-                    <div class="news-description col-md-10">
-                        @blog.Summary
-                    </div>
+
                 </div>
             </div>
-        }
+            }
+        </div>
     </div>
-</div>
 
-<partial name="_RightSideBarPartial" />
+    <partial name="_RightSideBarPartial" />
