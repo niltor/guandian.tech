@@ -4,30 +4,17 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>News</h4>
+<div class="">
+    <h4>
+        @Html.DisplayFor(model => model.Title)
+    </h4>
     <hr />
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id">编辑</a> |
+        <a asp-action="Index">返回</a>
+    </div>
+
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AuthorName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AuthorName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Content)
-        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
@@ -47,12 +34,6 @@
             @Html.DisplayFor(model => model.ThumbnailUrl)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Tags)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Tags)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.Provider)
         </dt>
         <dd>
@@ -65,20 +46,17 @@
             @Html.DisplayFor(model => model.CreatedTime)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.UpdatedTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UpdatedTime)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.Status)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Status)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+        <dd>
+            @Html.Raw(Model.Content)
+        </dd>
+
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
 </div>

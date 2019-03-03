@@ -7,9 +7,12 @@ using Guandian.Areas.Admin.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Guandian.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Octokit;
+using Z.EntityFramework.Plus;
 
 namespace Guandian.Areas.Admin.Controllers
 {
@@ -20,39 +23,95 @@ namespace Guandian.Areas.Admin.Controllers
         {
             _github = github;
         }
-        public ActionResult Index(int page = 1, int pageSize = 12)
+        public ActionResult Archive(int page = 1, int pageSize = 12)
         {
+            // 查询分类
+            var nodes = _context.FileNodes
+                .Where(f => f.IsFile == false && !string.IsNullOrEmpty(f.Path))
+                .OrderBy(f => f.Path)
+                .Select(s => new FileNode
+                {
+                    Id = s.Id,
+                    Path = s.Path
+                })
+                .ToList();
+            ViewBag.Nodes = nodes;
             page = page < 1 ? 1 : page;
             ViewBag.Page = page;
             var result = _context.Practknow
                 .OrderByDescending(n => n.CreatedTime)
+                .Where(p => p.MergeStatus == MergeStatus.NeedArchive)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
             return View(result);
         }
+        /// <summary>
+        /// 归档
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> Archive(Guid nodeId, List<Guid> ids)
+        {
+            // TODO:更改目录
+            var fileNode = _context.FileNodes.SingleOrDefault(f => f.Id == nodeId);
+            if (fileNode == null)
+            {
+                return NotFound();
+            }
+            // 查询对应的节点信息
+            var currentPractknows = _context.Practknow.Where(p => ids.Contains(p.Id))
+                .Include(p => p.FileNode)
+                .ToList();
+            var currentFileNodeIds = currentPractknows.Select(s => s.FileNode.Id).Distinct().ToList();
 
+            try
+            {
+                // 同步到github
+                foreach (var p in currentPractknows)
+                {
+                    var currentFileNode = p.FileNode;
+                    // 删除内容
+                    await _github.DeleteFile(currentFileNode.Path, "合并删除", currentFileNode.SHA);
+                    // 添加内容
+                    await _github.CreateFile(new NewFileDataModel
+                    {
+                        Path = fileNode.Path + "/" + currentFileNode.FileName,
+                        Content = p.Content,
+                        Message = "合并归档新建"
+                    });
+                    // 更新审核状态
+                    p.MergeStatus = MergeStatus.Merged;
+                }
+                // 更新父节点信息。TODO:回调保持一致，避免同步失败后的不一致
+                var updateFileNodes = _context.FileNodes
+                    .Where(f => currentFileNodeIds.Contains(f.Id))
+                    .ToList();
+                updateFileNodes.ForEach(f => f.ParentNode = fileNode);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message + e.Source);
+                return Json("失败");
+
+            }
+            return Json("成功");
+        }
         /// <summary>
         /// PR管理
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<List<Practknow>> PullRequest()
+        public async Task<ActionResult<List<PullRequest>>> PullRequest(int pageIndex = 1, int pageSize = 12)
         {
-            var data = _context.Practknow
-                .Where(p => p.Status == Status.Default)
-                .OrderBy(p => p.CreatedTime)
-                .Select(s => new Practknow
-                {
-                    Id = s.Id,
-                    AuthorName = s.AuthorName,
-                    CreatedTime = s.CreatedTime,
-                    PRNumber = s.PRNumber,
-                    Status = s.Status,
-                    Title = s.Title
-                })
-                .Take(20)
-                .ToList();
+            // TODO:获取Pull Request列表
+            var data = await _github.GetPullRequests(pageIndex, pageSize);
+            if (pageIndex < 1) pageIndex = 1;
+            ViewBag.Page = pageIndex;
+
             return View(data);
         }
 
@@ -61,14 +120,26 @@ namespace Guandian.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var data = _context.Practknow.SingleOrDefault(p => p.Id == id);
-                return View(data);
+                var pracknow = _context.Practknow.SingleOrDefault(p => p.Id == id);
+                return View(pracknow);
             }
             else
             {
-                return NotFound("");
+                return NotFound("不存在该践识");
             }
         }
+
+        /// <summary>
+        /// 审核内容
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult MergePR()
+        {
+            return View();
+        }
+
         /// <summary>
         /// FileNodes管理
         /// </summary>
@@ -87,17 +158,23 @@ namespace Guandian.Areas.Admin.Controllers
             else
             {
                 var currentNode = _context.FileNodes
-                .Where(f => f.Id == id)
-                .SingleOrDefault();
+                    .Include(f => f.ParentNode)
+                    .Where(f => f.Id == id)
+                    .SingleOrDefault();
 
                 if (currentNode != null)
                 {
                     // 查询路径
-                    path = GetFilePath(currentNode.Id);
                     if (!currentNode.IsFile)
                     {
                         // 查询当前内容
+                        path = GetFilePath(currentNode.Id);
                         fileNodes = _context.FileNodes.Where(f => f.ParentNode.Id == id).ToList();
+                    }
+                    else
+                    {
+                        path = GetFilePath(currentNode.ParentNode.Id);
+                        fileNodes = _context.FileNodes.Where(f => f.ParentNode.Id == currentNode.ParentNode.Id).ToList();
                     }
                 }
             }
@@ -108,7 +185,6 @@ namespace Guandian.Areas.Admin.Controllers
             };
             return View(data);
         }
-
         /// <summary>
         /// 添加FileNode
         /// </summary>
@@ -116,46 +192,96 @@ namespace Guandian.Areas.Admin.Controllers
         /// <param name="id">父结点id</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> AddFileNode(string name, Guid? id)
+        public async Task<ActionResult> AddFileNode(string name, string content, Guid? id)
         {
-            var parentNode = new FileNode();
-            if (id != null)
+            if (string.IsNullOrEmpty(name)) return BadRequest();
+            name = name.Trim();
+            // 判断是否存在
+            var exist = _context.FileNodes.SingleOrDefault(f => f.FileName.Equals(name));
+            if (exist == null)
             {
-                parentNode = _context.FileNodes.SingleOrDefault(f => f.Id == id);
-            }
-            // 构造github 新文件内容
-            var newFileDataModel = new NewFileDataModel
-            {
-                Content = $"目录:{name}",
-                Message = $"初始化目录：{name}",
-                Path = $"{name}/README.md"
-            };
+                var parentNode = new FileNode();
+                if (id != null)
+                {
+                    parentNode = _context.FileNodes.SingleOrDefault(f => f.Id == id);
+                }
+                // 构造github 新文件内容
+                var newFileDataModel = new NewFileDataModel
+                {
+                    Content = string.IsNullOrEmpty(content) ? $"目录:{name}" : content,
+                    Message = $"新建目录：{name}",
+                    Path = $"{name}/README.md"
+                };
 
-            var newFileNode = new FileNode
-            {
-                FileName = name,
-                IsFile = false,
-            };
-            // 有父节点时
-            if (parentNode.FileName != null)
-            {
-                newFileNode.ParentNode = parentNode;
-                var paths = GetFilePath(parentNode.Id)?.Select(p => p.FileName)?.ToArray();
-                // 设置路径
-                newFileNode.Path = string.Join("/", paths) + "/" + name;
-                newFileDataModel.Path = string.Join("/", paths) + "/" + name + "/readme.md";
+                var newFileNode = new FileNode
+                {
+                    FileName = name,
+                    IsFile = false,
+                    ReadmeContent = content
+                };
+                // 有父节点时
+                if (parentNode.FileName != null)
+                {
+                    newFileNode.ParentNode = parentNode;
+                    var paths = GetFilePath(parentNode.Id)?.Select(p => p.FileName)?.ToArray();
+                    // 设置路径
+                    newFileNode.Path = string.Join("/", paths) + "/" + name;
+                    newFileDataModel.Path = string.Join("/", paths) + "/" + name + "/readme.md";
+                }
+                else
+                {
+                    newFileNode.Path = name;
+                }
+                newFileDataModel.Path = WebUtility.UrlEncode(newFileDataModel.Path);
+                var createFileResult = await _github.CreateFile(newFileDataModel);
+                if (createFileResult != null)
+                {
+                    newFileNode.SHA = createFileResult.Sha;
+                    newFileNode.GithubLink = createFileResult.Url;
+                }
+                _context.Add(newFileNode);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = newFileNode.Id });
             }
-            newFileDataModel.Path = WebUtility.UrlEncode(newFileDataModel.Path);
-            var createFileResult = await _github.CreateFile(newFileDataModel);
+            else
+            {
+                return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = exist.Id });
+            }
+        }
+        /// <summary>
+        /// 修改更新 readme
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> UpdateFileNode(string content, Guid id)
+        {
+            if (id == null) return BadRequest();
+            // 判断是否存在
+            var currentFileNode = _context.FileNodes.SingleOrDefault(f => f.Id == id);
+            if (currentFileNode == null) return NotFound();
+
+            // 更新github 文件内容
+            var updateFileDataModel = new NewFileDataModel
+            {
+                Content = string.IsNullOrEmpty(content) ? $"目录:{currentFileNode.FileName}" : content,
+                Message = $"README更新",
+                Path = currentFileNode.Path + "/README.md",
+                Sha = currentFileNode.SHA
+            };
+            // 更新内容
+            currentFileNode.ReadmeContent = content;
+
+            updateFileDataModel.Path = WebUtility.UrlEncode(updateFileDataModel.Path);
+            var createFileResult = await _github.CreateFile(updateFileDataModel);
             if (createFileResult != null)
             {
-                newFileNode.SHA = createFileResult.Sha;
-                newFileNode.GithubLink = createFileResult.Url;
+                currentFileNode.SHA = createFileResult.Sha;
+                currentFileNode.GithubLink = createFileResult.Url;
             }
-            _context.Add(newFileNode);
             _context.SaveChanges();
-
-            return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = newFileNode.Id });
+            return RedirectToAction(nameof(PractknowsController.FileNodes), new { id = currentFileNode.Id });
         }
 
         /// <summary>
@@ -192,83 +318,20 @@ namespace Guandian.Areas.Admin.Controllers
             return View();
         }
 
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> Delete(Guid id)
-        {
-            var current = _context.Practknow.Find(id);
-            if (current != null)
-            {
-                _context.Remove(current);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-
         public ActionResult ClearFileNodes()
         {
             var all = _context.FileNodes.ToList();
             _context.FileNodes.RemoveRange(all);
             var result = _context.SaveChanges();
             return Content(result.ToString());
+        }
+
+        [AllowAnonymous]
+        public ActionResult Test()
+        {
+            //var count = _context.Practknow.Where(p => p.MergeStatus == MergeStatus.NeedMerge)
+            //          .Update(p => new Practknow { MergeStatus = MergeStatus.NeedArchive });
+            return Content("");
         }
     }
 }

@@ -37,9 +37,12 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
         public string StatusMessage { get; set; }
         [BindProperty]
         public InputModel Input { get; set; }
-
         public string GithubName { get; set; }
         public string Avatar { get; set; }
+        /// <summary>
+        /// 角色名
+        /// </summary>
+        public string Role { get; set; }
         public class InputModel
         {
             [Required]
@@ -59,11 +62,13 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
             {
                 return RedirectToPage("/Account/Login");
             }
-
-            var userName = await _userManager.GetUserNameAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            Username = userName;
+            Role = string.Join(";", (await _userManager.GetRolesAsync(user)));
+            Username = await _userManager.GetUserNameAsync(user);
+            Input = new InputModel
+            {
+                Email = await _userManager.GetEmailAsync(user),
+                PhoneNumber = await _userManager.GetPhoneNumberAsync(user)
+            };
 
             if (User.Identity.IsAuthenticated)
             {
@@ -75,11 +80,6 @@ namespace Guandian.Areas.Identity.Pages.Account.Manage
             {
                 Console.WriteLine("no Authenticated");
             }
-            Input = new InputModel
-            {
-                Email = email,
-                PhoneNumber = phoneNumber
-            };
 
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
 

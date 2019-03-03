@@ -31,7 +31,8 @@ namespace Guandian.Controllers
                     Title = b.Title,
                     UpdatedTime = b.UpdatedTime,
                     Id = b.Id,
-                    Link = b.Link
+                    Link = b.Link,
+                    Thumbnail = b.Thumbnail
                 })
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -51,7 +52,7 @@ namespace Guandian.Controllers
         public IActionResult Create()
         {
             var _token = HttpContext.GetTokenAsync("access_token").Result;
-            Console.WriteLine(_token); 
+            Console.WriteLine(_token);
             return View();
         }
         [HttpPost]
@@ -66,46 +67,6 @@ namespace Guandian.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(article);
-        }
-        // GET: News/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

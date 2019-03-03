@@ -45,16 +45,22 @@ namespace Guandian.Controllers
                 var currentNode = await _context.FileNodes
                     .Include(f => f.ParentNode)
                     .SingleOrDefaultAsync(f => f.Id == nodeId);
-                nodeTree = _context.FileNodes.Where(f => f.ParentNode.Id == nodeId).ToList();
 
                 if (currentNode == null) return View();
                 // 如果是文件夹
                 if (!currentNode.IsFile)
                 {
                     currentNodes = GetFilePath(currentNode.Id);
+                    nodeTree = _context.FileNodes
+                        .Where(f => f.ParentNode.Id == nodeId)
+                        .ToList();
                 }
                 else
                 {
+                    currentNodes = GetFilePath(currentNode.ParentNode.Id);
+                    nodeTree = _context.FileNodes
+                        .Where(f => f.ParentNode.Id == currentNode.ParentNode.Id)
+                        .ToList();
                     practknow = await _context.Practknow.SingleOrDefaultAsync(p => p.FileNode == currentNode);
                 }
             }
@@ -63,7 +69,8 @@ namespace Guandian.Controllers
                 // 默认内容
                 nodeTree = _context.FileNodes.Where(f => f.ParentNode == null).ToList();
             }
-
+            // 移除默认分类
+            nodeTree = nodeTree.Where(n => !n.FileName.Equals(GithubConfig.DefaultDicName)).ToList();
             return View(new PractknowIndexView
             {
                 CurrentNodes = currentNodes,
@@ -155,16 +162,26 @@ namespace Guandian.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddPractknowForm practknow)
         {
-            // TODO:重复标题内容的处理
             if (ModelState.IsValid)
             {
                 // 获取用户信息
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var currentUser = _context.Users.Where(a => a.Id == userId).SingleOrDefault();
                 // 查询是否已发布同标题文章
-                var currentFile = _context.Practknow.Where(p => p.User == currentUser && p.Title.Equals(practknow.Title)).SingleOrDefault();
-                // 标题重复，则以当前提交的为准
-                if (currentFile != null) _context.Remove(currentFile);
+                var currentFile = _context.Practknow
+                    .Where(p => p.User == currentUser && p.Title.Equals(practknow.Title))
+                    .Include(p => p.FileNode)
+                    .SingleOrDefault();
+
+                // 标题重复，删除当前
+                if (currentFile != null)
+                {
+                    _context.Remove(currentFile);
+                    if (currentFile.FileNode != null)
+                    {
+                        _context.Remove(currentFile.FileNode);
+                    }
+                }
                 var newFile = new Practknow
                 {
                     User = currentUser,
@@ -185,7 +202,6 @@ namespace Guandian.Controllers
                         reposName = forkResult?.Name ?? "practknow";
                         // 保存fork状态
                         currentUser.IsForkPractknow = true;
-                        _context.Users.Update(currentUser);
 
                         // 保存仓储信息
                         var repository = new Repository
@@ -202,7 +218,7 @@ namespace Guandian.Controllers
                         //　TODO:fork失败处理
                     }
                 }
-                else
+                else // 同步仓储
                 {
                     // 查询仓库名称
                     var repository = _context.Repositories.Where(r => r.User == currentUser && r.Tag.Equals("practknow")).SingleOrDefault();
@@ -227,7 +243,7 @@ namespace Guandian.Controllers
                                 });
                             }
                         }
-                        // 判断是否有重复名称的文件，有则取其sha，进行更新？
+                        // 判断是否有重复名称的文件，有则取其sha，进行更新
                         var exist = await _github.GetFileInfo(owner, reposName, practknow.Path + practknow.Title + ".md");
                         if (exist != null) sha = exist.Sha;
                     }
@@ -247,13 +263,27 @@ namespace Guandian.Controllers
                     Owner = owner ?? userId ?? "",
                     Sha = sha
                 });
-                // 更新文件sha
-                if (createFileResult.Sha != null) newFile.SHA = createFileResult.Sha;
-                // TODO:先查询是否已经存在pull request
-                var hasPR = await _github.HasPR(new NewPullRequestModel
+                // 提交成功后，添加FileNode更新sha
+                if (createFileResult != null)
                 {
-                    Head = owner + ":master",
-                });
+                    // 添加FileNode到未分类下,TODO
+                    var parentNode = _context.FileNodes.SingleOrDefault(f => f.FileName == GithubConfig.DefaultDicName);
+                    var fileNode = new FileNode
+                    {
+                        IsFile = true,
+                        FileName = practknow.Title + ".md",
+                        GithubLink = createFileResult.Url,
+                        SHA = createFileResult.Sha,
+                        Path = GithubConfig.DefaultDicName + "/" + practknow.Title + ".md",
+                        ParentNode = parentNode
+                    };
+                    _context.Add(fileNode);
+                    newFile.FileNode = fileNode;
+                    // 更新文件sha
+                    if (createFileResult.Sha != null) newFile.SHA = createFileResult.Sha;
+                }
+                // 先查询是否已经存在pull request
+                var hasPR = _github.HasPR(new NewPullRequestModel { Head = owner + ":master" }, out var pullRequest);
                 if (!hasPR)
                 {
                     // 发起 新内容pull request ，等待审核 
@@ -263,6 +293,11 @@ namespace Guandian.Controllers
                         Title = "新践识文章:" + practknow.Title
                     });
                     newFile.PRNumber = prResult.Number;
+                    newFile.PRSHA = prResult.MergeCommitSha;
+                }
+                else
+                {
+                    newFile.PRSHA = pullRequest.MergeCommitSha;
                 }
                 // 更新PR信息
                 _context.Add(newFile);

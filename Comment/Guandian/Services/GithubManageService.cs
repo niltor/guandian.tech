@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Octokit;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +17,8 @@ namespace Guandian.Services
     public class GithubManageService : BaseService
     {
         readonly GitHubClient _client;
-        static readonly string OrgName = "TechViewsTeam";
-        static readonly string TeamName = "BlogAuthor";
+        static readonly string OrgName = GithubConfig.OrgName;
+        static readonly string ReposName = GithubConfig.ReposName;
 
         public GithubManageService(ILogger<GithubManageService> logger, IOptionsMonitor<GithubOption> options) : base(logger)
         {
@@ -31,9 +33,52 @@ namespace Guandian.Services
         /// <returns></returns>
         public async Task<RepositoryContentInfo> CreateFile(NewFileDataModel filedata)
         {
-            var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path,
-            new CreateFileRequest(filedata.Message, filedata.Content, true));
-            return response.Content;
+            try
+            {
+                if (!string.IsNullOrEmpty(filedata.Sha))
+                {
+                    var response = await _client.Repository.Content.UpdateFile(
+                        filedata.Owner,
+                        filedata.Name,
+                        filedata.Path,
+                        new UpdateFileRequest(filedata.Message, filedata.Content, filedata.Sha));
+                    return response.Content;
+                }
+                else
+                {
+                    var response = await _client.Repository.Content.CreateFile(
+                        filedata.Owner,
+                        filedata.Name,
+                        filedata.Path,
+                        new CreateFileRequest(filedata.Message, filedata.Content, true));
+                    return response.Content;
+                }
+            }
+            catch (System.Exception e)
+            {
+                _logger.LogError("创建github文件时出错:" + e.Message + e.Source);
+                return null;
+            }
+
+        }
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="sha"></param>
+        /// <returns></returns>
+        public async Task DeleteFile(string path, string message, string sha)
+        {
+            try
+            {
+                await _client.Repository.Content.DeleteFile(OrgName, ReposName, path, new DeleteFileRequest(message, sha));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw;
+                // do nothing 
+            }
         }
         /// <summary>
         /// 向用户forked的仓库发起pull request
@@ -69,7 +114,7 @@ namespace Guandian.Services
         public async Task<MembershipState> AddUserToTeamAsync(string username)
         {
             var teams = await _client.Organization.Team.GetAll(OrgName);
-            var authorTeam = teams.Where(t => t.Name.Equals(TeamName)).SingleOrDefault();
+            var authorTeam = teams.Where(t => t.Name.Equals(ReposName)).SingleOrDefault();
             if (authorTeam != null)
             {
                 try
@@ -97,7 +142,7 @@ namespace Guandian.Services
         public async Task<bool> IsInTeam(string username)
         {
             var teams = await _client.Organization.Team.GetAll(OrgName);
-            var authorTeam = teams.Where(t => t.Name.Equals(TeamName)).SingleOrDefault();
+            var authorTeam = teams.Where(t => t.Name.Equals(ReposName)).SingleOrDefault();
             if (authorTeam != null)
             {
                 try
@@ -111,6 +156,31 @@ namespace Guandian.Services
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 获取PR列表
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PullRequest>> GetPullRequests(int pageIndex, int pageSize)
+        {
+            try
+            {
+                var PRs = await _client.PullRequest.GetAllForRepository(OrgName, ReposName,
+                    new ApiOptions
+                    {
+                        PageCount = 1,
+                        PageSize = pageSize,
+                        StartPage = pageIndex
+                    });
+                return PRs.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
     }

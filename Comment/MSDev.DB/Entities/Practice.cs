@@ -13,7 +13,6 @@ namespace MSDev.DB.Entities
         public Guid Id { get; set; }
         public Catalog Catalog { get; set; }
 
-
         public Video Video { get; set; }
         public Blog Blog { get; set; }
         public ICollection<UserPractice> UserPractice { get; set; }
@@ -30,7 +29,5 @@ namespace MSDev.DB.Entities
         public int? Views { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime UpdatedTime { get; set; }
-
-
     }
 }

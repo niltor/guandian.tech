@@ -4,14 +4,16 @@ using Guandian.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Guandian.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190222072317_addPRStatus")]
+    partial class addPRStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,9 +116,6 @@ namespace Guandian.Data.Migrations
                     b.Property<string>("Path")
                         .HasMaxLength(200);
 
-                    b.Property<string>("ReadmeContent")
-                        .HasMaxLength(2000);
-
                     b.Property<string>("SHA")
                         .HasMaxLength(200);
 
@@ -125,8 +124,6 @@ namespace Guandian.Data.Migrations
                     b.Property<DateTime>("UpdatedTime");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FileName");
 
                     b.HasIndex("ParentNodeId");
 

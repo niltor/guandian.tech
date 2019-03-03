@@ -40,10 +40,15 @@ namespace Guandian.Data.Entity
         [Display(Name = "概要")]
         public string Summary { get; set; }
         /// <summary>
-        /// github SHA
+        /// 文件 SHA
         /// </summary>
-        [MaxLength(200)]
+        [MaxLength(100)]
         public string SHA { get; set; }
+        /// <summary>
+        /// 合并提交的PR SHA
+        /// </summary>
+        [MaxLength(100)]
+        public string PRSHA { get; set; }
         /// <summary>
         /// pull request number
         /// </summary>
@@ -66,6 +71,10 @@ namespace Guandian.Data.Entity
         /// 待审核 
         /// </summary>
         NeedMerge,
+        /// <summary>
+        /// 待归档
+        /// </summary>
+        NeedArchive,
         /// <summary>
         /// 通过审核
         /// </summary>

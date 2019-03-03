@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using HtmlAgilityPack;
 using MSBlogsFunction.Entity;
 
 namespace MSBlogsFunction.RssFeeds
@@ -99,6 +100,7 @@ namespace MSBlogsFunction.RssFeeds
                                 {
                                     content = content.Replace("<pre", "<pre class=\"notranslate\"");
                                 }
+
                                 return new RssEntity
                                 {
                                     Title = x.Element(Title)?.Value,
@@ -109,6 +111,7 @@ namespace MSBlogsFunction.RssFeeds
                                     Link = x.Element(Link)?.Value,
                                     Categories = GetCategories(x),
                                     LastUpdateTime = createTime,
+                                    ThumbUrl = GetThumb(x.Element("guid"))
                                 };
                             })
                             .Take(number)
@@ -151,6 +154,17 @@ namespace MSBlogsFunction.RssFeeds
                 .Select(s => s.Value)
                 .ToArray();
             return string.Join(";", categories);
+        }
+        /// <summary>
+        /// 获取缩略图
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
+        protected virtual string GetThumb(XElement x)
+        {
+
+            return "";
         }
         /// <summary>
         /// 是否包含

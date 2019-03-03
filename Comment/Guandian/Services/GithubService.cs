@@ -55,18 +55,32 @@ namespace Guandian.Services
         {
             if (SetToken())
             {
-                if (!string.IsNullOrEmpty(filedata.Sha))
+                try
                 {
-                    var response = await _client.Repository.Content.UpdateFile(filedata.Owner, filedata.Name, filedata.Path, new UpdateFileRequest(filedata.Message, filedata.Content, filedata.Sha));
-                    return response.Content;
+                    if (!string.IsNullOrEmpty(filedata.Sha))
+                    {
+                        var response = await _client.Repository.Content.UpdateFile(
+                            filedata.Owner,
+                            filedata.Name,
+                            filedata.Path,
+                            new UpdateFileRequest(filedata.Message, filedata.Content, filedata.Sha));
+                        return response.Content;
+                    }
+                    else
+                    {
+                        var response = await _client.Repository.Content.CreateFile(
+                            filedata.Owner,
+                            filedata.Name,
+                            filedata.Path,
+                            new CreateFileRequest(filedata.Message, filedata.Content, true));
+                        return response.Content;
+                    }
                 }
-                else
+                catch (System.Exception e)
                 {
-                    var response = await _client.Repository.Content.CreateFile(filedata.Owner, filedata.Name, filedata.Path, new CreateFileRequest(filedata.Message, filedata.Content, true));
-                    return response.Content;
+                    _logger.LogError("创建github文件时出错:" + e.Message + e.Source);
+                    return null;
                 }
-
-
             }
             return null;
         }
@@ -133,17 +147,22 @@ namespace Guandian.Services
         /// </summary>
         /// <param name="pr"></param>
         /// <returns></returns>
-        public async Task<bool> HasPR(NewPullRequestModel pr)
+        public bool HasPR(NewPullRequestModel pr, out PullRequest pullRequet)
         {
             if (SetToken())
             {
-                var response = await _client.PullRequest.GetAllForRepository(pr.Owner, pr.Name, new PullRequestRequest
+                var response = _client.PullRequest.GetAllForRepository(pr.Owner, pr.Name, new PullRequestRequest
                 {
                     Base = pr.Base,
                     Head = pr.Head
-                });
-                if (response.Count > 0) return true;
+                }).Result;
+                if (response.Count > 0)
+                {
+                    pullRequet = response.FirstOrDefault();
+                    return true;
+                }
             }
+            pullRequet = null;
             return false;
         }
     }
@@ -154,16 +173,16 @@ namespace Guandian.Services
         /// <summary>
         /// 组织、用户名
         /// </summary>
-        public string Owner { get; set; } = "TechViewsTeam";
+        public string Owner { get; set; } = GithubConfig.OrgName;
         /// <summary>
         /// 仓库名
         /// </summary>
-        public string Name { get; set; } = "practknow";
+        public string Name { get; set; } = GithubConfig.ReposName;
         public string Title { get; set; }
         /// <summary>
         /// 分支
         /// </summary>
-        public string Base { get; set; } = "master";
+        public string Base { get; set; } = GithubConfig.DefaultBranch;
         /// <summary>
         /// 示例：niltor:master
         /// </summary>
@@ -175,11 +194,11 @@ namespace Guandian.Services
         /// <summary>
         /// 组织、用户名
         /// </summary>
-        public string Owner { get; set; } = "TechViewsTeam";
+        public string Owner { get; set; } = GithubConfig.OrgName;
         /// <summary>
         /// 仓库名
         /// </summary>
-        public string Name { get; set; } = "practknow";
+        public string Name { get; set; } = GithubConfig.ReposName;
         /// <summary>
         /// 路径
         /// </summary>
@@ -195,7 +214,7 @@ namespace Guandian.Services
         /// <summary>
         /// 分支名
         /// </summary>
-        public string Branch { get; set; } = "master";
+        public string Branch { get; set; } = GithubConfig.DefaultBranch;
         public string Sha { get; set; }
 
     }

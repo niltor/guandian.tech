@@ -1,3 +1,5 @@
+using Guandian.Services;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,6 @@ namespace Guandian.Models.Forms
         /// <summary>
         /// 目录
         /// </summary>
-        public string Path { get; set; } = "未分类/";
+        public string Path { get; set; } = GithubConfig.DefaultDicName + "/";
     }
 }
