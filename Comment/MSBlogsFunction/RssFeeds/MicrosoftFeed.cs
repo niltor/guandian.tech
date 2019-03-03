@@ -14,7 +14,8 @@ namespace MSBlogsFunction.RssFeeds
                 "https://blogs.msdn.microsoft.com/dotnet/feed/",
                 "http://feeds.feedburner.com/microsoft/devblog"
             };
-            Authorfilter = new string[] { "MSFT", "Team", "Microsoft", "Visual", "Office", "Blog" };
+            Authorfilter = new string[] { "MSFT", "Team", "Microsoft", "Visual", "Office", "Blog"
+            ,"Jayme Singleton","Nish Anil","Phillip Carter","Olia Gavrysh","Daniel Roth","Cesar De la Torre"};
         }
     }
 }
