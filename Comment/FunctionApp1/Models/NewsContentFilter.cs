@@ -30,6 +30,7 @@ namespace BingNewsFunction.Models
                 new NewsContentFilter{Url="news.zol.com.cn",Path=@"id=""article-content"""},
                 new NewsContentFilter{Url="tech.sina.com.cn",Path=@"id=""artibody"""},
                 new NewsContentFilter{Url="m.pchome.net",Path=@"class=""article-content"""},
+                new NewsContentFilter{Url="article.pchome.net",Path=@"class=""cms-article-text"""},
                 new NewsContentFilter{Url="donews.com",Path=@"class=""article-con"""},
                 new NewsContentFilter{Url="idcquan.com",Path=@"class=""clear deatil article-content fontSizeSmall BSHARE_POP"""},
                 new NewsContentFilter{Url="oschina.net",Path=@"class=""editor-viewer text clear"""},
