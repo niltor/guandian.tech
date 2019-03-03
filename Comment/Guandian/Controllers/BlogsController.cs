@@ -31,7 +31,8 @@ namespace Guandian.Controllers
                     Title = b.Title,
                     UpdatedTime = b.UpdatedTime,
                     Id = b.Id,
-                    Link = b.Link
+                    Link = b.Link,
+                    Thumbnail = b.Thumbnail
                 })
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)

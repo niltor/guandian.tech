@@ -8,8 +8,9 @@
         @foreach (var blog in Model)
         {
             var Url = HttpUtility.ParseQueryString(new Uri(blog.Link).Query);
-            <div class="news-list bg-white mb-2 p-1">
-                <div class="content col-md-10">
+            <div class="news-list bg-white mb-2 p-1 media">
+                <img src="@blog.Thumbnail" alt="" class="align-self-center mr-2 d-md-flex d-none" width="180"/>
+                <div class="media-body">
                     <div class="news-title col-md-10">
                         <a asp-controller="blogs" asp-action="detail" asp-route-id="@blog.Id" target="_blank">
                             <strong>
