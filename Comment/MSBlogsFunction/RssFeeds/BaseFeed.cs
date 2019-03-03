@@ -100,11 +100,6 @@ namespace MSBlogsFunction.RssFeeds
                                 {
                                     content = content.Replace("<pre", "<pre class=\"notranslate\"");
                                 }
-                                // TODO:获取guid链接，然后获取图片
-                                var guidLink = new Uri(x.Element("guid").Value);
-                                var guid = guidLink.ParseQueryString().Get("p");
-                                var link = guidLink.AbsoluteUri.Replace(guidLink.Query, "");
-                                //var thumbnial = GetThumb(link, "post-" + guid);
 
                                 return new RssEntity
                                 {
@@ -116,7 +111,7 @@ namespace MSBlogsFunction.RssFeeds
                                     Link = x.Element(Link)?.Value,
                                     Categories = GetCategories(x),
                                     LastUpdateTime = createTime,
-                                    //ThumbUrl = thumbnial
+                                    ThumbUrl = GetThumb(x.Element("guid"))
                                 };
                             })
                             .Take(number)
@@ -166,13 +161,10 @@ namespace MSBlogsFunction.RssFeeds
         /// <param name="url"></param>
         /// <param name="xpath"></param>
         /// <returns></returns>
-        protected virtual string GetThumb(string url, string xpath)
+        protected virtual string GetThumb(XElement x)
         {
-            var hw = new HtmlWeb();
-            var doc = hw.LoadFromWebAsync(url).Result;
-            var content = doc.DocumentNode.SelectSingleNode($"//article[@id='{xpath}']").InnerHtml;
-            return content;
 
+            return "";
         }
         /// <summary>
         /// 是否包含

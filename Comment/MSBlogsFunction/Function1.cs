@@ -61,7 +61,11 @@ namespace MSBlogsFunction
                     {
                         try
                         {
-                            var thumbnail = await intelligence.GetImageFromTextAsync(item.Title);
+                            var thumbnail = item.ThumbUrl;
+                            if (string.IsNullOrEmpty(item.ThumbUrl))
+                            {
+                                thumbnail = await intelligence.GetImageFromTextAsync(item.Title);
+                            }
                             //var thumbnail = "";
 
                             var blogForm = new BlogForm
