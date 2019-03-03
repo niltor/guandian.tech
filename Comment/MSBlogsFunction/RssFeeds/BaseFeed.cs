@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using HtmlAgilityPack;
 using MSBlogsFunction.Entity;
 
 namespace MSBlogsFunction.RssFeeds
@@ -99,6 +100,12 @@ namespace MSBlogsFunction.RssFeeds
                                 {
                                     content = content.Replace("<pre", "<pre class=\"notranslate\"");
                                 }
+                                // TODO:获取guid链接，然后获取图片
+                                var guidLink = new Uri(x.Element("guid").Value);
+                                var guid = guidLink.ParseQueryString().Get("p");
+                                var link = guidLink.AbsoluteUri.Replace(guidLink.Query, "");
+                                //var thumbnial = GetThumb(link, "post-" + guid);
+
                                 return new RssEntity
                                 {
                                     Title = x.Element(Title)?.Value,
@@ -109,6 +116,7 @@ namespace MSBlogsFunction.RssFeeds
                                     Link = x.Element(Link)?.Value,
                                     Categories = GetCategories(x),
                                     LastUpdateTime = createTime,
+                                    //ThumbUrl = thumbnial
                                 };
                             })
                             .Take(number)
@@ -151,6 +159,20 @@ namespace MSBlogsFunction.RssFeeds
                 .Select(s => s.Value)
                 .ToArray();
             return string.Join(";", categories);
+        }
+        /// <summary>
+        /// 获取缩略图
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
+        protected virtual string GetThumb(string url, string xpath)
+        {
+            var hw = new HtmlWeb();
+            var doc = hw.LoadFromWebAsync(url).Result;
+            var content = doc.DocumentNode.SelectSingleNode($"//article[@id='{xpath}']").InnerHtml;
+            return content;
+
         }
         /// <summary>
         /// 是否包含

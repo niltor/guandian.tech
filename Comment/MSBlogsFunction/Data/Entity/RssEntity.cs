@@ -13,5 +13,9 @@ namespace MSBlogsFunction.Entity
         public int PublishId { get; set; }
         public DateTime LastUpdateTime { get; set; }
         public string Content { get; set; }
+        /// <summary>
+        /// ËõÂÔÍ¼Á´½Ó
+        /// </summary>
+        public string ThumbUrl { get; set; }
     }
 }
