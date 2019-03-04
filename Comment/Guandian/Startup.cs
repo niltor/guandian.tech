@@ -129,7 +129,8 @@ namespace Guandian
             services.AddSession();// 使用Session
             services.AddSingleton(typeof(GithubService));
             services.AddSingleton(typeof(GithubManageService));
-            services.AddSingleton(typeof(ReviewManager));
+
+            services.AddScoped(typeof(ReviewManager));
 
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
                     .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册
