@@ -42,7 +42,7 @@ namespace Guandian.Manager
                 Body = pullRequest.Body,
                 DiffUrl = pullRequest.DiffUrl,
                 MergeCommitSha = pullRequest.MergeCommitSha,
-                MergeTime = pullRequest.MergedAt.Value,
+                MergeTime = pullRequest.MergedAt ?? DateTimeOffset.Now,
                 Number = pullRequest.Number,
                 Title = pullRequest.Title,
                 Url = pullRequest.Url,
