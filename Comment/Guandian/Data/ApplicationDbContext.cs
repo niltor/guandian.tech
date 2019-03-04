@@ -21,6 +21,8 @@ namespace Guandian.Data
         /// 文件节点
         /// </summary>
         public DbSet<FileNode> FileNodes { get; set; }
+        public DbSet<ReviewComment> ReviewComments { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public DbSet<Repository> Repositories { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
