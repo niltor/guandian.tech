@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 //using MSDev.MetaWeblog;
 
 namespace Guandian.Services

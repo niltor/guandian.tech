@@ -1,6 +1,5 @@
 using Senparc.NeuChar.Context;
 using Senparc.NeuChar.Entities;
-using Senparc.Weixin.MP.Entities;
 
 namespace Guandian.Services
 {

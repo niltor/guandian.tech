@@ -3,7 +3,6 @@ using Guandian.Areas.Webhooks.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Microsoft.AspNetCore.Mvc;
-using Octokit;
 using Z.EntityFramework.Plus;
 
 namespace Guandian.Areas.Webhooks.Controllers

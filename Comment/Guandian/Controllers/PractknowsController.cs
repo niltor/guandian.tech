@@ -1,10 +1,9 @@
 using Guandian.Data;
 using Guandian.Data.Entity;
+using Guandian.Manager;
 using Guandian.Models.Forms;
 using Guandian.Models.PractknowView;
 using Guandian.Services;
-using Guandian.Utilities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +21,19 @@ namespace Guandian.Controllers
     {
         private readonly GithubService _github;
         private readonly GithubManageService _githubManage;
+        private readonly ReviewManager _reviewManager;
 
-        public PractknowsController(ApplicationDbContext context, GithubService github, GithubManageService githubManage, UserManager<User> userManager, ILogger<PractknowsController> logger) : base(userManager, context, logger)
+        public PractknowsController(
+            ApplicationDbContext context,
+            GithubService github,
+            GithubManageService githubManage,
+            UserManager<User> userManager,
+            ReviewManager reviewManager,
+            ILogger<PractknowsController> logger) : base(userManager, context, logger)
         {
             _github = github;
             _githubManage = githubManage;
+            _reviewManager = reviewManager;
         }
 
         /// <summary>
@@ -294,6 +301,8 @@ namespace Guandian.Controllers
                     });
                     newFile.PRNumber = prResult.Number;
                     newFile.PRSHA = prResult.MergeCommitSha;
+                    // 添加审核
+                    await _reviewManager.AddReviewFromPRAsync(prResult, currentUser);
                 }
                 else
                 {

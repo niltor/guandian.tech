@@ -1,5 +1,6 @@
 using Guandian.Data;
 using Guandian.Data.Entity;
+using Guandian.Manager;
 using Guandian.Services;
 using Guandian.Utilities;
 using Microsoft.AspNetCore.Authentication;
@@ -128,6 +129,7 @@ namespace Guandian
             services.AddSession();// 使用Session
             services.AddSingleton(typeof(GithubService));
             services.AddSingleton(typeof(GithubManageService));
+            services.AddSingleton(typeof(ReviewManager));
 
             services.AddSenparcGlobalServices(Configuration)//Senparc.CO2NET 全局注册
                     .AddSenparcWeixinServices(Configuration);//Senparc.Weixin 注册
