@@ -41,7 +41,7 @@ namespace MSBlogsFunction.RssFeeds
 
             var hw = new HtmlWeb();
             var doc = hw.LoadFromWebAsync(link).Result;
-            var content = doc.DocumentNode.SelectSingleNode($"//article[@id='post-{guid}']//img")
+            var content = doc.DocumentNode.SelectSingleNode($"//article[@id='post-{guid}']//noscript/img")?
                 .GetAttributeValue("src", null);
             return content;
         }

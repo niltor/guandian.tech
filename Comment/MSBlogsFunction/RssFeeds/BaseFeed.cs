@@ -122,7 +122,7 @@ namespace MSBlogsFunction.RssFeeds
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message + e.InnerException); ;
+                Console.WriteLine(e.Message + e.InnerException + e.StackTrace); ;
                 throw;
             }
             // 处理没有内容的博客
