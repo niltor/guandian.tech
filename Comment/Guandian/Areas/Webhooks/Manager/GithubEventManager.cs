@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using GithubWebhook.Events;
 using Guandian.Areas.Webhooks.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
@@ -18,14 +17,14 @@ namespace Guandian.Areas.Webhooks.Manager
         {
         }
 
-        public async Task<int> PullRequestAsync(PullRequestEventModel pr)
+        public async Task<int> PullRequestAsync(PullRequestEvent pr)
         {
             int count = 0;
             switch (pr.Action)
             {
                 case "closed":
                     // 通过合并 
-                    if (pr.PullRequest.Merged && pr.PullRequest.MergedBy != null)
+                    if (pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy != null)
                     {
                         var sha = pr.PullRequest.MergeCommitSha;
                         count = await _context.Practknow
@@ -34,7 +33,7 @@ namespace Guandian.Areas.Webhooks.Manager
                            .UpdateAsync(p => new Practknow { MergeStatus = MergeStatus.NeedArchive, PRSHA = sha });
                     }
                     // 关闭未通过合并 
-                    else if (!pr.PullRequest.Merged && pr.PullRequest.MergedBy == null)
+                    else if (!pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy == null)
                     {
                         // TODO:消息提醒
                     }

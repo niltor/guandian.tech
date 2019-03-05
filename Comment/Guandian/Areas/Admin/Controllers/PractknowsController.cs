@@ -10,7 +10,6 @@ using Guandian.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Octokit;
 using Z.EntityFramework.Plus;
 
 namespace Guandian.Areas.Admin.Controllers

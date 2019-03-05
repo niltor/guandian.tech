@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Guandian.Areas.Webhooks.Models;
 using Guandian.Data;
-using Guandian.Data.Entity;
 using Guandian.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Z.EntityFramework.Plus;
 
 namespace Guandian.Areas.Webhooks.Controllers
 {
