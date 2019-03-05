@@ -10,5 +10,6 @@
 
         }
         public string PAT { get; set; }
+        public string WebHookSecret { get; set; }
     }
 }

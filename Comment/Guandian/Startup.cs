@@ -49,7 +49,7 @@ namespace Guandian
             services.Configure<GithubOption>(options =>
             {
                 options.PAT = Configuration.GetSection("OAuth")["PAT:TechviewsManageToken"];
-                Console.WriteLine(options.PAT);
+                options.WebHookSecret = Configuration.GetSection("OAuth")["WebHookSecret"];
             });
             // 数据库
             services.AddDbContext<ApplicationDbContext>(options =>

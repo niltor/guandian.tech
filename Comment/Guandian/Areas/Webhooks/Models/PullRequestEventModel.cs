@@ -106,16 +106,16 @@ namespace Guandian.Areas.Webhooks.Models
         public object Body { get; set; }
 
         [JsonProperty("created_at")]
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
         [JsonProperty("updated_at")]
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         [JsonProperty("closed_at")]
-        public DateTimeOffset ClosedAt { get; set; }
+        public DateTimeOffset? ClosedAt { get; set; }
 
         [JsonProperty("merged_at")]
-        public DateTimeOffset MergedAt { get; set; }
+        public DateTimeOffset? MergedAt { get; set; }
 
         [JsonProperty("merge_commit_sha")]
         public string MergeCommitSha { get; set; }
@@ -364,13 +364,13 @@ namespace Guandian.Areas.Webhooks.Models
         public Uri DeploymentsUrl { get; set; }
 
         [JsonProperty("created_at")]
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
         [JsonProperty("updated_at")]
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         [JsonProperty("pushed_at")]
-        public DateTimeOffset PushedAt { get; set; }
+        public DateTimeOffset? PushedAt { get; set; }
 
         [JsonProperty("git_url")]
         public string GitUrl { get; set; }

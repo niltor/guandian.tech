@@ -19,11 +19,11 @@
                     <tr>
                         <td>
                             @review.Title
-                            <a class="text-info" href="https://github.com/TechViewsTeam/Practknow/pull/@review.Number">
+                            <a class="text-info" href="https://github.com/TechViewsTeam/Practknow/pull/@review.Number" target="_blank">
                                 [#@review.Number]
                             </a>
                         </td>
-                        <td>@review.User.NickName</td>
+                        <td>@review.User.Email</td>
                         <td>@review.CreatedTime.ToString("yyyy-MM-dd HH:mm")</td>
                         <td>
                             <a href="@review.HtmlUrl" target="_blank">
