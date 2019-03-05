@@ -1,5 +1,4 @@
-﻿@using Octokit
-@model List<PullRequest>
+﻿@model List<Review>
 @{
     ViewData["Title"] = "践识审核";
 }
@@ -15,19 +14,19 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var pr in Model)
+                @foreach (var review in Model)
                 {
                     <tr>
                         <td>
-                            @pr.Title
-                            <a class="text-info" href="https://github.com/TechViewsTeam/Practknow/pull/@pr.Number">
-                                [#@pr.Number]
+                            @review.Title
+                            <a class="text-info" href="https://github.com/TechViewsTeam/Practknow/pull/@review.Number">
+                                [#@review.Number]
                             </a>
                         </td>
-                        <td>@pr.User.Login</td>
-                        <td>@pr.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@review.User.NickName</td>
+                        <td>@review.CreatedTime.ToString("yyyy-MM-dd HH:mm")</td>
                         <td>
-                            <a href="@pr.HtmlUrl" target="_blank">
+                            <a href="@review.HtmlUrl" target="_blank">
                                 前去审核
                             </a>
                         </td>

@@ -16,7 +16,10 @@ namespace Guandian.Data.Entity
         /// </summary>
         [MaxLength(2000)]
         public string Body { get; set; }
+        [MaxLength(300)]
         public string Url { get; set; }
+        [MaxLength(300)]
+        public string HtmlUrl { get; set; }
         [MaxLength(300)]
         public string DiffUrl { get; set; }
         [MaxLength(300)]

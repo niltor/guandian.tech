@@ -104,10 +104,14 @@ namespace Guandian.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<List<PullRequest>>> PullRequest(int pageIndex = 1, int pageSize = 12)
+        public async Task<ActionResult<List<Review>>> PullRequest(int pageIndex = 1, int pageSize = 12)
         {
-            // TODO:获取Pull Request列表
-            var data = await _github.GetPullRequests(pageIndex, pageSize);
+            // 获取Pull Request列表
+            var data = await _context.Reviews
+                .Include(r => r.User)
+                .Take(20)
+                .ToListAsync();
+
             if (pageIndex < 1) pageIndex = 1;
             ViewBag.Page = pageIndex;
 

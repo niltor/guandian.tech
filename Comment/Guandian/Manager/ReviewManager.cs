@@ -46,6 +46,7 @@ namespace Guandian.Manager
                 Number = pullRequest.Number,
                 Title = pullRequest.Title,
                 Url = pullRequest.Url,
+                HtmlUrl = pullRequest.HtmlUrl,
                 User = user,
                 Merged = pullRequest.Merged,
             };
