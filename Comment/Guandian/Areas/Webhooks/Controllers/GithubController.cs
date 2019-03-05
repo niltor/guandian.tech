@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using GithubWebhook.Events;
 using Guandian.Data;
 using Guandian.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace Guandian.Areas.Webhooks.Controllers
 {
@@ -37,6 +39,7 @@ namespace Guandian.Areas.Webhooks.Controllers
             request.Headers.TryGetValue("X-GitHub-Delivery", out var delivery);
             request.Headers.TryGetValue("content-type", out var contentType);
 
+            // 验证
             if (contentType != "application/json")
             {
                 return BadRequest("错误的content-type.仅接受application/json");
@@ -51,14 +54,88 @@ namespace Guandian.Areas.Webhooks.Controllers
             {
                 if (!SignatureValid(bodyString, signature))
                 {
-                    throw new Exception($"签名验证错误!");
+                    return BadRequest($"签名验证错误!");
                 }
+
+                // 解析内容
+
             }
             else
             {
                 return BadRequest("无效的签名信息！");
             }
             return Ok();
+        }
+
+        private object ConvertPayload(string eventName, string PayloadText)
+        {
+            switch (eventName)
+            {
+                case PingEvent.EventString:
+                    return PingEvent.FromJson(PayloadText);
+                case CommitCommentEvent.EventString:
+                    return CommitCommentEvent.FromJson(PayloadText);
+                case CreateEvent.EventString:
+                    return CreateEvent.FromJson(PayloadText);
+                case DeleteEvent.EventString:
+                    return DeleteEvent.FromJson(PayloadText);
+                case DeploymentEvent.EventString:
+                    return DeploymentEvent.FromJson(PayloadText);
+                case DeploymentStatusEvent.EventString:
+                    return DeploymentStatusEvent.FromJson(PayloadText);
+                case ForkEvent.EventString:
+                    return ForkEvent.FromJson(PayloadText);
+                case GollumEvent.EventString:
+                    return GollumEvent.FromJson(PayloadText);
+                case InstallationEvent.EventString:
+                    return InstallationEvent.FromJson(PayloadText);
+                case InstallationRepositoriesEvent.EventString:
+                    return InstallationRepositoriesEvent.FromJson(PayloadText);
+                case IssueCommentEvent.EventString:
+                    return IssueCommentEvent.FromJson(PayloadText);
+                case IssuesEvent.EventString:
+                    return IssuesEvent.FromJson(PayloadText);
+                case LabelEvent.EventString:
+                    return LabelEvent.FromJson(PayloadText);
+                case MemberEvent.EventString:
+                    return MemberEvent.FromJson(PayloadText);
+                case MembershipEvent.EventString:
+                    return MembershipEvent.FromJson(PayloadText);
+                case MilestoneEvent.EventString:
+                    return MilestoneEvent.FromJson(PayloadText);
+                case OrganizationEvent.EventString:
+                    return OrganizationEvent.FromJson(PayloadText);
+                case OrgBlockEvent.EventString:
+                    return OrgBlockEvent.FromJson(PayloadText);
+                case PageBuildEvent.EventString:
+                    return PageBuildEvent.FromJson(PayloadText);
+                case ProjectCardEvent.EventString:
+                    return ProjectCardEvent.FromJson(PayloadText);
+                case ProjectColumnEvent.EventString:
+                    return ProjectColumnEvent.FromJson(PayloadText);
+                case ProjectEvent.EventString:
+                    return ProjectEvent.FromJson(PayloadText);
+                case PublicEvent.EventString:
+                    return PublicEvent.FromJson(PayloadText);
+                case PullRequestEvent.EventString:
+                    return PullRequestEvent.FromJson(PayloadText);
+                case PullRequestReviewEvent.EventString:
+                    return PullRequestReviewEvent.FromJson(PayloadText);
+                case PullRequestReviewCommentEvent.EventString:
+                    return PullRequestReviewCommentEvent.FromJson(PayloadText);
+                case PushEvent.EventString:
+                    return PushEvent.FromJson(PayloadText);
+                case ReleaseEvent.EventString:
+                    return ReleaseEvent.FromJson(PayloadText);
+                case RepositoryEvent.EventString:
+                    return RepositoryEvent.FromJson(PayloadText);
+                case StatusEvent.EventString:
+                    return StatusEvent.FromJson(PayloadText);
+                case WatchEvent.EventString:
+                    return WatchEvent.FromJson(PayloadText);
+                default:
+                    throw new NotImplementedException("");
+            }
         }
 
 
