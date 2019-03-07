@@ -22,6 +22,7 @@ namespace Guandian.Controllers
         public ActionResult Index(int page = 1, int pageSize = 20)
         {
             var blogs = _context.Blogs
+                .Where(b => b.Status != Status.Obsolete)
                 .OrderByDescending(n => n.UpdatedTime)
                 .Select(b => new Blog
                 {
