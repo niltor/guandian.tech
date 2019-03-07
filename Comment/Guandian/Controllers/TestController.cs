@@ -29,8 +29,7 @@ namespace Guandian.Controllers
         /// <returns></returns>
         public ActionResult GithubTestAsync()
         {
-            var content = _event.HandleEvent("pull_request");
-            return Content(content);
+            return Ok();
         }
     }
 }

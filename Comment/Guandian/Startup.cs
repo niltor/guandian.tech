@@ -1,3 +1,4 @@
+using Guandian.Areas.Webhooks.Manager;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Guandian.Manager;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +62,7 @@ namespace Guandian
             //       Configuration.GetConnectionString("MSDev")));
             // 身份验证服务 
             services.AddIdentity<User, IdentityRole>()
+                .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             //.AddEntityFrameworkStores<MSDevContext>();
 
@@ -90,8 +93,8 @@ namespace Guandian
 
             // 身份验证服务
             services.AddSingleton<IdentityVerifyService>();
-            //services.AddSingleton<GithubManageService>();
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddSingleton<GithubManageService>();
+            services.AddScoped<GithubEventManager>();
 
             // 添加policy角色
             services.AddAuthorization(options =>
@@ -118,12 +121,7 @@ namespace Guandian
                     options.SaveTokens = true;
                 });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                 .AddJsonOptions(options =>
-                 {
-                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                 }); ;
+            services.AddMvc().AddNewtonsoftJson();
 
             services.AddMemoryCache();// 使用本地缓存必须添加
             services.AddSession();// 使用Session

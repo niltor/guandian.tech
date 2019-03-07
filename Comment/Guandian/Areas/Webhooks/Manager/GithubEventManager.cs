@@ -22,11 +22,16 @@ namespace Guandian.Areas.Webhooks.Manager
 
         public string HandleEvent(string eventName)
         {
+            string re = "";
             eventName = StringTools.ToUpperPascalCase(eventName) + "Event";
             var objectType = Type.GetType("GithubWebhook.Events." + eventName);
-            object ob = Activator.CreateInstance(objectType);
+            object eventClass = Activator.CreateInstance(objectType);
 
-            var re = StringTools.ToJson(ob);
+            //objectType switch
+            //{
+            //    PullRequestEvent => "",
+            //    _ => ""
+            //};
             Console.WriteLine(re);
             return re;
         }

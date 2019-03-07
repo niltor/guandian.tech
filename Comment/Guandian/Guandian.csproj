@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <EnableDefaultContentItems>true</EnableDefaultContentItems>
     <UserSecretsId>aspnet-Comment-7FFC48C7-5037-4F12-9E69-1948B0650351</UserSecretsId>
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
@@ -14,19 +14,27 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview3-19153-02" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.0.0-preview3-19153-02" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0-preview3-19153-02" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0-preview3-19153-02" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview3-19153-02" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0-preview3.19153.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview3.19153.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0-preview3.19153.1" />
+    
     <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="2.0.1" />
     <PackageReference Include="Google.Cloud.Translation.V2" Version="1.1.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.9.0" />
-    <PackageReference Include="Markdig" Version="0.15.7" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.9.1" />
+    <PackageReference Include="Markdig" Version="0.16.0" />
     <PackageReference Include="Markdig.SyntaxHighlighting" Version="1.1.7" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.6.1" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.7.0-beta2" />
     <PackageReference Include="Octokit" Version="0.32.0" />
-    <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.2.5" />
+    <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.2.6" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.7.0-preview3.19128.7" />
     <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="1.8.18" />
   </ItemGroup>
 
