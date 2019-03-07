@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using GithubWebhook.Events;
 using Guandian.Areas.Webhooks.Models;
 using Guandian.Data;
 using Guandian.Data.Entity;
+using Guandian.Utilities;
 using Z.EntityFramework.Plus;
 
 namespace Guandian.Areas.Webhooks.Manager
@@ -17,6 +19,17 @@ namespace Guandian.Areas.Webhooks.Manager
         {
         }
 
+
+        public string HandleEvent(string eventName)
+        {
+            eventName = StringTools.ToUpperPascalCase(eventName) + "Event";
+            var objectType = Type.GetType("GithubWebhook.Events." + eventName);
+            object ob = Activator.CreateInstance(objectType);
+
+            var re = StringTools.ToJson(ob);
+            Console.WriteLine(re);
+            return re;
+        }
         public async Task<int> PullRequestAsync(PullRequestEvent pr)
         {
             int count = 0;

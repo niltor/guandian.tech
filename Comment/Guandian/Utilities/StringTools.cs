@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System;
+using System.Globalization;
 
 namespace Guandian.Utilities
 {
@@ -129,7 +130,6 @@ namespace Guandian.Utilities
             return sameNum / shorterString.Length;
         }
 
-
         /// <summary>
         /// 获取搜索关键词当前行内容
         /// </summary>
@@ -155,6 +155,23 @@ namespace Guandian.Utilities
         public static string ToJson(object obj)
         {
             return JsonConvert.SerializeObject(obj, Formatting.Indented);
+        }
+
+        /// <summary>
+        /// 转换成Pascal命名
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string ToUpperPascalCase(string str)
+        {
+            TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
+            if (str.Contains("_"))
+            {
+                str = str.Replace("_", " ");
+            }
+            string outString = myTI.ToTitleCase(str);
+            outString = outString.Replace(" ", "");
+            return outString;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Guandian.Data;
+﻿using Guandian.Areas.Webhooks.Manager;
+using Guandian.Data;
 using Guandian.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,26 +10,27 @@ namespace Guandian.Controllers
     public class TestController : BaseController
     {
         readonly GithubManageService _service;
+        readonly GithubEventManager _event;
         readonly GithubService _github;
-        public TestController(GithubManageService service, GithubService github, ApplicationDbContext context, ILogger<TestController> logger) : base(context, logger)
+        public TestController(
+            GithubManageService service,
+            GithubService github,
+            GithubEventManager eventManager,
+            ApplicationDbContext context,
+            ILogger<TestController> logger) : base(context, logger)
         {
             _service = service;
             _github = github;
+            _event = eventManager;
         }
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> GithubTestAsync()
+        public ActionResult GithubTestAsync()
         {
-            var status = await _service.AddUserToTeamAsync("geethin");
-            if (status == Octokit.MembershipState.Pending)
-            {
-                // TODO:提示跳转到项目页面接受邀请。
-
-
-            }
-            return Content("");
+            var content = _event.HandleEvent("pull_request");
+            return Content(content);
         }
     }
 }
