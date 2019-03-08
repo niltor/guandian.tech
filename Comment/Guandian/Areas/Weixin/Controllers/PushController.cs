@@ -2,6 +2,7 @@ using Guandian.Data;
 using Guandian.Utilities;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.MP.AdvancedAPIs;
@@ -134,6 +135,7 @@ namespace Guandian.Areas.Weixin.Controllers
                                     for (int i = 0; i < imageNodes.Count; i++)
                                     {
                                         var url = imageNodes[i].GetAttributeValue("src", null);
+                                        if (url == null) continue;
                                         // 只保留jpg图片
                                         if (!url.EndsWith(".jpg"))
                                         {
@@ -202,7 +204,7 @@ namespace Guandian.Areas.Weixin.Controllers
                         }
                         catch (Exception e)
                         {
-                            DumpConsole(e.Message);
+                            DumpConsole(e.Message + e.StackTrace);
                         }
                     }
                 }
@@ -243,7 +245,6 @@ namespace Guandian.Areas.Weixin.Controllers
             return Ok();
         }
 
-
         /// <summary>
         /// 下载文件
         /// </summary>
@@ -272,5 +273,6 @@ namespace Guandian.Areas.Weixin.Controllers
             }
 
         }
+
     }
 }
