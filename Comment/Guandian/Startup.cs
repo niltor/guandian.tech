@@ -11,14 +11,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin;
@@ -27,6 +23,7 @@ using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
 using System;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 
 namespace Guandian
 {
@@ -120,11 +117,11 @@ namespace Guandian
                     options.Scope.Add("user:email");
                     options.SaveTokens = true;
                 });
-
-            services.AddMvc().AddNewtonsoftJson();
+            services.AddMvc()
+                .AddNewtonsoftJson();
 
             services.AddMemoryCache();// 使用本地缓存必须添加
-            services.AddSession();// 使用Session
+            services.AddSession();// 使用Session 
             services.AddSingleton(typeof(GithubService));
             services.AddSingleton(typeof(GithubManageService));
 
