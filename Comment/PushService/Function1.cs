@@ -13,11 +13,11 @@ namespace PushService
             int retryNum = 3;
             using (var hc = new HttpClient())
             {
-                var response = await hc.GetAsync("https://guandian.tech/weixin/Push/PushToWeixinAsync");
+                var response = await hc.GetAsync("https://guandian.tech/weixin/Push/PushToWeixin");
                 while (retryNum > 0 && !response.IsSuccessStatusCode)
                 {
                     retryNum--;
-                    response = await hc.GetAsync("https://guandian.tech/weixin/Push/PushToWeixinAsync");
+                    response = await hc.GetAsync("https://guandian.tech/weixin/Push/PushToWeixin");
                 }
             }
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
