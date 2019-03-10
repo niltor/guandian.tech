@@ -24,6 +24,7 @@ using Senparc.Weixin.RegisterServices;
 using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Newtonsoft.Json.Serialization;
 
 namespace Guandian
 {
@@ -60,7 +61,8 @@ namespace Guandian
             // 身份验证服务 
             services.AddIdentity<User, IdentityRole>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
             //.AddEntityFrameworkStores<MSDevContext>();
 
             services.Configure<IdentityOptions>(options =>
