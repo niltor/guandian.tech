@@ -33,6 +33,11 @@ namespace Guandian.Data
         {
             builder.Entity<Author>().HasBaseType<User>();
 
+            builder.Entity<User>(e =>
+            {
+                e.HasIndex(u => u.GitId).IsUnique();
+            });
+
             builder.Entity<FileNode>(e =>
             {
                 e.HasOne(f => f.ParentNode)

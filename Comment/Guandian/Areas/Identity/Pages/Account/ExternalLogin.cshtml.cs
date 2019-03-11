@@ -128,7 +128,13 @@ namespace Guandian.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 // 创建用户及角色
-                var user = new User { UserName = Input.Email, Email = Input.Email };
+                var gitId = info.Principal.FindFirst("urn:github:id");
+                var user = new User
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    GitId = gitId.Value
+                };
                 var result = await _userManager.CreateAsync(user);
                 if (!await _roleManager.RoleExistsAsync(info.LoginProvider))
                 {
@@ -146,10 +152,11 @@ namespace Guandian.Areas.Identity.Pages.Account
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        // TODO: 需要添加角色
+                        // 需要添加角色
                         await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Name));
                         await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:avatar"));
                         await _userManager.AddClaimAsync(user, info.Principal.FindFirst(ClaimTypes.Email));
+                        await _userManager.AddClaimAsync(user, info.Principal.FindFirst("urn:github:id"));
                         var props = new AuthenticationProperties();
                         props.StoreTokens(info.AuthenticationTokens);
 

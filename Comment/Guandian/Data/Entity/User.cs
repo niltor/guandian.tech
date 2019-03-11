@@ -19,7 +19,8 @@ namespace Guandian.Data.Entity
         /// <summary>
         /// githubId
         /// </summary>
-        public int GitId { get; set; }
+        [MaxLength(20)]
+        public string GitId { get; set; }
         /// <summary>
         /// 昵称
         /// </summary>

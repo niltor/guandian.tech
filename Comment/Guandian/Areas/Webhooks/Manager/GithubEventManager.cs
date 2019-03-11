@@ -204,7 +204,7 @@ namespace Guandian.Areas.Webhooks.Manager
                 if (uid != null)
                 {
                     var review = _context.Reviews.SingleOrDefault(r => r.Number == number);
-                    var user = _context.Users.SingleOrDefault(u => u.GitId == uid);
+                    var user = _context.Users.SingleOrDefault(u => u.GitId == uid.ToString());
                     if (review != null || user != null)
                     {
                         var newReviewComment = new ReviewComment
