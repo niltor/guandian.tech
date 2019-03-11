@@ -18,7 +18,7 @@ namespace Guandian.Areas.Webhooks.Manager
         }
 
 
-        public async Task<string> HandleEventAsync(string eventName, string requestBody)
+        public async Task HandleEventAsync(string eventName, string requestBody)
         {
             string re = "";
             switch (eventName)
@@ -150,8 +150,56 @@ namespace Guandian.Areas.Webhooks.Manager
                 default:
                     throw new NotImplementedException("");
             }
+        }
+        /// <summary>
+        /// pull request状态改变
+        /// </summary>
+        /// <param name="pr"></param>
+        /// <returns></returns>
+        public async Task<int> PullRequestAsync(PullRequestEvent pr)
+        {
+            int count = 0;
+            switch (pr.Action)
+            {
+                case "closed":
+                    // 通过合并 
+                    if (pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy != null)
+                    {
+                        var sha = pr.PullRequest.MergeCommitSha;
+                        count = await _context.Practknow
+                           .Where(p => p.PRNumber == pr.PullRequest.Number)
+                           .Where(p => p.MergeStatus == MergeStatus.NeedMerge)
+                           .UpdateAsync(p => new Practknow { MergeStatus = MergeStatus.NeedArchive, PRSHA = sha });
+                    }
+                    // 关闭未通过合并 
+                    else if (!pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy == null)
+                    {
+                        // TODO:消息提醒
+                    }
+                    break;
+                case "opened":
+                    // TODO: 管理员邮件消息提醒
+                    break;
+                case "synchronize":
+                    // do nothing
+                    break;
+                default:
+                    break;
+            }
+            return count;
+        }
+        /// <summary>
+        /// Comment提交
+        /// </summary>
+        /// <param name="issueCommentModel"></param>
+        /// <returns></returns>
+        private Task IssueCommentAsync(IssueCommentEvent issueCommentModel)
+        {
+            if (issueCommentModel.Action == "created")
+            {
 
-            return re;
+            }
+            throw new NotImplementedException();
         }
 
         private Task StatusAsync(StatusEvent statusModel)
@@ -249,11 +297,6 @@ namespace Guandian.Areas.Webhooks.Manager
             throw new NotImplementedException();
         }
 
-        private Task IssueCommentAsync(IssueCommentEvent issueCommentModel)
-        {
-            throw new NotImplementedException();
-        }
-
         private Task InstallationRepositoriesAsync(InstallationRepositoriesEvent installationRepositoriesModel)
         {
             throw new NotImplementedException();
@@ -304,37 +347,5 @@ namespace Guandian.Areas.Webhooks.Manager
             throw new NotImplementedException();
         }
 
-        public async Task<int> PullRequestAsync(PullRequestEvent pr)
-        {
-            int count = 0;
-            switch (pr.Action)
-            {
-                case "closed":
-                    // 通过合并 
-                    if (pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy != null)
-                    {
-                        var sha = pr.PullRequest.MergeCommitSha;
-                        count = await _context.Practknow
-                           .Where(p => p.PRNumber == pr.PullRequest.Number)
-                           .Where(p => p.MergeStatus == MergeStatus.NeedMerge)
-                           .UpdateAsync(p => new Practknow { MergeStatus = MergeStatus.NeedArchive, PRSHA = sha });
-                    }
-                    // 关闭未通过合并 
-                    else if (!pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy == null)
-                    {
-                        // TODO:消息提醒
-                    }
-                    break;
-                case "opened":
-                    // TODO: 管理员邮件消息提醒
-                    break;
-                case "synchronize":
-                    // do nothing
-                    break;
-                default:
-                    break;
-            }
-            return count;
-        }
     }
 }

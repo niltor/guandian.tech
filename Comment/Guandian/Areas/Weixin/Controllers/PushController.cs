@@ -27,7 +27,6 @@ namespace Guandian.Areas.Weixin.Controllers
         {
 
         }
-
         /// <summary>
         /// 推送到微信公共号
         /// </summary>
@@ -244,7 +243,6 @@ namespace Guandian.Areas.Weixin.Controllers
             }
             return Ok();
         }
-
         /// <summary>
         /// 下载文件
         /// </summary>
