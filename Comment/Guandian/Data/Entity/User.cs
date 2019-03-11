@@ -17,6 +17,10 @@ namespace Guandian.Data.Entity
         [MaxLength(100)]
         public string RealName { get; set; }
         /// <summary>
+        /// githubId
+        /// </summary>
+        public int GitId { get; set; }
+        /// <summary>
         /// 昵称
         /// </summary>
         [PersonalData]

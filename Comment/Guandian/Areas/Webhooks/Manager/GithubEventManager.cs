@@ -193,13 +193,33 @@ namespace Guandian.Areas.Webhooks.Manager
         /// </summary>
         /// <param name="issueCommentModel"></param>
         /// <returns></returns>
-        private Task IssueCommentAsync(IssueCommentEvent issueCommentModel)
+        private async Task<int> IssueCommentAsync(IssueCommentEvent issueCommentModel)
         {
             if (issueCommentModel.Action == "created")
             {
-
+                // TODO:当前只针对pull request comment进行处理
+                var number = issueCommentModel.Issue.Number;
+                var uid = issueCommentModel.Comment?.User?.Id;
+                var content = issueCommentModel.Comment.Body;
+                if (uid != null)
+                {
+                    var review = _context.Reviews.SingleOrDefault(r => r.Number == number);
+                    var user = _context.Users.SingleOrDefault(u => u.GitId == uid);
+                    if (review != null || user != null)
+                    {
+                        var newReviewComment = new ReviewComment
+                        {
+                            Content = content,
+                            Review = review,
+                            HtmlUrl = issueCommentModel.Comment.HtmlUrl,
+                            User = user,
+                        };
+                        _context.Add(newReviewComment);
+                        return await _context.SaveChangesAsync();
+                    }
+                }
             }
-            throw new NotImplementedException();
+            return 0;
         }
 
         private Task StatusAsync(StatusEvent statusModel)
