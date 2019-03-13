@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using GithubWebhook.Events;
+using Guandian.Areas.Webhooks.Manager;
 using Guandian.Data;
 using Guandian.Utilities;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,11 @@ namespace Guandian.Areas.Webhooks.Controllers
     {
 
         private readonly GithubOption _options;
-        public GithubController(ApplicationDbContext context, IOptionsMonitor<GithubOption> options) : base(context)
+        readonly GithubEventManager _eventManager;
+        public GithubController(ApplicationDbContext context, IOptionsMonitor<GithubOption> options, GithubEventManager eventManager) : base(context)
         {
             _options = options.CurrentValue;
+            _eventManager = eventManager;
         }
         [HttpGet("test")]
         public string Test()
@@ -31,7 +34,7 @@ namespace Guandian.Areas.Webhooks.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("event_hook")]
-        public ActionResult EventHook()
+        public async System.Threading.Tasks.Task<ActionResult> EventHookAsync()
         {
             var request = HttpContext.Request;
             request.Headers.TryGetValue("X-GitHub-Event", out var eventName);
@@ -47,18 +50,18 @@ namespace Guandian.Areas.Webhooks.Controllers
             string bodyString = "";
             using (var reader = new StreamReader(request.Body, Encoding.UTF8))
             {
-                bodyString = reader.ReadToEnd();
+                bodyString = await reader.ReadToEndAsync();
             }
 
             if (!string.IsNullOrEmpty(signature))
             {
-                if (!SignatureValid(bodyString, signature))
-                {
-                    return BadRequest($"签名验证错误!");
-                }
+                //if (!SignatureValid(bodyString, signature))
+                //{
+                //    return BadRequest($"签名验证错误!");
+                //}
 
                 // 解析内容
-
+                await _eventManager.HandleEventAsync(eventName, bodyString);
             }
             else
             {

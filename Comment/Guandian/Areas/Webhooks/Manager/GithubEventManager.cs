@@ -20,7 +20,6 @@ namespace Guandian.Areas.Webhooks.Manager
 
         public async Task HandleEventAsync(string eventName, string requestBody)
         {
-            string re = "";
             switch (eventName)
             {
                 case PingEvent.EventString:
@@ -205,7 +204,7 @@ namespace Guandian.Areas.Webhooks.Manager
                 {
                     var review = _context.Reviews.SingleOrDefault(r => r.Number == number);
                     var user = _context.Users.SingleOrDefault(u => u.GitId == uid.ToString());
-                    if (review != null || user != null)
+                    if (review != null && user != null)
                     {
                         var newReviewComment = new ReviewComment
                         {
