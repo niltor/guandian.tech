@@ -35,6 +35,7 @@
     <PackageReference Include="Markdig" Version="0.16.0" />
     <PackageReference Include="Markdig.SyntaxHighlighting" Version="1.1.7" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.7.0-beta2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.0.0-preview3.19153.1" />
     <PackageReference Include="Octokit" Version="0.32.0" />
     <PackageReference Include="Senparc.Weixin.MP.MVC" Version="7.2.6" />
     <PackageReference Include="System.Data.SqlClient" Version="4.7.0-preview3.19128.7" />

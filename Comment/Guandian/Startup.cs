@@ -23,8 +23,6 @@ using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
 using System;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Newtonsoft.Json.Serialization;
 
 namespace Guandian
 {
@@ -120,8 +118,16 @@ namespace Guandian
                     options.Scope.Add("user:email");
                     options.SaveTokens = true;
                 });
+
             services.AddMvc()
                 .AddNewtonsoftJson();
+
+            services.AddStackExchangeRedisCache(option =>
+            {
+                option.Configuration = "localhost";
+                option.InstanceName = "guandian";
+
+            });
 
             services.AddMemoryCache();// 使用本地缓存必须添加
             services.AddSession();// 使用Session 
