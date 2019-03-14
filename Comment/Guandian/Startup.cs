@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -23,6 +24,7 @@ using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
 using System;
 using System.Security.Claims;
+using System.Text;
 
 namespace Guandian
 {
@@ -119,8 +121,7 @@ namespace Guandian
                     options.SaveTokens = true;
                 });
 
-            services.AddMvc()
-                .AddNewtonsoftJson();
+            services.AddMvc();
 
             services.AddStackExchangeRedisCache(option =>
             {
@@ -141,7 +142,7 @@ namespace Guandian
 
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting, IApplicationLifetime lifetime, IDistributedCache cache)
         {
             if (env.IsDevelopment())
             {
@@ -152,6 +153,16 @@ namespace Guandian
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            // 缓存设置
+            lifetime.ApplicationStarted.Register(() =>
+            {
+                var currentTimeUTC = DateTime.UtcNow.ToString();
+                byte[] encodedCurrentTimeUTC = Encoding.UTF8.GetBytes(currentTimeUTC);
+                var options = new DistributedCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(20));
+                cache.Set("cachedTimeUTC", encodedCurrentTimeUTC, options);
+            });
+
             app.UseStaticFiles();
             //app.UseCookiePolicy();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
