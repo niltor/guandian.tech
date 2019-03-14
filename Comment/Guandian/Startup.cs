@@ -15,7 +15,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin;
@@ -23,6 +25,7 @@ using Senparc.Weixin.Entities;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
 using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -125,8 +128,8 @@ namespace Guandian
 
             services.AddStackExchangeRedisCache(option =>
             {
-                option.Configuration = "localhost";
-                option.InstanceName = "guandian";
+                option.Configuration = Configuration.GetConnectionString("Redis");
+                option.InstanceName = "guandian_";
 
             });
 
@@ -142,7 +145,14 @@ namespace Guandian
 
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting, IApplicationLifetime lifetime, IDistributedCache cache)
+        public void Configure(
+            IApplicationBuilder app,
+            Microsoft.AspNetCore.Hosting.IHostingEnvironment env,
+            IOptions<SenparcSetting> senparcSetting,
+            IOptions<SenparcWeixinSetting> senparcWeixinSetting,
+            IHostApplicationLifetime lifetime,
+            ApplicationDbContext context,
+            IDistributedCache cache)
         {
             if (env.IsDevelopment())
             {
@@ -154,14 +164,17 @@ namespace Guandian
                 app.UseExceptionHandler("/Home/Error");
             }
             // 缓存设置
+            var titleList = context.Practknow.Select(s => s.Title).ToList();
+
             lifetime.ApplicationStarted.Register(() =>
             {
-                var currentTimeUTC = DateTime.UtcNow.ToString();
-                byte[] encodedCurrentTimeUTC = Encoding.UTF8.GetBytes(currentTimeUTC);
-                var options = new DistributedCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(20));
-                cache.Set("cachedTimeUTC", encodedCurrentTimeUTC, options);
+                var titleString = cache.GetString("titles");
+                if (string.IsNullOrEmpty(titleString))
+                {
+                    cache.SetString("titles", JsonConvert.SerializeObject(titleList));
+                }
             });
+
 
             app.UseStaticFiles();
             //app.UseCookiePolicy();
