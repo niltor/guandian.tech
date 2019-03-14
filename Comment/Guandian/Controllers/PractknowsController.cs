@@ -7,7 +7,9 @@ using Guandian.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,7 @@ namespace Guandian.Controllers
         private readonly GithubService _github;
         private readonly GithubManageService _githubManage;
         private readonly ReviewManager _reviewManager;
+        readonly IDistributedCache _cache;
 
         public PractknowsController(
             ApplicationDbContext context,
@@ -29,11 +32,13 @@ namespace Guandian.Controllers
             GithubManageService githubManage,
             UserManager<User> userManager,
             ReviewManager reviewManager,
+            IDistributedCache cache,
             ILogger<PractknowsController> logger) : base(userManager, context, logger)
         {
             _github = github;
             _githubManage = githubManage;
             _reviewManager = reviewManager;
+            _cache = cache;
         }
 
         /// <summary>
@@ -137,6 +142,20 @@ namespace Guandian.Controllers
         }
 
         /// <summary>
+        /// 查询相似标题内容
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public ActionResult<string> GetSimilaryTitle(string title)
+        {
+            var titleString = _cache.GetString("titles");
+            var titles = JsonConvert.DeserializeObject<List<string>>(titleString);
+            
+            
+            return "";
+        }
+
+        /// <summary>
         /// 构建导航菜单
         /// </summary>
         /// <param name="node"></param>
@@ -159,7 +178,6 @@ namespace Guandian.Controllers
             }
             return result;
         }
-
         /// <summary>
         /// 创建践识
         /// </summary>

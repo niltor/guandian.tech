@@ -45,8 +45,6 @@ namespace Guandian.Data
                 e.HasIndex(f => f.FileName);
             });
 
-
-
             builder.Entity<Repository>()
                 .HasIndex(r => r.Tag);
             base.OnModelCreating(builder);
