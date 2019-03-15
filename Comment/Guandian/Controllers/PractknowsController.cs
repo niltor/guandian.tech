@@ -4,6 +4,7 @@ using Guandian.Manager;
 using Guandian.Models.Forms;
 using Guandian.Models.PractknowView;
 using Guandian.Services;
+using Guandian.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,6 @@ namespace Guandian.Controllers
         private readonly GithubManageService _githubManage;
         private readonly ReviewManager _reviewManager;
         readonly IDistributedCache _cache;
-
         public PractknowsController(
             ApplicationDbContext context,
             GithubService github,
@@ -146,13 +146,12 @@ namespace Guandian.Controllers
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
-        public ActionResult<string> GetSimilaryTitle(string title)
+        public ActionResult<List<SearchTitle>> GetSimilaryTitle(string title)
         {
-            var titleString = _cache.GetString("titles");
-            var titles = JsonConvert.DeserializeObject<List<string>>(titleString);
-            
-            
-            return "";
+            var titleString = _cache.GetString("searchTitles");
+            var titles = JsonConvert.DeserializeObject<List<SearchTitle>>(titleString);
+            var similarTitles = titles.Where(t => StringTools.GetSimilar(title, t.Title) > 0.6).ToList();
+            return similarTitles;
         }
 
         /// <summary>

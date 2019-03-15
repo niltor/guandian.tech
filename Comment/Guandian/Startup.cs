@@ -2,6 +2,7 @@ using Guandian.Areas.Webhooks.Manager;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Guandian.Manager;
+using Guandian.Models.PractknowView;
 using Guandian.Services;
 using Guandian.Utilities;
 using Microsoft.AspNetCore.Authentication;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -124,7 +126,10 @@ namespace Guandian
                     options.SaveTokens = true;
                 });
 
-            services.AddMvc();
+            services.AddMvc()
+                .AddNewtonsoftJson()
+                .AddRazorRuntimeCompilation()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddStackExchangeRedisCache(option =>
             {
@@ -164,14 +169,19 @@ namespace Guandian
                 app.UseExceptionHandler("/Home/Error");
             }
             // 缓存设置
-            var titleList = context.Practknow.Select(s => s.Title).ToList();
+            var titleList = context.Practknow.Select(s => new SearchTitle
+            {
+                Title = s.Title,
+                Id = s.Id,
+                UpdatedTime = s.UpdatedTime
+            }).ToList();
 
             lifetime.ApplicationStarted.Register(() =>
             {
-                var titleString = cache.GetString("titles");
+                var titleString = cache.GetString("searchTitles");
                 if (string.IsNullOrEmpty(titleString))
                 {
-                    cache.SetString("titles", JsonConvert.SerializeObject(titleList));
+                    cache.SetString("searchTitles", JsonConvert.SerializeObject(titleList));
                 }
             });
 
