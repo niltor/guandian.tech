@@ -116,7 +116,9 @@
             };
         },
         onSelect: function (suggestion) {
-            // TODO 选择后事件处理
+            // TODO 选择后事件处理，跳转到内容页
+            var path ='/Practknows?nodeId='+suggestion.data;
+            window.open(path);
         }
     });
 </script>

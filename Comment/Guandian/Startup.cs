@@ -172,7 +172,7 @@ namespace Guandian
             var titleList = context.Practknow.Select(s => new SearchTitle
             {
                 Title = s.Title,
-                Id = s.Id,
+                Id = s.FileNode.Id,
                 UpdatedTime = s.UpdatedTime
             }).ToList();
 
@@ -184,7 +184,6 @@ namespace Guandian
                     cache.SetString("searchTitles", JsonConvert.SerializeObject(titleList));
                 }
             });
-
 
             app.UseStaticFiles();
             //app.UseCookiePolicy();
