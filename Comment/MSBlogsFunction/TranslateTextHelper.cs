@@ -176,6 +176,7 @@ namespace MSBlogsFunction
                         if (response.IsSuccessStatusCode)
                         {
                             responseBody = await response.Content.ReadAsStringAsync();
+                            responseBody = responseBody.Replace("</ ", "</");
                             JArray jsonArray = JsonConvert.DeserializeObject<JArray>(responseBody);
                             if (jsonArray[0].HasValues)
                             {
