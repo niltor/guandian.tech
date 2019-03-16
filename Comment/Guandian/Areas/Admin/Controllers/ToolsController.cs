@@ -121,7 +121,7 @@ namespace Guandian.Areas.Admin.Controllers
             // 筛选
             foreach (var item in blogs)
             {
-                if (currentBlogs.Any(c => StringTools.Similarity(c.TitleEn, item) >= 0.5 || c.TitleEn == item))
+                if (currentBlogs.Any(c => StringTools.Similarity(c.TitleEn, item) >= 0.85 || c.TitleEn == item))
                 {
                     result.Remove(item);
                 }

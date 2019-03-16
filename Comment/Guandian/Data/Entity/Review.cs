@@ -26,7 +26,8 @@ namespace Guandian.Data.Entity
         public string CommitsUrl { get; set; }
         public int Number { get; set; }
         [MaxLength(100)]
-        public string MergeCommitSha { get; set; }
+        public string MergeCommitSha { get; set; }  
+
         public bool Merged { get; set; }
         public DateTimeOffset MergeTime { get; set; }
         public ReviewStatus MergeStatus { get; set; }

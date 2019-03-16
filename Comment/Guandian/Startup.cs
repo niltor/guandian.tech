@@ -2,6 +2,7 @@ using Guandian.Areas.Webhooks.Manager;
 using Guandian.Data;
 using Guandian.Data.Entity;
 using Guandian.Manager;
+using Guandian.Models.PractknowView;
 using Guandian.Services;
 using Guandian.Utilities;
 using Microsoft.AspNetCore.Authentication;
@@ -11,10 +12,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin;
@@ -22,9 +27,9 @@ using Senparc.Weixin.Entities;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.RegisterServices;
 using System;
+using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Newtonsoft.Json.Serialization;
+using System.Text;
 
 namespace Guandian
 {
@@ -112,6 +117,7 @@ namespace Guandian
                     options.ClientId = Configuration.GetSection("OAuth")["Github:ClientId"];
                     options.ClientSecret = Configuration.GetSection("OAuth")["Github:ClientSecret"];
                     options.ClaimActions.MapJsonKey("urn:github:avatar", "avatar_url");
+                    options.ClaimActions.MapJsonKey("urn:github:id", "id");
                     options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
                     options.Scope.Add("read:user");
                     options.Scope.Add("public_repo");
@@ -119,8 +125,18 @@ namespace Guandian
                     options.Scope.Add("user:email");
                     options.SaveTokens = true;
                 });
+
             services.AddMvc()
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson()
+                .AddRazorRuntimeCompilation()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddStackExchangeRedisCache(option =>
+            {
+                option.Configuration = Configuration.GetConnectionString("Redis");
+                option.InstanceName = "guandian_";
+
+            });
 
             services.AddMemoryCache();// 使用本地缓存必须添加
             services.AddSession();// 使用Session 
@@ -134,7 +150,14 @@ namespace Guandian
 
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<SenparcSetting> senparcSetting, IOptions<SenparcWeixinSetting> senparcWeixinSetting)
+        public void Configure(
+            IApplicationBuilder app,
+            Microsoft.AspNetCore.Hosting.IHostingEnvironment env,
+            IOptions<SenparcSetting> senparcSetting,
+            IOptions<SenparcWeixinSetting> senparcWeixinSetting,
+            IHostApplicationLifetime lifetime,
+            ApplicationDbContext context,
+            IDistributedCache cache)
         {
             if (env.IsDevelopment())
             {
@@ -145,6 +168,23 @@ namespace Guandian
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            // 缓存设置
+            var titleList = context.Practknow.Select(s => new SearchTitle
+            {
+                Title = s.Title,
+                Id = s.FileNode.Id,
+                UpdatedTime = s.UpdatedTime
+            }).ToList();
+
+            lifetime.ApplicationStarted.Register(() =>
+            {
+                var titleString = cache.GetString("searchTitles");
+                if (string.IsNullOrEmpty(titleString))
+                {
+                    cache.SetString("searchTitles", JsonConvert.SerializeObject(titleList));
+                }
+            });
+
             app.UseStaticFiles();
             //app.UseCookiePolicy();
             app.UseForwardedHeaders(new ForwardedHeadersOptions

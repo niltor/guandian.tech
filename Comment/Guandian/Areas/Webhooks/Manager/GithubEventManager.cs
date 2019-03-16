@@ -18,9 +18,8 @@ namespace Guandian.Areas.Webhooks.Manager
         }
 
 
-        public async Task<string> HandleEventAsync(string eventName, string requestBody)
+        public async Task HandleEventAsync(string eventName, string requestBody)
         {
-            string re = "";
             switch (eventName)
             {
                 case PingEvent.EventString:
@@ -150,8 +149,76 @@ namespace Guandian.Areas.Webhooks.Manager
                 default:
                     throw new NotImplementedException("");
             }
-
-            return re;
+        }
+        /// <summary>
+        /// pull request状态改变
+        /// </summary>
+        /// <param name="pr"></param>
+        /// <returns></returns>
+        public async Task<int> PullRequestAsync(PullRequestEvent pr)
+        {
+            int count = 0;
+            switch (pr.Action)
+            {
+                case "closed":
+                    // 通过合并 
+                    if (pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy != null)
+                    {
+                        var sha = pr.PullRequest.MergeCommitSha;
+                        count = await _context.Practknow
+                           .Where(p => p.PRNumber == pr.PullRequest.Number)
+                           .Where(p => p.MergeStatus == MergeStatus.NeedMerge)
+                           .UpdateAsync(p => new Practknow { MergeStatus = MergeStatus.NeedArchive, PRSHA = sha });
+                    }
+                    // 关闭未通过合并 
+                    else if (!pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy == null)
+                    {
+                        // TODO:消息提醒
+                    }
+                    break;
+                case "opened":
+                    // TODO: 管理员邮件消息提醒
+                    break;
+                case "synchronize":
+                    // do nothing
+                    break;
+                default:
+                    break;
+            }
+            return count;
+        }
+        /// <summary>
+        /// Comment提交
+        /// </summary>
+        /// <param name="issueCommentModel"></param>
+        /// <returns></returns>
+        private async Task<int> IssueCommentAsync(IssueCommentEvent issueCommentModel)
+        {
+            if (issueCommentModel.Action == "created")
+            {
+                // TODO:当前只针对pull request comment进行处理
+                var number = issueCommentModel.Issue.Number;
+                var uid = issueCommentModel.Comment?.User?.Id;
+                var content = issueCommentModel.Comment.Body;
+                if (uid != null)
+                {
+                    var review = _context.Reviews.SingleOrDefault(r => r.Number == number);
+                    var user = _context.Users.SingleOrDefault(u => u.GitId == uid.ToString());
+                    if (review != null && user != null)
+                    {
+                        var newReviewComment = new ReviewComment
+                        {
+                            Content = content,
+                            Review = review,
+                            HtmlUrl = issueCommentModel.Comment.HtmlUrl,
+                            User = user,
+                        };
+                        _context.Add(newReviewComment);
+                        return await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            return 0;
         }
 
         private Task StatusAsync(StatusEvent statusModel)
@@ -249,11 +316,6 @@ namespace Guandian.Areas.Webhooks.Manager
             throw new NotImplementedException();
         }
 
-        private Task IssueCommentAsync(IssueCommentEvent issueCommentModel)
-        {
-            throw new NotImplementedException();
-        }
-
         private Task InstallationRepositoriesAsync(InstallationRepositoriesEvent installationRepositoriesModel)
         {
             throw new NotImplementedException();
@@ -304,37 +366,5 @@ namespace Guandian.Areas.Webhooks.Manager
             throw new NotImplementedException();
         }
 
-        public async Task<int> PullRequestAsync(PullRequestEvent pr)
-        {
-            int count = 0;
-            switch (pr.Action)
-            {
-                case "closed":
-                    // 通过合并 
-                    if (pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy != null)
-                    {
-                        var sha = pr.PullRequest.MergeCommitSha;
-                        count = await _context.Practknow
-                           .Where(p => p.PRNumber == pr.PullRequest.Number)
-                           .Where(p => p.MergeStatus == MergeStatus.NeedMerge)
-                           .UpdateAsync(p => new Practknow { MergeStatus = MergeStatus.NeedArchive, PRSHA = sha });
-                    }
-                    // 关闭未通过合并 
-                    else if (!pr.PullRequest.Merged.GetValueOrDefault() && pr.PullRequest.MergedBy == null)
-                    {
-                        // TODO:消息提醒
-                    }
-                    break;
-                case "opened":
-                    // TODO: 管理员邮件消息提醒
-                    break;
-                case "synchronize":
-                    // do nothing
-                    break;
-                default:
-                    break;
-            }
-            return count;
-        }
     }
 }
