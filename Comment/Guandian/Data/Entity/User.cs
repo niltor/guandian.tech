@@ -38,6 +38,7 @@ namespace Guandian.Data.Entity
         public DateTime Birthday { get; set; }
         public ICollection<Repository> Respositories { get; set; }
         public ICollection<Practknow> Practknows { get; set; }
+        public ICollection<Contribution> Contributions { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public ICollection<ReviewComment> ReviewComments { get; set; }
         /// <summary>

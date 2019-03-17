@@ -21,6 +21,10 @@ namespace Guandian.Data
         /// 文件节点
         /// </summary>
         public DbSet<FileNode> FileNodes { get; set; }
+        /// <summary>
+        /// 贡献:用户与践识关联表
+        /// </summary>
+        public DbSet<Contribution> Contributions { get; set; }
         public DbSet<ReviewComment> ReviewComments { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Repository> Repositories { get; set; }
@@ -47,7 +51,14 @@ namespace Guandian.Data
 
             builder.Entity<Repository>()
                 .HasIndex(r => r.Tag);
+
+            builder.Entity<Contribution>(e =>
+            {
+                e.HasOne(c => c.User).WithMany(u => u.Contributions);
+                e.HasOne(c => c.Practknow).WithMany(p => p.Contributions);
+            });
             base.OnModelCreating(builder);
+
         }
     }
 }
