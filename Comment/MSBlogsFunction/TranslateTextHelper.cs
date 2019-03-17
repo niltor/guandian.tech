@@ -11,7 +11,7 @@ namespace MSBlogsFunction
 {
     public class TranslateTextHelper
     {
-
+        public string MSKey { get; set; }
         public string SubScriptKey { get; set; }
         public TranslateTextHelper(string subscriptKey)
         {
@@ -112,7 +112,7 @@ namespace MSBlogsFunction
                     request.Method = HttpMethod.Post;
                     request.RequestUri = new Uri(uri);
                     request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                    request.Headers.Add("Ocp-Apim-Subscription-Key", SubScriptKey);
+                    request.Headers.Add("Ocp-Apim-Subscription-Key", MSKey);
                     var response = await client.SendAsync(request);
                     if (response.IsSuccessStatusCode)
                     {

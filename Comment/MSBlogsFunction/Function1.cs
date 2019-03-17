@@ -36,7 +36,10 @@ namespace MSBlogsFunction
         static async Task SaveMSBlogs(List<RssEntity> blogs, ILogger log)
         {
             string subKey = Environment.GetEnvironmentVariable("GoogleTranslateKey");
-            var translateHelper = new TranslateTextHelper(subKey);
+            var translateHelper = new TranslateTextHelper(subKey)
+            {
+                MSKey = Environment.GetEnvironmentVariable("TranslateKey")
+            };
             log.LogInformation("采集微软RSS：" + blogs.Count + "条;\r\n" + string.Join(";\r\n", blogs.Select(b => b.Title).ToArray()));
             // blogs去重
             using (var hc = new HttpClient())
@@ -73,8 +76,8 @@ namespace MSBlogsFunction
                                 ContentEn = item.Content,
                                 AuthorName = item.Author,
                                 Categories = item.Categories,
-                                Content = translateHelper.TranslateText(item.Content),
-                                Summary = translateHelper.TranslateText(item.Description),
+                                Content = translateHelper.TranslateText(item.Content, TranslateTextHelper.Provider.Google),
+                                Summary = translateHelper.TranslateText(item.Description, TranslateTextHelper.Provider.Microsoft),
                                 Title = translateHelper.TranslateText(item.Title),
                                 TitleEn = item.Title,
                                 Link = item.Link,
