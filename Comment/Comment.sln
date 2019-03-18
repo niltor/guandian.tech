@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaWeblog", "MetaWeblog\Me
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PushService", "PushService\PushService.csproj", "{F640A42F-C954-45F4-B30B-FBA7D39F3CF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{71E474B9-6208-4083-91D0-205A1AFA0017}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{71E474B9-6208-4083-91D0-205A1AFA0017}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
