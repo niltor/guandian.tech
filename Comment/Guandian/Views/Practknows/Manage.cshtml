@@ -1,0 +1,48 @@
+﻿@model List<Practknow>;
+@{
+    ViewData["Title"] = "践识管理";
+}
+<div class="row">
+
+    <div class="col-auto">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" asp-action="Manage">我的践识</a>
+            <a class="nav-link" asp-action="Review">待审践识</a>
+            <a class="nav-link" asp-action="Contribution">我的贡献</a>
+        </div>
+    </div>
+    <div class="col-auto">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>标题</th>
+                    <th>评论</th>
+                    <th>更新时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var practknow in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Index" asp-route-nodeId="@practknow.FileNode.Id" target="_blank">@practknow.Title</a>
+                        </td>
+                        <td>
+                            @foreach (var comment in practknow.Comments)
+                            {
+                                <span>@comment.Content</span>
+                                <br />
+                            }
+                        </td>
+                        <td>@practknow.UpdatedTime.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            <a href="#">编辑</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

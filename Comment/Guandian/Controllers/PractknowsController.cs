@@ -90,6 +90,48 @@ namespace Guandian.Controllers
                 Practknow = practknow
             });
         }
+
+        /// <summary>
+        /// 个人践识管理
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<List<Practknow>>> ManageAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var practknow = _context.Practknow
+                .Include(p => p.Comments)
+                .Include(p => p.FileNode)
+                .Where(p => p.User == user)
+                .Where(p => p.MergeStatus == MergeStatus.Merged)
+                .ToList();
+            return View(practknow);
+        }
+        /// <summary>
+        /// 待审
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<List<Practknow>>> ReviewAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var practknow = _context.Practknow
+                .Include(p => p.Comments)
+                .Include(p => p.FileNode)
+                .Where(p => p.User == user)
+                .Where(p => p.MergeStatus != MergeStatus.Merged)
+                .ToList();
+            return View(practknow);
+        }
+        /// <summary>
+        /// 贡献
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Contribution()
+        {
+            return View();
+        }
         /// <summary>
         /// 获取当前结点路径 TODO:待抽象复用
         /// </summary>

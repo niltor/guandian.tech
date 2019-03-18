@@ -12,6 +12,13 @@
     var Avatar = User.FindFirst(c => c.Type == "urn:github:avatar")?.Value;
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
         <ul class="navbar-nav navbar-right">
+            <li class="nav-item ">
+                <a class="nav-link text-dark" asp-action="Create" asp-controller="Practknows" asp-area="">
+                    <strong>
+                        分享践识
+                    </strong>
+                </a>
+            </li>
             <li class="nav-item dropdown d-inline-flex">
                 <a class="nav-link ">
                     <img src="@Avatar" width="26" height="26" style="border-radius:50% !important" />
@@ -19,9 +26,10 @@
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" id="userDropdown" href="#" aria-haspopup="true" aria-expanded="false">
                     @UserManager.GetUserName(User)
                 </a>
+
                 <div class="dropdown-menu" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" asp-page="/Account/Manage/Index" asp-area="Identity">我的账号</a>
-                    <a class="dropdown-item" asp-action="Create" asp-controller="Practknows" asp-area="">分享践识</a>
+                    <a class="dropdown-item" asp-page="/Account/Manage/Index" asp-area="Identity">账号管理</a>
+                    <a class="dropdown-item" asp-action="Manage" asp-controller="Practknows" asp-area="">践识管理</a>
                     @*@if (user.IsMember)
                         {
                             <a class="dropdown-item" asp-action="Create" asp-controller="Practknows" asp-area="">分享践识</a>

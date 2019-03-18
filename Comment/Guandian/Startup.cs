@@ -29,7 +29,6 @@ using Senparc.Weixin.RegisterServices;
 using System;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 
 namespace Guandian
 {
