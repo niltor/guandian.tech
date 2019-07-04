@@ -3,16 +3,17 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Functions
 {
     public static class BingNews
     {
         [FunctionName("BingNewsAuto")]
-        //public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
-        public static async Task RunAsync([TimerTrigger("0 0 */4 * * *")]TimerInfo myTimer, TraceWriter log)
+        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, ILogger log)
+        //public static async Task RunAsync([TimerTrigger("0 0 */4 * * *")]TimerInfo myTimer, ILogger log)
         {
-            log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
+            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
             // 读取配置
             var configuration = new ConfigurationBuilder()
@@ -32,7 +33,7 @@ namespace Functions
                     var result = await service.GetNews(keyword);
                     await service.SaveNewsAsync(connstr, result);
                 }
-                log.Info("finish");
+                log.LogInformation("finish");
             }
         }
     }

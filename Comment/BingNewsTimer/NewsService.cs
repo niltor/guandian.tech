@@ -10,6 +10,7 @@ using Functions.Data.Entity;
 using Functions.Models;
 using HtmlAgilityPack;
 using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 namespace Functions
@@ -24,9 +25,9 @@ namespace Functions
 
         private const double Similarity = 0.5;// 定义相似度
         private static HttpClient SearchClient { get; set; }
-        TraceWriter _log;
+        ILogger _log;
 
-        public NewsService(TraceWriter log, string searchKey)
+        public NewsService(ILogger log, string searchKey)
         {
             _log = log;
             SearchClient = new HttpClient();
@@ -57,14 +58,14 @@ namespace Functions
                 // 来源过滤
                 if (!urlFilter.Any(p => newNews[i].Url.ToLower().Contains(p)))
                 {
-                    _log.Info("filter:" + newNews[i].Provider + newNews[i].Title);
+                    _log.LogInformation("filter:" + newNews[i].Provider + newNews[i].Title);
                     newNews[i].Title = string.Empty;
                     continue;
                 }
                 // 无缩略图过滤
                 if (string.IsNullOrEmpty(newNews[i].ThumbnailUrl))
                 {
-                    _log.Info("noPic:" + newNews[i].Title);
+                    _log.LogInformation("noPic:" + newNews[i].Title);
                     newNews[i].Title = string.Empty;
                     continue;
                 }
@@ -75,7 +76,7 @@ namespace Functions
                     // 重复过滤
                     if ((StringTools.Similarity(newNews[i].Title, newNews[j].Title) > Similarity))
                     {
-                        _log.Info("repeat" + newNews[i].Title);
+                        _log.LogInformation("repeat" + newNews[i].Title);
                         newNews[i].Title = string.Empty;
                         continue;
                     }
@@ -137,7 +138,7 @@ namespace Functions
             }
             catch (Exception e)
             {
-                _log.Info(e.Source + e.Message);
+                _log.LogInformation(e.Source + e.Message);
             }
 
             return articles;
@@ -218,7 +219,7 @@ namespace Functions
             }
             catch (Exception e)
             {
-                _log.Error("==GetNewsContentAsync:" + e.Message + e.InnerException);
+                _log.LogError("==GetNewsContentAsync:" + e.Message + e.InnerException);
                 return "";
             }
         }
