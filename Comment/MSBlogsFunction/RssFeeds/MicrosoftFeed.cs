@@ -11,7 +11,6 @@ namespace MSBlogsFunction.RssFeeds
         {
             Urls = new string[]
             {
-                "https://blogs.microsoft.com/on-the-issues/feed/",
                 "https://blogs.windows.com/buildingapps/feed/",
                 "https://blogs.microsoft.com/ai/feed/",
                 "https://blogs.microsoft.com/feed/",
