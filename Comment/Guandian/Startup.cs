@@ -125,7 +125,7 @@ namespace Guandian
                     options.SaveTokens = true;
                 });
 
-            services.AddMvc()
+            services.AddMvc(option => option.EnableEndpointRouting = false)
                 .AddNewtonsoftJson()
                 .AddRazorRuntimeCompilation()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
