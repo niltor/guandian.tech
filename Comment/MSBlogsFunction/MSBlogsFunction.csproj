@@ -18,7 +18,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.8.9" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.Language.TextAnalytics" Version="2.8.0-preview" />
     <PackageReference Include="Microsoft.Azure.CognitiveServices.Search.ImageSearch" Version="1.2.0" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.27" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
   <ItemGroup>

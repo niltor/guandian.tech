@@ -9,8 +9,8 @@ namespace Functions
     public static class BingNews
     {
         [FunctionName("BingNewsAuto")]
-        //public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
-        public static async Task RunAsync([TimerTrigger("0 0 */4 * * *")]TimerInfo myTimer, TraceWriter log)
+        public static async Task RunAsync([TimerTrigger("*/20 * * * * *")]TimerInfo myTimer, TraceWriter log)
+        //public static async Task RunAsync([TimerTrigger("0 0 */4 * * *")]TimerInfo myTimer, TraceWriter log)
         {
             log.Info($"C# Timer trigger function executed at: {DateTime.Now}");
 
