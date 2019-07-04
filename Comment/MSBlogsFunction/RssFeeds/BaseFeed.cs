@@ -63,9 +63,9 @@ namespace MSBlogsFunction.RssFeeds
         public virtual async Task<List<RssEntity>> GetBlogs(int number = 3)
         {
             var result = new List<RssEntity>();
-            try
+            foreach (var url in Urls)
             {
-                foreach (var url in Urls)
+                try
                 {
                     string xmlString = await _httpClient.GetStringAsync(url);
                     if (!string.IsNullOrEmpty(xmlString))
@@ -119,12 +119,12 @@ namespace MSBlogsFunction.RssFeeds
                         result.AddRange(blogs);
                     }
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message + e.InnerException + e.StackTrace);
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message + e.InnerException + e.StackTrace); ;
-                throw;
-            }
+
             // 处理没有内容的博客
             result.Where(r => string.IsNullOrEmpty(r.Content)).ToList()
                 .ForEach(item =>

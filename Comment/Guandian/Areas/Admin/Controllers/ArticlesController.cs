@@ -20,7 +20,6 @@ namespace Guandian.Areas.Admin.Controllers
             page = page < 1 ? 1 : page;
             ViewBag.Page = page;
             var result = _context.Blogs
-                .Where(b => !string.IsNullOrEmpty(b.Content))
                 .Select(s => new Blog
                 {
                     Title = s.Title,

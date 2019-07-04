@@ -36,7 +36,7 @@ namespace MSBlogsFunction
                 Endpoint = "https://eastasia.api.cognitive.microsoft.com"
             };
             // 根据关键词查询图片
-            var result = await textClient.KeyPhrasesAsync(new MultiLanguageBatchInput(new List<MultiLanguageInput>()
+            var result = await textClient.KeyPhrasesAsync(true, new MultiLanguageBatchInput(new List<MultiLanguageInput>()
             {
                 new MultiLanguageInput()
                 {
@@ -48,7 +48,7 @@ namespace MSBlogsFunction
 
             foreach (var keyword in result.Documents[0].KeyPhrases)
             {
-                var imageClient = new ImageSearchAPI(new ApiKeyServiceClientCredentials(ImageKey));
+                var imageClient = new ImageSearchClient(new ApiKeyServiceClientCredentials(ImageKey));
                 var imageResults = await imageClient.Images.SearchAsync(query: keyword, acceptLanguage: "EN", color: "ColorOnly", freshness: "Month", count: 5, size: "Medium");
                 if (imageResults.Value?.Count > 0)
                 {
